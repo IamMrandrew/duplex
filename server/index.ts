@@ -2,6 +2,7 @@ import express, { Request, Response } from 'express'
 import mongoose from 'mongoose'
 import cors from 'cors'
 import path from 'path'
+require('dotenv').config()
 
 const app: express.Application = express()
 
