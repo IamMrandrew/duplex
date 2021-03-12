@@ -1,0 +1,10 @@
+{
+  "name": "duplex",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "scripts": {
+    "start": "node server/index.ts",
+    "heroku-postbuild": "YARN_PRODUCTION=false yarn --cwd client install && yarn --cwd server install && yarn --cwd client build"
+  }
+}
