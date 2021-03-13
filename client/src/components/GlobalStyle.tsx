@@ -22,6 +22,7 @@ export const COLOR = {
   bg: {
     light: '#FFFFFF', // White
     box: '#F8F9FB', // Searchbar, Input background
+    lightgrey: '#DEE2E7', // Button
     grey: '#FCFCFC',
   },
   primary: {
