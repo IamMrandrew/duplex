@@ -18,6 +18,18 @@ export const GlobalStyle = createGlobalStyle`
   }
 `
 
+export const COLOR = {
+  bg: {
+    light: '#FFFFFF', // White
+    box: '#F8F9FB', // Searchbar, Input background
+    grey: '#FCFCFC',
+  },
+  primary: {
+    main: '#8C9DAF',
+    shaded: '#455463',
+  },
+}
+
 export const ResetStyle = createGlobalStyle`
 html,
 body,
