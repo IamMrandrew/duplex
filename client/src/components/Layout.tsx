@@ -12,6 +12,7 @@ export const AppLayout = styled.div`
   width: 100%;
   grid-template-columns: ${NAV_WIDTH}px minmax(${MIN_SECONDARY_COL_WIDTH}px, ${MAX_SECONDARY_COL_WIDTH}px) 1fr;
   grid-template-areas: 'navigation secondary main';
+  height: 100vh;
 `
 
 /* 
