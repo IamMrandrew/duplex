@@ -3,6 +3,7 @@ import styled from 'styled-components/macro'
 import { Avatar } from '@material-ui/core'
 import { COLOR } from '../components/GlobalStyle'
 import { IoMdSend } from 'react-icons/io'
+import Message from '../components/Message'
 
 type Props = {
   children?: ReactElement
@@ -17,7 +18,9 @@ const ChatArea: React.FC<Props> = (props) => {
           <Name>Ellis Jane</Name>
         </TitleWrapper>
       </Header>
-      <Content></Content>
+      <Content>
+        <Message />
+      </Content>
       <InputWrapper>
         <Input />
         <InputButton>
