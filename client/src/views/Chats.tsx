@@ -33,6 +33,10 @@ export default Chats
 const Wrapper = styled.div`
   grid-area: secondary;
   padding: 24px;
+
+  @media (max-width: 767.99px) {
+    padding: 12px;
+  }
 `
 const Header = styled.div`
   padding-top: 40px;

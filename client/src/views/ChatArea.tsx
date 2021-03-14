@@ -59,6 +59,10 @@ const Content = styled.div`
   overflow-y: scroll;
   height: calc(100vh - 90px - 100px);
   padding: 8px 32px;
+
+  @media (max-width: 767.99px) {
+    padding: 12px;
+  }
 `
 
 const Icon = styled(Avatar)``
@@ -74,6 +78,10 @@ const InputWrapper = styled.div`
   padding: 20px 32px;
   padding-bottom: 32px;
   background-color: ${COLOR.bg.light};
+
+  @media (max-width: 767.99px) {
+    padding: 20px 12px;
+  }
 `
 
 const Input = styled.input`
