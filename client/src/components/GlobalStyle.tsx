@@ -29,6 +29,10 @@ export const COLOR = {
     main: '#8C9DAF',
     shaded: '#455463',
   },
+  mono: {
+    main: '#202020',
+    tinted: '#4b4b4b',
+  },
 }
 
 export const ResetStyle = createGlobalStyle`
