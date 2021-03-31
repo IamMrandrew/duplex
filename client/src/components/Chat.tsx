@@ -1,4 +1,5 @@
 import React from 'react'
+import { Link } from 'react-router-dom'
 import { Avatar } from '@material-ui/core'
 import styled from 'styled-components/macro'
 import { COLOR } from './GlobalStyle'
@@ -7,7 +8,7 @@ type Props = {}
 
 const Chat: React.FC<Props> = () => {
   return (
-    <Wrapper>
+    <Wrapper to="/chat">
       <IconWrapper>
         <Icon />
       </IconWrapper>
@@ -21,9 +22,11 @@ const Chat: React.FC<Props> = () => {
 
 export default Chat
 
-const Wrapper = styled.div`
+const Wrapper = styled(Link)`
   display: flex;
   align-items: center;
+  text-decoration: none;
+  color: inherit;
 
   padding: 20px 0px;
 `

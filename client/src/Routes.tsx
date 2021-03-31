@@ -51,10 +51,16 @@ const Routes = (props: Props): ReactElement => {
         <NavBar />
         <Switch>
           {dimensions.width > 768 && (
-            <Route exact path={['/', toPath(LOCATIONS.home)]}>
-              <Chats />
-              <ChatArea />
-            </Route>
+            <>
+              <Route exact path={['/', toPath(LOCATIONS.home)]}>
+                <Chats />
+                <ChatArea />
+              </Route>
+              <Route path="/chat">
+                <Chats />
+                <ChatArea />
+              </Route>
+            </>
           )}
           {dimensions.width <= 768 && (
             <>
