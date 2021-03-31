@@ -57,7 +57,7 @@ const TitleWrapper = styled.div`
 
 const Content = styled.div`
   overflow-y: scroll;
-  height: calc(100vh - 90px - 100px);
+  height: calc(100vh - 60px - 100px);
   padding: 8px 32px;
 
   @media (max-width: 767.99px) {
