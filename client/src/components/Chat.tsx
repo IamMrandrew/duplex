@@ -28,7 +28,7 @@ const Wrapper = styled(Link)`
   text-decoration: none;
   color: inherit;
 
-  padding: 20px 0px;
+  padding: 14px 0px;
 `
 
 const IconWrapper = styled.div`

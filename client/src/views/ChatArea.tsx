@@ -38,7 +38,7 @@ const Wrapper = styled.div`
 `
 
 const Header = styled.div`
-  padding-top: 40px;
+  padding-top: 20px;
   padding-bottom: 10px;
   display: flex;
   align-items: center;
@@ -65,10 +65,15 @@ const Content = styled.div`
   }
 `
 
-const Icon = styled(Avatar)``
+const Icon = styled(Avatar)`
+  &.MuiAvatar-root {
+    height: 30px;
+    width: 30px;
+  }
+`
 
 const Name = styled.span`
-  font-size: 20px;
+  font-size: 18px;
   font-weight: 700;
 `
 
