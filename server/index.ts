@@ -1,13 +1,26 @@
 import express, { Request, Response } from 'express'
-import mongoose from 'mongoose'
-import cors from 'cors'
+import Routes from './routes'
 import path from 'path'
+import UserRoutes from './routes/user'
+import connectDB from './DB'
+import middlewares from './middlewares'
 require('dotenv').config()
 
 const app: express.Application = express()
 
-app.use(express.json())
-app.use(cors())
+app.use(middlewares)
+
+// db connection
+connectDB()
+
+// app routes
+const routes: Array<Routes> = []
+const router = express.Router()
+
+routes.push(new UserRoutes(router))
+
+app.use('/api', router)
+//
 
 if (process.env.NODE_ENV === 'production') {
   app.use(express.static(path.join(__dirname, '../client/build')))
