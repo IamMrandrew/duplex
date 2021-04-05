@@ -25,6 +25,11 @@ export const COLOR = {
     lightgrey: '#DEE2E7', // Button
     palegrey: '#FAFAFA',
   },
+  font: {
+    grey: '#465462',
+    dark: '#000',
+    link: '#7289da', // randomly choose temp color
+  },
   primary: {
     main: '#8C9DAF',
     shaded: '#455463',
