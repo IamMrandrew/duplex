@@ -33,13 +33,17 @@ export default Chats
 const Wrapper = styled.div`
   grid-area: secondary;
   padding: 24px;
+
+  @media (max-width: 767.99px) {
+    padding: 12px;
+  }
 `
 const Header = styled.div`
-  padding-top: 40px;
+  padding-top: 20px;
   padding-bottom: 10px;
 `
 const Title = styled.h1`
-  font-size: 24px;
+  font-size: 18px;
   font-weight: 700;
   text-align: center;
 `
@@ -47,7 +51,7 @@ const Title = styled.h1`
 const SectionTitle = styled.h2`
   margin-top: 20px;
   margin-bottom: 5px;
-  font-size: 20px;
+  font-size: 17px;
   font-weight: 500;
 `
 

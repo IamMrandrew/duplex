@@ -23,7 +23,7 @@ export const COLOR = {
     light: '#FFFFFF', // White
     box: '#F8F9FB', // Searchbar, Input background
     lightgrey: '#DEE2E7', // Button
-    grey: '#FCFCFC',
+    palegrey: '#FAFAFA',
   },
   font: {
     grey: '#465462',
@@ -33,6 +33,10 @@ export const COLOR = {
   primary: {
     main: '#8C9DAF',
     shaded: '#455463',
+  },
+  mono: {
+    main: '#202020',
+    tinted: '#4b4b4b',
   },
 }
 
