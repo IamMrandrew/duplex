@@ -8,8 +8,8 @@ const middlewares = Router()
 // // middlewares.use(passport.session())
 
 middlewares.use(express.json())
-middlewares.use(bodyParser.urlencoded({ extended: false }))
-middlewares.use(bodyParser.json())
+middlewares.use(express.urlencoded({ extended: false }))
+middlewares.use(express.json())
 middlewares.use(cors({ credentials: true, origin: true }))
 
 export default middlewares
