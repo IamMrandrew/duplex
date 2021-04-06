@@ -1,4 +1,4 @@
-import React, { ReactElement, useEffect } from 'react'
+import React, { ReactElement, useState, useEffect, useContext } from 'react'
 import { useParams } from 'react-router-dom'
 import styled from 'styled-components/macro'
 import { Avatar } from '@material-ui/core'
@@ -7,6 +7,7 @@ import { IoMdSend } from 'react-icons/io'
 import Message from '../components/Message'
 import io from 'socket.io-client'
 import { chat } from '../types/chat'
+import { SocketContext } from '../contexts/SocketContext'
 
 type Props = {
   chats: Array<chat>
@@ -15,12 +16,38 @@ type Props = {
 
 const ChatArea: React.FC<Props> = ({ chats }) => {
   const { id } = useParams<{ id: string }>()
+  const { socket } = useContext(SocketContext)
+  const [messages, setMessages]: any = useState([])
+  const [input, setInput] = useState('')
+
+  const inputHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setInput(e.target.value)
+  }
+
+  const sendMessageHandler = () => {
+    if (socket) {
+      socket.emit('message', {
+        id: id,
+        content: input,
+      })
+    }
+  }
 
   useEffect(() => {
-    const socket = io({
-      withCredentials: true,
-    })
-  }, [])
+    socket.emit('join', { id })
+
+    return () => {
+      socket.emit('leave', { id })
+    }
+  }, [socket, id])
+
+  useEffect(() => {
+    if (socket) {
+      socket.on('newMessage', (message: any) => {
+        setMessages([...messages, message])
+      })
+    }
+  }, [socket, messages])
 
   return (
     <Wrapper>
@@ -31,11 +58,13 @@ const ChatArea: React.FC<Props> = ({ chats }) => {
         </TitleWrapper>
       </Header>
       <Content>
-        <Message />
+        {messages.map((message: any) => (
+          <Message key={message._id} message={message} />
+        ))}
       </Content>
       <InputWrapper>
-        <Input />
-        <InputButton>
+        <Input value={input} onChange={inputHandler} />
+        <InputButton onClick={sendMessageHandler}>
           <IoMdSend />
         </InputButton>
       </InputWrapper>

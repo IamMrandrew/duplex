@@ -41,6 +41,10 @@ import { Server, Socket } from 'socket.io'
 import { createServer } from 'http'
 import jwt from 'jsonwebtoken'
 
+import User from './models/user'
+import Chat from './models/chat'
+import mongoose from 'mongoose'
+
 const httpServer = createServer(app)
 const io = new Server(httpServer)
 
@@ -68,8 +72,37 @@ io.on('connection', (socket: Socket) => {
   const extSocket = <ExtSocket>socket
   console.log(extSocket.userData.userId + ' Connected')
 
-  socket.on('disconnect', () => {
+  extSocket.on('disconnect', () => {
     console.log(extSocket.userData.userId + ' Disconnected')
+  })
+
+  extSocket.on('join', ({ id }) => {
+    extSocket.join(id)
+    console.log(`${extSocket.userData.email} joined chat ${id}`)
+  })
+
+  extSocket.on('leave', ({ id }) => {
+    extSocket.leave(id)
+    console.log(`${extSocket.userData.email} leaved chat ${id}`)
+  })
+
+  extSocket.on('message', async ({ id, content }) => {
+    if (content.trim().length > 0) {
+      try {
+        const user = await User.findById(extSocket.userData.userId)
+        const message: any = {
+          _id: new mongoose.Types.ObjectId(),
+          sender: user,
+          content: content,
+          createdAt: Date.now(),
+        }
+        const chat = await Chat.findByIdAndUpdate(id, { $push: { messages: message } }, { new: true })
+
+        io.to(id).emit('newMessage', message)
+      } catch (err) {
+        console.log(err)
+      }
+    }
   })
 })
 

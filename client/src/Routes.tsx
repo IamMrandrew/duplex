@@ -1,6 +1,5 @@
-import React, { ReactElement, useState, useEffect } from 'react'
-import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom'
-// import { GlobalStyle, ResetStyle } from '@components/GlobalStyle'
+import React, { ReactElement, useState, useEffect, useContext } from 'react'
+import { Switch, Route } from 'react-router-dom'
 import { GlobalStyle, ResetStyle } from './components/GlobalStyle'
 import { AppLayout } from './components/Layout'
 import NavBar from './components/NavBar'
@@ -11,6 +10,7 @@ import Login from './views/Login'
 import { useResponsive } from './hooks/useResponsive'
 
 import ChatService from './services/ChatService'
+import { SocketContext, socket } from './contexts/SocketContext'
 
 type Props = {
   children?: ReactElement | Array<ReactElement>
@@ -54,32 +54,34 @@ const Routes = (props: Props): ReactElement => {
         <Route exact path={toPath(LOCATIONS.login)}>
           <Login />
         </Route>
-        <App>
-          <>
-            {!isMobile() && (
-              <>
-                <Route exact path={['/', toPath(LOCATIONS.home)]}>
-                  <Chats chats={chats} />
-                  <ChatArea chats={chats} />
-                </Route>
-                <Route path={toPath(LOCATIONS.chat)}>
-                  <Chats chats={chats} />
-                  <ChatArea chats={chats} />
-                </Route>
-              </>
-            )}
-            {isMobile() && (
-              <>
-                <Route exact path={['/', toPath(LOCATIONS.home)]}>
-                  <Chats chats={chats} />
-                </Route>
-                <Route path={toPath(LOCATIONS.chat)}>
-                  <ChatArea chats={chats} />
-                </Route>
-              </>
-            )}
-          </>
-        </App>
+        <SocketContext.Provider value={{ socket }}>
+          <App>
+            <>
+              {!isMobile() && (
+                <>
+                  <Route exact path={['/', toPath(LOCATIONS.home)]}>
+                    <Chats chats={chats} />
+                    <ChatArea chats={chats} />
+                  </Route>
+                  <Route path={toPath(LOCATIONS.chat)}>
+                    <Chats chats={chats} />
+                    <ChatArea chats={chats} />
+                  </Route>
+                </>
+              )}
+              {isMobile() && (
+                <>
+                  <Route exact path={['/', toPath(LOCATIONS.home)]}>
+                    <Chats chats={chats} />
+                  </Route>
+                  <Route path={toPath(LOCATIONS.chat)}>
+                    <ChatArea chats={chats} />
+                  </Route>
+                </>
+              )}
+            </>
+          </App>
+        </SocketContext.Provider>
       </Switch>
     </>
   )
@@ -87,6 +89,15 @@ const Routes = (props: Props): ReactElement => {
 
 const App = (props: Props): ReactElement => {
   const { children } = props
+
+  const { socket } = useContext(SocketContext)
+
+  useEffect(() => {
+    socket.on('connect', () => {
+      console.log('Sockect connect successfully ')
+    })
+  }, [])
+
   return (
     <AppLayout>
       <NavBar />

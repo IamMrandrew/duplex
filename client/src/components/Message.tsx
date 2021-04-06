@@ -2,13 +2,18 @@ import React from 'react'
 import styled from 'styled-components/macro'
 import { COLOR } from './GlobalStyle'
 
-type Props = {}
+type Props = {
+  message: {
+    content: string
+    sender: string
+  }
+}
 
-const Message: React.FC<Props> = () => {
+const Message: React.FC<Props> = ({ message }) => {
   return (
     <Wrapper>
       <Bubble>
-        <Text>Hello :)</Text>
+        <Text>{message.content}</Text>
       </Bubble>
     </Wrapper>
   )
