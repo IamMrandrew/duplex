@@ -3,7 +3,7 @@ import Routes from './routes'
 import path from 'path'
 import UserRoutes from './routes/user'
 import connectDB from './DB'
-import middlewares from './middlewares'
+import middlewares from './middleware'
 require('dotenv').config()
 
 const app: express.Application = express()

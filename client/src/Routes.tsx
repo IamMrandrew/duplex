@@ -1,4 +1,4 @@
-import React, { useState, useEffect, ReactElement } from 'react'
+import React, { ReactElement } from 'react'
 import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom'
 // import { GlobalStyle, ResetStyle } from '@components/GlobalStyle'
 import { GlobalStyle, ResetStyle } from './components/GlobalStyle'
@@ -8,6 +8,7 @@ import Chats from './views/Chats'
 import ChatArea from './views/ChatArea'
 import Onboarding from './views/Onboarding'
 import Login from './views/Login'
+import { useResponsive } from './hooks/useResponsive'
 
 type Props = {
   children?: ReactElement | Array<ReactElement>
@@ -20,6 +21,7 @@ export const LOCATIONS = {
   explore: 'explore',
   settings: 'settings',
   login: 'login',
+  chat: 'chat/:id',
 }
 
 export const toPath = (location: string): string => {
@@ -28,61 +30,46 @@ export const toPath = (location: string): string => {
 
 const Routes = (props: Props): ReactElement => {
   const { children, ...rest } = props
-
-  const [dimensions, setDimensions] = useState({
-    height: window.innerHeight,
-    width: window.innerWidth,
-  })
-
-  useEffect(() => {
-    function handleResize() {
-      setDimensions({
-        height: window.innerHeight,
-        width: window.innerWidth,
-      })
-    }
-    window.addEventListener('resize', handleResize)
-
-    return () => window.removeEventListener('resize', handleResize)
-  })
+  const { isMobile } = useResponsive()
 
   return (
     <>
       <ResetStyle />
       <GlobalStyle />
-      <AppLayout>
-        <NavBar />
-        <Switch>
-          <Route exact path={toPath(LOCATIONS.onboarding)}>
-            <Onboarding />
-          </Route>
-          <Route exact path={toPath(LOCATIONS.login)}>
-            <Login />
-          </Route>
-          {dimensions.width > 768 && (
-            <>
-              <Route exact path={['/', toPath(LOCATIONS.home)]}>
-                <Chats />
-                <ChatArea />
-              </Route>
-              <Route path="/chat/:id">
-                <Chats />
-                <ChatArea />
-              </Route>
-            </>
-          )}
-          {dimensions.width <= 768 && (
-            <>
-              <Route exact path="/">
-                <Chats />
-              </Route>
-              <Route path="/chat/:id">
-                <ChatArea />
-              </Route>
-            </>
-          )}
-        </Switch>
-      </AppLayout>
+      <Switch>
+        <Route exact path={toPath(LOCATIONS.onboarding)}>
+          <Onboarding />
+        </Route>
+        <Route exact path={toPath(LOCATIONS.login)}>
+          <Login />
+        </Route>
+        <App>
+          <>
+            {!isMobile() && (
+              <>
+                <Route exact path={['/', toPath(LOCATIONS.home)]}>
+                  <Chats />
+                  <ChatArea />
+                </Route>
+                <Route path={toPath(LOCATIONS.chat)}>
+                  <Chats />
+                  <ChatArea />
+                </Route>
+              </>
+            )}
+            {isMobile() && (
+              <>
+                <Route exact path={['/', toPath(LOCATIONS.home)]}>
+                  <Chats />
+                </Route>
+                <Route path={toPath(LOCATIONS.chat)}>
+                  <ChatArea />
+                </Route>
+              </>
+            )}
+          </>
+        </App>
+      </Switch>
     </>
   )
 }
