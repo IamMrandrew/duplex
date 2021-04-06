@@ -53,6 +53,12 @@ const Routes = (props: Props): ReactElement => {
       <AppLayout>
         <NavBar />
         <Switch>
+          <Route exact path={toPath(LOCATIONS.onboarding)}>
+            <Onboarding />
+          </Route>
+          <Route exact path={toPath(LOCATIONS.login)}>
+            <Login />
+          </Route>
           {dimensions.width > 768 && (
             <>
               <Route exact path={['/', toPath(LOCATIONS.home)]}>
@@ -75,12 +81,6 @@ const Routes = (props: Props): ReactElement => {
               </Route>
             </>
           )}
-        <Route exact path={toPath(LOCATIONS.onboarding)}>
-          <Onboarding />
-        </Route>
-        <Route exact path={toPath(LOCATIONS.login)}>
-          <Login />
-        </Route>
         </Switch>
       </AppLayout>
     </>
