@@ -6,12 +6,14 @@ import { COLOR } from '../components/GlobalStyle'
 import { IoMdSend } from 'react-icons/io'
 import Message from '../components/Message'
 import io from 'socket.io-client'
+import { chat } from '../types/chat'
 
 type Props = {
+  chats: Array<chat>
   children?: ReactElement
 }
 
-const ChatArea: React.FC<Props> = (props) => {
+const ChatArea: React.FC<Props> = ({ chats }) => {
   const { id } = useParams<{ id: string }>()
 
   useEffect(() => {
@@ -25,7 +27,7 @@ const ChatArea: React.FC<Props> = (props) => {
       <Header>
         <TitleWrapper>
           <Icon></Icon>
-          <Name>Ellis Jane</Name>
+          <Name>{chats.find((chat) => chat._id === id) ? chats.find((chat) => chat._id === id)!.title : ''}</Name>
         </TitleWrapper>
       </Header>
       <Content>

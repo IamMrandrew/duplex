@@ -1,4 +1,4 @@
-import React, { ReactElement } from 'react'
+import React, { ReactElement, useState, useEffect } from 'react'
 import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom'
 // import { GlobalStyle, ResetStyle } from '@components/GlobalStyle'
 import { GlobalStyle, ResetStyle } from './components/GlobalStyle'
@@ -9,6 +9,8 @@ import ChatArea from './views/ChatArea'
 import Onboarding from './views/Onboarding'
 import Login from './views/Login'
 import { useResponsive } from './hooks/useResponsive'
+
+import ChatService from './services/ChatService'
 
 type Props = {
   children?: ReactElement | Array<ReactElement>
@@ -32,6 +34,15 @@ const Routes = (props: Props): ReactElement => {
   const { children, ...rest } = props
   const { isMobile } = useResponsive()
 
+  // This state and useEffect can put inside App, But I am not sure how
+  const [chats, setChats] = useState([])
+
+  useEffect(() => {
+    ChatService.getChats().then((res) => {
+      setChats(res.data)
+    })
+  }, [])
+
   return (
     <>
       <ResetStyle />
@@ -48,22 +59,22 @@ const Routes = (props: Props): ReactElement => {
             {!isMobile() && (
               <>
                 <Route exact path={['/', toPath(LOCATIONS.home)]}>
-                  <Chats />
-                  <ChatArea />
+                  <Chats chats={chats} />
+                  <ChatArea chats={chats} />
                 </Route>
                 <Route path={toPath(LOCATIONS.chat)}>
-                  <Chats />
-                  <ChatArea />
+                  <Chats chats={chats} />
+                  <ChatArea chats={chats} />
                 </Route>
               </>
             )}
             {isMobile() && (
               <>
                 <Route exact path={['/', toPath(LOCATIONS.home)]}>
-                  <Chats />
+                  <Chats chats={chats} />
                 </Route>
                 <Route path={toPath(LOCATIONS.chat)}>
-                  <ChatArea />
+                  <ChatArea chats={chats} />
                 </Route>
               </>
             )}

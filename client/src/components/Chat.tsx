@@ -3,16 +3,15 @@ import { Link } from 'react-router-dom'
 import { Avatar } from '@material-ui/core'
 import styled from 'styled-components/macro'
 import { COLOR } from './GlobalStyle'
+import { chat } from '../types/chat'
 
 type Props = {
-  chat: {
-    title: string
-  }
+  chat: chat
 }
 
 const Chat: React.FC<Props> = ({ chat }) => {
   return (
-    <Wrapper to="/chat/id">
+    <Wrapper to={`/chat/${chat._id}`}>
       <IconWrapper>
         <Icon />
       </IconWrapper>

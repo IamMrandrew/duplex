@@ -3,21 +3,14 @@ import styled from 'styled-components/macro'
 import { COLOR } from '../components/GlobalStyle'
 import { FaPlus } from 'react-icons/fa'
 import Chat from '../components/Chat'
-import ChatService from '../services/ChatService'
+import { chat } from '../types/chat'
 
 type Props = {
+  chats: Array<chat>
   children?: ReactElement
 }
 
-const Chats: React.FC<Props> = (props) => {
-  const [chats, setChats] = useState([])
-
-  useEffect(() => {
-    ChatService.getChats().then((res) => {
-      setChats(res.data)
-    })
-  }, [])
-
+const Chats: React.FC<Props> = ({ chats }) => {
   return (
     <Wrapper>
       <Header>
