@@ -46,10 +46,10 @@ io.use((socket, next) => {
   // Middleware that handle the JWT
 })
 
-io.on('connection', (socket: Socket) => {
-  console.log('Connected: ' + socket.userId)
+// io.on('connection', (socket: Socket) => {
+//   console.log('Connected: ' + socket.userId)
 
-  socket.on('disconnect', () => {
-    console.log('Disconnected: ' + socket.userId)
-  })
-})
+//   socket.on('disconnect', () => {
+//     console.log('Disconnected: ' + socket.userId)
+//   })
+// })

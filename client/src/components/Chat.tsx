@@ -8,7 +8,7 @@ type Props = {}
 
 const Chat: React.FC<Props> = () => {
   return (
-    <Wrapper to="/chat">
+    <Wrapper to="/chat/id">
       <IconWrapper>
         <Icon />
       </IconWrapper>
