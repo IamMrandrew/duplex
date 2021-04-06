@@ -61,6 +61,25 @@ export const checkIntegrity = (target: Target, validators: Array<Validator>): Ta
   return target
 }
 
+export const formNoErr = (formState: Record<string, Target>): boolean => {
+  let flag = true
+  for (const key of Object.keys(formState)) {
+    if (formState[key].errMsg) {
+      flag = false
+      break
+    }
+  }
+  return flag
+}
+
+export const toData = (formState: Record<string, Target>): Record<string, string | number> => {
+  const data: Record<string, string | number> = {}
+  for (const key of Object.keys(formState)) {
+    data[key] = formState[key].value
+  }
+  return data
+}
+
 export const VALIDATORS = {
   REQUIRED,
   EMAIL,

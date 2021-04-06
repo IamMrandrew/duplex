@@ -35,7 +35,10 @@ const Controller = {
           if (err) return sendError(res, 401, 'Failed to comapre password')
           if (result) {
             // valid password
-            const token = jwt.sign({ email: user.email, userId: user._id }, process.env.JWT_TOKEN || '')
+            const token = jwt.sign({ email: user.email, userId: user._id }, process.env.JWT_TOKEN || '', {
+              expiresIn: ONE_DAY,
+            })
+            user.password = null
             return res
               .status(200)
               .cookie('token', token, {
@@ -44,7 +47,7 @@ const Controller = {
                 maxAge: ONE_DAY,
                 httpOnly: true,
               })
-              .send({ message: 'logged in' })
+              .send({ message: 'logged in', user: user })
           }
           return sendError(res, 401, 'Incorrect password')
         })

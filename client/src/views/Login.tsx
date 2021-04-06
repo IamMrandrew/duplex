@@ -1,9 +1,12 @@
 import { Button, TextField } from '@material-ui/core'
 import React, { ChangeEvent, ReactElement, useState } from 'react'
+import { useHistory } from 'react-router'
 import styled from 'styled-components'
 import { COLOR } from '../components/GlobalStyle'
 import { MEDIA_BREAK } from '../components/Layout'
-import { checkIntegrity, VALIDATORS } from '../formIntegrity'
+import { useUserState } from '../context/UserContext'
+import { checkIntegrity, formNoErr, toData, VALIDATORS } from '../formIntegrity'
+import UserServices from '../services/UserService'
 
 type Props = {
   children?: ReactElement
@@ -26,38 +29,51 @@ type FormProps = {
 const LoginForm = (props: FormProps) => {
   const { setIsLogin } = props
   const [input, setInput] = useState({
-    username: { value: '', errMsg: '' },
+    emailOrUsername: { value: '', errMsg: '' },
     password: { value: '', errMsg: '' },
   })
+  const history = useHistory()
+  const userState = useUserState()
 
   const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
     const nextState = input
-    console.log(e)
     nextState[e.target.id as keyof typeof input] = { value: e.target.value, errMsg: '' }
     setInput({ ...nextState })
   }
 
   const handleSubmit = () => {
-    const username = checkIntegrity(input.username, [VALIDATORS.REQUIRED])
+    const emailOrUsername = checkIntegrity(input.emailOrUsername, [VALIDATORS.REQUIRED])
     const password = checkIntegrity(input.password, [VALIDATORS.REQUIRED])
-    setInput({ ...input, username, password })
+    setInput({ ...input, emailOrUsername, password })
+    if (formNoErr(input)) {
+      UserServices.login(toData(input))
+        .then((res) => {
+          console.log(res)
+          userState.updateState(res.data.user)
+          history.push('/')
+        })
+        .catch((err) => {
+          console.log(err)
+        })
+    }
   }
 
   return (
     <Form>
       <Title>Welcome!</Title>
       <TextInput
-        id="username"
-        label="username"
+        id="emailOrUsername"
+        label="Email or Username"
         variant="outlined"
         onChange={handleInputChange}
-        error={!!input.username.errMsg}
-        helperText={input.username.errMsg}
+        error={!!input.emailOrUsername.errMsg}
+        helperText={input.emailOrUsername.errMsg}
       />
       <TextInput
         id="password"
         label="password"
         variant="outlined"
+        type="password"
         onChange={handleInputChange}
         error={!!input.password.errMsg}
         helperText={input.password.errMsg}
@@ -92,6 +108,15 @@ const SignupForm = (props: FormProps) => {
     const username = checkIntegrity(input.username, [VALIDATORS.REQUIRED])
     const password = checkIntegrity(input.password, [VALIDATORS.REQUIRED])
     setInput({ ...input, email, username, password })
+    if (formNoErr(input)) {
+      UserServices.signup(toData(input))
+        .then((res) => {
+          setIsLogin(true)
+        })
+        .catch((err) => {
+          console.log(err)
+        })
+    }
   }
 
   return (
@@ -116,6 +141,7 @@ const SignupForm = (props: FormProps) => {
       <TextInput
         id="password"
         label="password"
+        type="password"
         variant="outlined"
         onChange={handleInputChange}
         error={!!input.password.errMsg}
