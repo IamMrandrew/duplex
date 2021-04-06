@@ -11,7 +11,7 @@ export default class ChatRoutes extends Routes {
 
   configureRoutes(): void {
     this.router.route(`/chat`).get(auth, (req: Request, res: Response) => {
-      controller.getAllChats(req, res)
+      controller.getChats(req, res)
     })
 
     this.router.route(`/chat`).post(auth, (req: Request, res: Response) => {

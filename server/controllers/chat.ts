@@ -2,10 +2,9 @@ import { Request, Response } from 'express'
 import mongoose from 'mongoose'
 import Chat from '../models/chat'
 import User from '../models/user'
-import UserRoutes from '../routes/user'
 
 const Controller = {
-  getAllChats: (req: Request, res: Response) => {
+  getChats: (req: Request, res: Response) => {
     Chat.find({})
       .then((chats: any) => {
         Promise.all(

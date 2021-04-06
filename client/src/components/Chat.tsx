@@ -4,16 +4,20 @@ import { Avatar } from '@material-ui/core'
 import styled from 'styled-components/macro'
 import { COLOR } from './GlobalStyle'
 
-type Props = {}
+type Props = {
+  chat: {
+    title: string
+  }
+}
 
-const Chat: React.FC<Props> = () => {
+const Chat: React.FC<Props> = ({ chat }) => {
   return (
     <Wrapper to="/chat/id">
       <IconWrapper>
         <Icon />
       </IconWrapper>
       <ChatWrapper>
-        <Name>Ellis </Name>
+        <Name>{chat.title}</Name>
         <Message>Nice to meet u 😆</Message>
       </ChatWrapper>
     </Wrapper>
