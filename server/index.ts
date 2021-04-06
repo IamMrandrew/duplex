@@ -34,6 +34,22 @@ if (process.env.NODE_ENV === 'production') {
   })
 }
 
-app.listen(process.env.PORT, () => {
+const server = app.listen(process.env.PORT, () => {
   console.log('Server is running on port ' + process.env.PORT)
+})
+
+import { Server, Socket } from 'socket.io'
+
+const io = new Server(server)
+
+io.use((socket, next) => {
+  // Middleware that handle the JWT
+})
+
+io.on('connection', (socket: Socket) => {
+  console.log('Connected: ' + socket.userId)
+
+  socket.on('disconnect', () => {
+    console.log('Disconnected: ' + socket.userId)
+  })
 })

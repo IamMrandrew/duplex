@@ -65,7 +65,7 @@ const Routes = (props: Props): ReactElement => {
                 <Chats />
                 <ChatArea />
               </Route>
-              <Route path="/chat">
+              <Route path="/chat/:id">
                 <Chats />
                 <ChatArea />
               </Route>
@@ -76,7 +76,7 @@ const Routes = (props: Props): ReactElement => {
               <Route exact path="/">
                 <Chats />
               </Route>
-              <Route path="/chat">
+              <Route path="/chat/:id">
                 <ChatArea />
               </Route>
             </>

@@ -1,15 +1,22 @@
 import React, { ReactElement } from 'react'
+import { useParams } from 'react-router-dom'
 import styled from 'styled-components/macro'
 import { Avatar } from '@material-ui/core'
 import { COLOR } from '../components/GlobalStyle'
 import { IoMdSend } from 'react-icons/io'
 import Message from '../components/Message'
+import io from 'socket.io-client'
 
 type Props = {
   children?: ReactElement
 }
 
 const ChatArea: React.FC<Props> = (props) => {
+  const { id } = useParams<{ id: string }>()
+  const socket = io({
+    withCredentials: true,
+  })
+
   return (
     <Wrapper>
       <Header>
