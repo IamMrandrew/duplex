@@ -1,5 +1,5 @@
 import mongoose from 'mongoose'
-import messageSchema from './message'
+import { messageSchema } from './message'
 
 const chatSchema = new mongoose.Schema({
   _id: { type: mongoose.Schema.Types.ObjectId, default: new mongoose.Types.ObjectId() },

@@ -2,6 +2,7 @@ import express, { Request, Response } from 'express'
 import Routes from './routes'
 import path from 'path'
 import UserRoutes from './routes/user'
+import ChatRoutes from './routes/chat'
 import connectDB from './DB'
 import middlewares from './middleware'
 import cookie from 'cookie'
@@ -19,6 +20,7 @@ const routes: Array<Routes> = []
 const router = express.Router()
 
 routes.push(new UserRoutes(router))
+routes.push(new ChatRoutes(router))
 
 app.use('/api', router)
 //
