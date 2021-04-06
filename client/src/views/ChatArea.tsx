@@ -1,4 +1,4 @@
-import React, { ReactElement } from 'react'
+import React, { ReactElement, useEffect } from 'react'
 import { useParams } from 'react-router-dom'
 import styled from 'styled-components/macro'
 import { Avatar } from '@material-ui/core'
@@ -13,9 +13,12 @@ type Props = {
 
 const ChatArea: React.FC<Props> = (props) => {
   const { id } = useParams<{ id: string }>()
-  const socket = io({
-    withCredentials: true,
-  })
+
+  useEffect(() => {
+    const socket = io({
+      withCredentials: true,
+    })
+  }, [])
 
   return (
     <Wrapper>
