@@ -94,8 +94,13 @@ const App = (props: Props): ReactElement => {
 
   useEffect(() => {
     socket.on('connect', () => {
-      console.log('Sockect connect successfully ')
+      console.log('Socket connect successfully ')
     })
+
+    return () => {
+      socket.close()
+      console.log('Socket disconnected')
+    }
   }, [])
 
   return (

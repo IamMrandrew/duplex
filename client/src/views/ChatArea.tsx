@@ -5,7 +5,6 @@ import { Avatar } from '@material-ui/core'
 import { COLOR } from '../components/GlobalStyle'
 import { IoMdSend } from 'react-icons/io'
 import Message from '../components/Message'
-import io from 'socket.io-client'
 import { chat } from '../types/chat'
 import { SocketContext } from '../contexts/SocketContext'
 
@@ -17,6 +16,7 @@ type Props = {
 const ChatArea: React.FC<Props> = ({ chats }) => {
   const { id } = useParams<{ id: string }>()
   const { socket } = useContext(SocketContext)
+  const [chat, setChat]: any = useState({})
   const [messages, setMessages]: any = useState([])
   const [input, setInput] = useState('')
 
@@ -31,21 +31,34 @@ const ChatArea: React.FC<Props> = ({ chats }) => {
         content: input,
       })
     }
+    setInput('')
   }
 
   useEffect(() => {
     socket.emit('join', { id })
 
+    setChat(chats.find((chat) => chat._id === id))
+
     return () => {
       socket.emit('leave', { id })
     }
-  }, [socket, id])
+  }, [socket, id, chats])
+
+  useEffect(() => {
+    if (chat) {
+      setMessages(chat.messages)
+    }
+  }, [chat])
 
   useEffect(() => {
     if (socket) {
       socket.on('newMessage', (message: any) => {
         setMessages([...messages, message])
       })
+    }
+
+    return () => {
+      socket.off('newMessage')
     }
   }, [socket, messages])
 
@@ -54,14 +67,10 @@ const ChatArea: React.FC<Props> = ({ chats }) => {
       <Header>
         <TitleWrapper>
           <Icon></Icon>
-          <Name>{chats.find((chat) => chat._id === id) ? chats.find((chat) => chat._id === id)!.title : ''}</Name>
+          <Name>{chat ? chat.title : ''}</Name>
         </TitleWrapper>
       </Header>
-      <Content>
-        {messages.map((message: any) => (
-          <Message key={message._id} message={message} />
-        ))}
-      </Content>
+      <Content>{messages && messages.map((message: any) => <Message key={message._id} message={message} />)}</Content>
       <InputWrapper>
         <Input value={input} onChange={inputHandler} />
         <InputButton onClick={sendMessageHandler}>
