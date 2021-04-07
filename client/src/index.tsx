@@ -1,7 +1,7 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
 import { BrowserRouter as Router } from 'react-router-dom'
-import UserProvider from './context/UserContext'
+import UserProvider from './contexts/UserContext'
 import Routes from './Routes'
 
 ReactDOM.render(
