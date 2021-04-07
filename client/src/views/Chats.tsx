@@ -1,14 +1,16 @@
-import React, { ReactElement } from 'react'
+import React, { ReactElement, useEffect, useState } from 'react'
 import styled from 'styled-components/macro'
 import { COLOR } from '../components/GlobalStyle'
 import { FaPlus } from 'react-icons/fa'
 import Chat from '../components/Chat'
+import { chat } from '../types/chat'
 
 type Props = {
+  chats: Array<chat>
   children?: ReactElement
 }
 
-const Chats: React.FC<Props> = (props) => {
+const Chats: React.FC<Props> = ({ chats }) => {
   return (
     <Wrapper>
       <Header>
@@ -20,10 +22,10 @@ const Chats: React.FC<Props> = (props) => {
           <FaPlus />
         </AddButton>
       </SearchWrapper>
-      <SectionTitle>Messages</SectionTitle>
-      <Chat />
-      <Chat />
-      <Chat />
+      <SectionTitle>Spaces</SectionTitle>
+      {chats.map((chat: any) => (
+        <Chat key={chat._id} chat={chat} />
+      ))}
     </Wrapper>
   )
 }

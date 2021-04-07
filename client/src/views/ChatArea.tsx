@@ -1,29 +1,100 @@
-import React, { ReactElement } from 'react'
+import React, { ReactElement, useState, useEffect, useContext } from 'react'
+import { useParams } from 'react-router-dom'
 import styled from 'styled-components/macro'
 import { Avatar } from '@material-ui/core'
 import { COLOR } from '../components/GlobalStyle'
 import { IoMdSend } from 'react-icons/io'
 import Message from '../components/Message'
+import { chat } from '../types/chat'
+import { SocketContext } from '../contexts/SocketContext'
+import { useUserState } from '../contexts/UserContext'
 
 type Props = {
+  chats: Array<chat>
+  setChats: any
   children?: ReactElement
 }
 
-const ChatArea: React.FC<Props> = (props) => {
+const ChatArea: React.FC<Props> = ({ chats, setChats }) => {
+  const { id } = useParams<{ id: string }>()
+  const { socket } = useContext(SocketContext)
+  const userState = useUserState()
+
+  const [chat, setChat]: any = useState({})
+  const [messages, setMessages]: any = useState([])
+  const [input, setInput] = useState('')
+
+  const inputHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setInput(e.target.value)
+  }
+
+  const sendMessageHandler = () => {
+    if (socket) {
+      socket.emit('message', {
+        id: id,
+        content: input,
+      })
+    }
+    setInput('')
+  }
+
+  const checkIfIncoming = (message: any) => {
+    return !(userState.state._id === message.sender._id)
+  }
+
+  useEffect(() => {
+    socket.emit('join', { id })
+
+    setChat(chats.find((chat) => chat._id === id))
+
+    return () => {
+      socket.emit('leave', { id })
+    }
+  }, [socket, id, chats])
+
+  useEffect(() => {
+    if (chat) {
+      setMessages(chat.messages)
+    }
+  }, [chat])
+
+  useEffect(() => {
+    if (socket) {
+      socket.on('newMessage', (message: any) => {
+        setMessages([...messages, message])
+        setChats(
+          chats.map((chat) => {
+            if (chat._id === id) {
+              return { ...chat, messages: [...chat.messages, message] }
+            }
+            return chat
+          }),
+        )
+      })
+    }
+
+    return () => {
+      socket.off('newMessage')
+    }
+  }, [socket, messages])
+
   return (
     <Wrapper>
       <Header>
         <TitleWrapper>
           <Icon></Icon>
-          <Name>Ellis Jane</Name>
+          <Name>{chat ? chat.title : ''}</Name>
         </TitleWrapper>
       </Header>
       <Content>
-        <Message />
+        {messages &&
+          messages.map((message: any) => (
+            <Message key={message._id} message={message} incoming={checkIfIncoming(message)} />
+          ))}
       </Content>
       <InputWrapper>
-        <Input />
-        <InputButton>
+        <Input value={input} onChange={inputHandler} />
+        <InputButton onClick={sendMessageHandler}>
           <IoMdSend />
         </InputButton>
       </InputWrapper>

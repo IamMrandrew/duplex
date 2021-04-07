@@ -4,7 +4,7 @@ import { useHistory } from 'react-router'
 import styled from 'styled-components'
 import { COLOR } from '../components/GlobalStyle'
 import { MEDIA_BREAK } from '../components/Layout'
-import { useUserState } from '../context/UserContext'
+import { useUserState } from '../contexts/UserContext'
 import { checkIntegrity, formNoErr, toData, VALIDATORS } from '../formIntegrity'
 import UserServices from '../services/UserService'
 
