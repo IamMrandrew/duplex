@@ -7,15 +7,19 @@ import { IoMdSend } from 'react-icons/io'
 import Message from '../components/Message'
 import { chat } from '../types/chat'
 import { SocketContext } from '../contexts/SocketContext'
+import { useUserState } from '../context/UserContext'
 
 type Props = {
   chats: Array<chat>
+  setChats: any
   children?: ReactElement
 }
 
-const ChatArea: React.FC<Props> = ({ chats }) => {
+const ChatArea: React.FC<Props> = ({ chats, setChats }) => {
   const { id } = useParams<{ id: string }>()
   const { socket } = useContext(SocketContext)
+  const userState = useUserState()
+
   const [chat, setChat]: any = useState({})
   const [messages, setMessages]: any = useState([])
   const [input, setInput] = useState('')
@@ -32,6 +36,10 @@ const ChatArea: React.FC<Props> = ({ chats }) => {
       })
     }
     setInput('')
+  }
+
+  const checkIfIncoming = (message: any) => {
+    return !(userState.state._id === message.sender._id)
   }
 
   useEffect(() => {
@@ -54,6 +62,14 @@ const ChatArea: React.FC<Props> = ({ chats }) => {
     if (socket) {
       socket.on('newMessage', (message: any) => {
         setMessages([...messages, message])
+        setChats(
+          chats.map((chat) => {
+            if (chat._id === id) {
+              return { ...chat, messages: [...chat.messages, message] }
+            }
+            return chat
+          }),
+        )
       })
     }
 
@@ -70,7 +86,12 @@ const ChatArea: React.FC<Props> = ({ chats }) => {
           <Name>{chat ? chat.title : ''}</Name>
         </TitleWrapper>
       </Header>
-      <Content>{messages && messages.map((message: any) => <Message key={message._id} message={message} />)}</Content>
+      <Content>
+        {messages &&
+          messages.map((message: any) => (
+            <Message key={message._id} message={message} incoming={checkIfIncoming(message)} />
+          ))}
+      </Content>
       <InputWrapper>
         <Input value={input} onChange={inputHandler} />
         <InputButton onClick={sendMessageHandler}>

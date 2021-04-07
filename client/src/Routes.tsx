@@ -61,11 +61,11 @@ const Routes = (props: Props): ReactElement => {
                 <>
                   <Route exact path={['/', toPath(LOCATIONS.home)]}>
                     <Chats chats={chats} />
-                    <ChatArea chats={chats} />
+                    <ChatArea chats={chats} setChats={setChats} />
                   </Route>
                   <Route path={toPath(LOCATIONS.chat)}>
                     <Chats chats={chats} />
-                    <ChatArea chats={chats} />
+                    <ChatArea chats={chats} setChats={setChats} />
                   </Route>
                 </>
               )}
@@ -75,7 +75,7 @@ const Routes = (props: Props): ReactElement => {
                     <Chats chats={chats} />
                   </Route>
                   <Route path={toPath(LOCATIONS.chat)}>
-                    <ChatArea chats={chats} />
+                    <ChatArea chats={chats} setChats={setChats} />
                   </Route>
                 </>
               )}

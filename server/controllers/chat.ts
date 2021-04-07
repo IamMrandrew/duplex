@@ -6,6 +6,7 @@ import User from '../models/user'
 const Controller = {
   getChats: (req: Request, res: Response) => {
     Chat.find({})
+      .populate('messages.sender')
       .then((chats: any) => {
         Promise.all(
           chats.map((chat: any) => {
