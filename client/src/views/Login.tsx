@@ -4,6 +4,7 @@ import { useHistory } from 'react-router'
 import styled from 'styled-components'
 import { COLOR } from '../components/GlobalStyle'
 import { MEDIA_BREAK } from '../components/Layout'
+import { useUserState } from '../context/UserContext'
 import { checkIntegrity, formNoErr, toData, VALIDATORS } from '../formIntegrity'
 import UserServices from '../services/UserService'
 
@@ -32,6 +33,7 @@ const LoginForm = (props: FormProps) => {
     password: { value: '', errMsg: '' },
   })
   const history = useHistory()
+  const userState = useUserState()
 
   const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
     const nextState = input
@@ -46,7 +48,8 @@ const LoginForm = (props: FormProps) => {
     if (formNoErr(input)) {
       UserServices.login(toData(input))
         .then((res) => {
-          console.log(res.data)
+          console.log(res)
+          userState.updateState(res.data.user)
           history.push('/')
         })
         .catch((err) => {
@@ -70,6 +73,7 @@ const LoginForm = (props: FormProps) => {
         id="password"
         label="password"
         variant="outlined"
+        type="password"
         onChange={handleInputChange}
         error={!!input.password.errMsg}
         helperText={input.password.errMsg}
@@ -137,6 +141,7 @@ const SignupForm = (props: FormProps) => {
       <TextInput
         id="password"
         label="password"
+        type="password"
         variant="outlined"
         onChange={handleInputChange}
         error={!!input.password.errMsg}
