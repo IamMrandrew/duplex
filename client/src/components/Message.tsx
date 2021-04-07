@@ -7,12 +7,13 @@ type Props = {
     content: string
     sender: string
   }
+  incoming: boolean
 }
 
-const Message: React.FC<Props> = ({ message }) => {
+const Message: React.FC<Props> = ({ message, incoming }) => {
   return (
-    <Wrapper>
-      <Bubble>
+    <Wrapper incoming={incoming}>
+      <Bubble incoming={incoming}>
         <Text>{message.content}</Text>
       </Bubble>
     </Wrapper>
@@ -23,15 +24,15 @@ export default Message
 
 const Wrapper = styled.div`
   display: flex;
-  justify-content: flex-end;
+  justify-content: ${(props: { incoming: boolean }) => (props.incoming ? 'flex-left' : 'flex-end')};
   margin-top: 4px;
   margin-bottom: 4px;
 `
 
 const Bubble = styled.div`
   padding: 12px 20px;
-  background-color: white;
-  color: ${COLOR.mono.main};
+  background-color: ${(props: { incoming: boolean }) => (props.incoming ? COLOR.primary.main : 'white')};
+  color: ${(props: { incoming: boolean }) => (props.incoming ? 'white' : COLOR.mono.main)};
   border-radius: 18px;
 `
 
