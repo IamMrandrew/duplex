@@ -7,7 +7,7 @@ import { IoMdSend } from 'react-icons/io'
 import Message from '../components/Message'
 import { chat } from '../types/chat'
 import { SocketContext } from '../contexts/SocketContext'
-import { useUserState } from '../context/UserContext'
+import { useUserState } from '../contexts/UserContext'
 
 type Props = {
   chats: Array<chat>
