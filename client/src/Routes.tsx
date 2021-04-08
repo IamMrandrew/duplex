@@ -40,8 +40,6 @@ const Routes = (props: Props): ReactElement => {
   const userState = useUserContext()
   const history = useHistory()
   const [loading, setLoading] = useState(true) // pre render loadings of authorized contents, need a loading view
-  // This state and useEffect can put inside App, But I am not sure how
-  const [chats, setChats] = useState([])
 
   // OnMount actions for all pages
   useEffect(() => {
@@ -74,12 +72,12 @@ const Routes = (props: Props): ReactElement => {
                 {!isMobile() ? (
                   <>
                     <Route exact path={['/', toPath(LOCATIONS.home)]}>
-                      <Chats chats={chats} />
-                      <ChatArea chats={chats} setChats={setChats} />
+                      <Chats />
+                      <ChatArea />
                     </Route>
                     <Route path={toPath(LOCATIONS.chat)}>
-                      <Chats chats={chats} />
-                      <ChatArea chats={chats} setChats={setChats} />
+                      <Chats />
+                      <ChatArea />
                     </Route>
                     <Route path={toPath(LOCATIONS.settings)}>
                       <Settings />
@@ -89,10 +87,10 @@ const Routes = (props: Props): ReactElement => {
                 ) : (
                   <>
                     <Route exact path={['/', toPath(LOCATIONS.home)]}>
-                      <Chats chats={chats} />
+                      <Chats />
                     </Route>
                     <Route path={toPath(LOCATIONS.chat)}>
-                      <ChatArea chats={chats} setChats={setChats} />
+                      <ChatArea />
                     </Route>
                     <Route path={toPath(LOCATIONS.settings)}>
                       <Settings />
