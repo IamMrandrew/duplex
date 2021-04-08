@@ -26,10 +26,12 @@ export default class UserRoutes extends Routes {
       // controller.resetPassword(req, res)
     })
 
-    this.router.route('/user').get(auth, (req: Request, res: Response) => {
+    this.router.route('/users').get(auth, (req: Request, res: Response) => {
       controller.listUsers(req, res)
     })
-
+    this.router.route('/user').get(auth, (req: Request, res: Response) => {
+      controller.getUser(req, res)
+    })
     this.router.route('/user/:userId').delete(auth, (req: Request, res: Response) => {
       controller.deleteUser(req, res)
     })

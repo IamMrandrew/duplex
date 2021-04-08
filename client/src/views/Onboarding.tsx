@@ -3,6 +3,7 @@ import React, { ReactElement } from 'react'
 import styled from 'styled-components'
 import { useHistory } from 'react-router'
 import { LOCATIONS, toPath } from '../Routes'
+import { Link } from 'react-router-dom'
 
 type Props = {
   children?: ReactElement
@@ -19,10 +20,10 @@ const Onboarding = (props: Props): ReactElement => {
   return (
     <Wrapper>
       <Nav>
-        <NavItem toEnd onClick={redirect}>
+        <NavItem to={toPath(LOCATIONS.login)} toEnd>
           Sign up
         </NavItem>
-        <NavItem onClick={redirect}>Log in</NavItem>
+        <NavItem to={toPath(LOCATIONS.login)}>Log in</NavItem>
       </Nav>
       <HeroContainer>
         <H1>Duplex</H1>
@@ -54,7 +55,7 @@ type NavItemProps = {
   toEnd?: boolean
 }
 
-const NavItem = styled.div`
+const NavItem = styled(Link)`
   cursor: pointer;
   padding: 5px 10px 5px 10px;
   margin-left: ${(props: NavItemProps) => (props.toEnd ? `auto` : `none`)};

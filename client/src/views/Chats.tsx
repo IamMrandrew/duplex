@@ -4,13 +4,16 @@ import { COLOR } from '../components/GlobalStyle'
 import { FaPlus } from 'react-icons/fa'
 import Chat from '../components/Chat'
 import { chat } from '../types/chat'
+import { useChatContext } from '../contexts/ChatContext'
 
 type Props = {
-  chats: Array<chat>
   children?: ReactElement
 }
 
-const Chats: React.FC<Props> = ({ chats }) => {
+const Chats: React.FC<Props> = () => {
+  const chatContext = useChatContext()
+  const chats = chatContext.state
+
   return (
     <Wrapper>
       <Header>

@@ -7,18 +7,18 @@ import { IoMdSend } from 'react-icons/io'
 import Message from '../components/Message'
 import { chat } from '../types/chat'
 import { SocketContext } from '../contexts/SocketContext'
-import { useUserState } from '../contexts/UserContext'
+import { useUserContext } from '../contexts/UserContext'
+import { useChatContext } from '../contexts/ChatContext'
 
 type Props = {
-  chats: Array<chat>
-  setChats: any
   children?: ReactElement
 }
 
-const ChatArea: React.FC<Props> = ({ chats, setChats }) => {
+const ChatArea: React.FC<Props> = () => {
   const { id } = useParams<{ id: string }>()
   const { socket } = useContext(SocketContext)
-  const userState = useUserState()
+  const userState = useUserContext().state
+  const chatContext = useChatContext()
 
   const [chat, setChat]: any = useState({})
   const [messages, setMessages]: any = useState([])
@@ -39,18 +39,18 @@ const ChatArea: React.FC<Props> = ({ chats, setChats }) => {
   }
 
   const checkIfIncoming = (message: any) => {
-    return !(userState.state._id === message.sender._id)
+    return !(userState._id === message.sender._id)
   }
 
   useEffect(() => {
     socket.emit('join', { id })
 
-    setChat(chats.find((chat) => chat._id === id))
+    setChat(chatContext.state.find((chat) => chat._id === id))
 
     return () => {
       socket.emit('leave', { id })
     }
-  }, [socket, id, chats])
+  }, [socket, id, chatContext.state])
 
   useEffect(() => {
     if (chat) {
@@ -62,14 +62,7 @@ const ChatArea: React.FC<Props> = ({ chats, setChats }) => {
     if (socket) {
       socket.on('newMessage', (message: any) => {
         setMessages([...messages, message])
-        setChats(
-          chats.map((chat) => {
-            if (chat._id === id) {
-              return { ...chat, messages: [...chat.messages, message] }
-            }
-            return chat
-          }),
-        )
+        chatContext.updateChatMessage(id, chat, message)
       })
     }
 

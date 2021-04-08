@@ -4,7 +4,7 @@ import { useHistory } from 'react-router'
 import styled from 'styled-components'
 import { COLOR } from '../components/GlobalStyle'
 import { MEDIA_BREAK } from '../components/Layout'
-import { useUserState } from '../contexts/UserContext'
+import { useUserContext } from '../contexts/UserContext'
 import { checkIntegrity, formNoErr, toData, VALIDATORS } from '../formIntegrity'
 import UserServices from '../services/UserService'
 
@@ -33,7 +33,7 @@ const LoginForm = (props: FormProps) => {
     password: { value: '', errMsg: '' },
   })
   const history = useHistory()
-  const userState = useUserState()
+  const userState = useUserContext()
 
   const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
     const nextState = input

@@ -61,12 +61,25 @@ const Controller = {
       message: 'Logged out',
     })
   },
-  reset: () => {},
+  reset: () => {}, // reset password
   listUsers: (req: Request, res: Response) => {
-    User.find({}, (err, data) => {
-      if (err) return sendError(res, 500, 'Error in getting users', err)
-      res.status(200).send(data)
-    })
+    User.find({})
+      .then((users: any) => {
+        res.status(200).send(users)
+      })
+      .catch((err: any) => {
+        return sendError(res, 500, 'Error in getting users', err)
+      })
+  },
+  getUser: (req: Request, res: Response) => {
+    User.findOne({ _id: req.userData.userId })
+      .then((user: any) => {
+        log(user as string)
+        return res.status(202).json(user)
+      })
+      .catch((err: any) => {
+        return sendError(res, 500, 'Error in getting user info', err)
+      })
   },
   deleteUser: (req: Request, res: Response) => {
     const userId = new mongoose.Types.ObjectId(<string>req.params.userId)

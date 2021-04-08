@@ -23,6 +23,8 @@ export const UserContext = createContext<ContextType>({
 const UserProvider = ({ children }: Props): ReactElement => {
   const [state, setState] = useState({})
 
+  // remain properties that are not passed from newState
+  // only change properties that are passed from newState
   const updateState = (newState: Obj): void => {
     setState((prevState) => ({ ...prevState, ...newState }))
   }
@@ -49,6 +51,6 @@ const UserProvider = ({ children }: Props): ReactElement => {
   )
 }
 
-export const useUserState = (): ContextType => useContext(UserContext)
+export const useUserContext = (): ContextType => useContext(UserContext)
 
 export default UserProvider
