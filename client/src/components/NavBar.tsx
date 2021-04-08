@@ -54,12 +54,12 @@ const Items = styled.div`
     margin-bottom: 40px;
   }
 
-  & > a > svg:nth-child(1) {
+  & > a:nth-child(1) > svg {
     width: 32px;
     height: 34px;
   }
 
-  & > a > svg:nth-child(2) {
+  & > a:nth-child(2) > svg {
     width: 26px;
     height: 26px;
   }
