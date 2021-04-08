@@ -4,6 +4,8 @@ import { MdLayers } from 'react-icons/md'
 import { FaLayerGroup } from 'react-icons/fa'
 import { Avatar } from '@material-ui/core'
 import { COLOR } from './GlobalStyle'
+import { Link } from 'react-router-dom'
+import { LOCATIONS, toPath } from '../Routes'
 
 type Props = {
   children?: ReactElement
@@ -14,10 +16,16 @@ const NavBar = (props: Props): ReactElement => {
   return (
     <Wrapper>
       <Items>
-        <MdLayers />
-        <FaLayerGroup />
+        <Link to={toPath(LOCATIONS.home)}>
+          <MdLayers />
+        </Link>
+        <Link to={toPath(LOCATIONS.home)}>
+          <FaLayerGroup />
+        </Link>
       </Items>
-      <Avatar />
+      <Link to={toPath(LOCATIONS.settings)}>
+        <Avatar />
+      </Link>
     </Wrapper>
   )
 }
@@ -38,7 +46,7 @@ const Wrapper = styled.div`
 `
 
 const Items = styled.div`
-  & > svg {
+  & > a > svg {
     display: block;
     color: ${COLOR.primary.shaded};
     margin-left: auto;
@@ -46,12 +54,12 @@ const Items = styled.div`
     margin-bottom: 40px;
   }
 
-  & > svg:nth-child(1) {
+  & > a > svg:nth-child(1) {
     width: 32px;
     height: 34px;
   }
 
-  & > svg:nth-child(2) {
+  & > a > svg:nth-child(2) {
     width: 26px;
     height: 26px;
   }

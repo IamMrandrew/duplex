@@ -7,7 +7,7 @@ import { IoMdSend } from 'react-icons/io'
 import Message from '../components/Message'
 import { chat } from '../types/chat'
 import { SocketContext } from '../contexts/SocketContext'
-import { useUserState } from '../contexts/UserContext'
+import { useUserContext } from '../contexts/UserContext'
 
 type Props = {
   chats: Array<chat>
@@ -18,7 +18,7 @@ type Props = {
 const ChatArea: React.FC<Props> = ({ chats, setChats }) => {
   const { id } = useParams<{ id: string }>()
   const { socket } = useContext(SocketContext)
-  const userState = useUserState()
+  const userState = useUserContext()
 
   const [chat, setChat]: any = useState({})
   const [messages, setMessages]: any = useState([])

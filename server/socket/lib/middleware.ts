@@ -1,6 +1,7 @@
 import { Server, Socket } from 'socket.io'
 import jwt from 'jsonwebtoken'
 import cookie from 'cookie'
+import { log } from '../../utils'
 
 interface ExtSocket extends Socket {
   userData: any
@@ -13,8 +14,8 @@ const Middleware = {
     const token = cookies.token
 
     jwt.verify(token, process.env.JWT_TOKEN || '', async (verifyErr: any, decoded: any) => {
-      if (verifyErr?.message == 'jwt expired') return console.error('Token expried' + verifyErr)
-      if (verifyErr?.message == 'jwt must be provided') return console.error('Unauthorized' + verifyErr)
+      if (verifyErr?.message == 'jwt expired') return log('Token expried' + verifyErr)
+      if (verifyErr?.message == 'jwt must be provided') return log('Unauthorized' + verifyErr)
       if (decoded) {
         const extSocket = <ExtSocket>socket
         extSocket.userData = decoded

@@ -5,22 +5,18 @@ type Obj = Record<string, any>
 type ContextType = {
   state: Obj
   updateState: (newState: Obj) => void
-  loggedIn: () => boolean
-  logout: () => void
 }
 
 type Props = {
   children: ReactElement
 }
 
-export const UserContext = createContext<ContextType>({
+export const ChatContext = createContext<ContextType>({
   state: {},
   updateState: () => {},
-  loggedIn: () => false,
-  logout: () => {},
 })
 
-const UserProvider = ({ children }: Props): ReactElement => {
+const ChatProvider = ({ children }: Props): ReactElement => {
   const [state, setState] = useState({})
 
   // remain properties that are not passed from newState
@@ -29,28 +25,18 @@ const UserProvider = ({ children }: Props): ReactElement => {
     setState((prevState) => ({ ...prevState, ...newState }))
   }
 
-  const loggedIn = (): boolean => {
-    return Object.keys(state).length > 0
-  }
-
-  const logout = (): void => {
-    setState({})
-  }
-
   return (
-    <UserContext.Provider
+    <ChatContext.Provider
       value={{
         state,
         updateState,
-        loggedIn,
-        logout,
       }}
     >
       {children}
-    </UserContext.Provider>
+    </ChatContext.Provider>
   )
 }
 
-export const useUserContext = (): ContextType => useContext(UserContext)
+export const useChatContext = (): ContextType => useContext(ChatContext)
 
-export default UserProvider
+export default ChatProvider
