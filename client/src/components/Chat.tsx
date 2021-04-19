@@ -10,6 +10,14 @@ type Props = {
 }
 
 const Chat: React.FC<Props> = ({ chat }) => {
+  const trimmedContent = (): string => {
+    return chat.messages.length > 0
+      ? chat.messages[chat.messages.length - 1].content.length > 32
+        ? chat.messages[chat.messages.length - 1].content.substring(0, 32) + '...'
+        : chat.messages[chat.messages.length - 1].content.substring(0, 32)
+      : ''
+  }
+
   return (
     <Wrapper to={`/chat/${chat._id}`}>
       <IconWrapper>
@@ -17,7 +25,7 @@ const Chat: React.FC<Props> = ({ chat }) => {
       </IconWrapper>
       <ChatWrapper>
         <Name>{chat.title}</Name>
-        <Message>Nice to meet u 😆</Message>
+        <Message>{trimmedContent()}</Message>
       </ChatWrapper>
     </Wrapper>
   )

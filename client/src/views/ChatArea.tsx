@@ -43,7 +43,11 @@ const ChatArea: React.FC<Props> = () => {
   }
 
   const checkIfContinuous = (message: any, index: number): boolean => {
-    return messages[index - 1] ? message.sender._id !== messages[index - 1].sender._id : false
+    return messages[index - 1] ? message.sender._id === messages[index - 1].sender._id : false
+  }
+
+  const checkIfEndContinuous = (message: any, index: number): boolean => {
+    return messages[index + 1] ? message.sender._id !== messages[index + 1].sender._id : false
   }
 
   useEffect(() => {
@@ -91,6 +95,7 @@ const ChatArea: React.FC<Props> = () => {
               message={message}
               incoming={checkIfIncoming(message)}
               continuing={checkIfContinuous(message, index)}
+              endContinuing={checkIfEndContinuous(message, index)}
             />
           ))}
       </Content>

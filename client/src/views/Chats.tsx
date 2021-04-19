@@ -30,9 +30,16 @@ const Chats: React.FC<Props> = () => {
         </AddButton>
       </SearchWrapper>
       <SectionTitle>Spaces</SectionTitle>
-      {chats.map((chat: any) => (
-        <Chat key={chat._id} chat={chat} />
-      ))}
+      {chats
+        .sort((a, b) => {
+          return a.messages.length > 0 && b.messages.length > 0
+            ? new Date(b.messages[b.messages.length - 1].createdAt).getTime() -
+                new Date(a.messages[a.messages.length - 1].createdAt).getTime()
+            : b.messages.length - a.messages.length
+        })
+        .map((chat: any) => (
+          <Chat key={chat._id} chat={chat} />
+        ))}
     </Wrapper>
   )
 }
