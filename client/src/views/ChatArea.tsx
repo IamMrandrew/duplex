@@ -38,8 +38,12 @@ const ChatArea: React.FC<Props> = () => {
     setInput('')
   }
 
-  const checkIfIncoming = (message: any) => {
+  const checkIfIncoming = (message: any): boolean => {
     return !(userState._id === message.sender._id)
+  }
+
+  const checkIfContinuous = (message: any, index: number): boolean => {
+    return messages[index - 1] ? message.sender._id !== messages[index - 1].sender._id : false
   }
 
   useEffect(() => {
@@ -81,8 +85,13 @@ const ChatArea: React.FC<Props> = () => {
       </Header>
       <Content>
         {messages &&
-          messages.map((message: any) => (
-            <Message key={message._id} message={message} incoming={checkIfIncoming(message)} />
+          messages.map((message: any, index: number) => (
+            <Message
+              key={message._id}
+              message={message}
+              incoming={checkIfIncoming(message)}
+              continuing={checkIfContinuous(message, index)}
+            />
           ))}
       </Content>
       <InputWrapper>

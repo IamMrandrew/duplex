@@ -5,17 +5,25 @@ import { COLOR } from './GlobalStyle'
 type Props = {
   message: {
     content: string
-    sender: string
+    sender: {
+      username: string
+    }
   }
   incoming: boolean
+  continuing: boolean
 }
 
-const Message: React.FC<Props> = ({ message, incoming }) => {
+const Message: React.FC<Props> = ({ message, incoming, continuing }) => {
   return (
     <Wrapper incoming={incoming}>
-      <Bubble incoming={incoming}>
-        <Text>{message.content}</Text>
-      </Bubble>
+      <Content>
+        <Name incoming={incoming} continuing={continuing}>
+          {message.sender.username}
+        </Name>
+        <Bubble incoming={incoming}>
+          <Text>{message.content}</Text>
+        </Bubble>
+      </Content>
     </Wrapper>
   )
 }
@@ -29,6 +37,8 @@ const Wrapper = styled.div`
   margin-bottom: 4px;
 `
 
+const Content = styled.div``
+
 const Bubble = styled.div`
   padding: 12px 20px;
   background-color: ${(props: { incoming: boolean }) => (props.incoming ? COLOR.primary.main : 'white')};
@@ -39,4 +49,12 @@ const Bubble = styled.div`
 const Text = styled.span`
   font-size: 16px;
   font-weight: 500;
+`
+const Name = styled.span`
+  font-size: 16px;
+  font-weight: 500;
+  color: ${COLOR.primary.shaded};
+  display: ${(props: { incoming: boolean; continuing: boolean }) =>
+    props.incoming && props.continuing ? 'block' : 'none'};
+  margin-bottom: 3px;
 `
