@@ -1,4 +1,4 @@
-import { useState, useEffect, ReactElement } from 'react'
+import { useState, useEffect } from 'react'
 
 export const useResponsive = () => {
   const [dimensions, setDimensions] = useState({

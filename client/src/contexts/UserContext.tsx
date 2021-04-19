@@ -4,7 +4,7 @@ type Obj = Record<string, any>
 
 type ContextType = {
   state: Obj
-  updateState: (newState: Obj) => void
+  updateState: (newState: Obj, connectSocket?: ()=>void) => void
   loggedIn: () => boolean
   logout: () => void
 }
@@ -25,8 +25,12 @@ const UserProvider = ({ children }: Props): ReactElement => {
 
   // remain properties that are not passed from newState
   // only change properties that are passed from newState
-  const updateState = (newState: Obj): void => {
+  const updateState = (newState: Obj, connectSocket?: ()=>void): void => {
     setState((prevState) => ({ ...prevState, ...newState }))
+    if(Object.keys(newState).length > 0 && connectSocket) {
+      console.log(connectSocket)
+      connectSocket()
+    }
   }
 
   const loggedIn = (): boolean => {

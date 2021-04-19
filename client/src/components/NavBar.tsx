@@ -3,16 +3,10 @@ import styled from 'styled-components/macro'
 import { MdLayers } from 'react-icons/md'
 import { FaLayerGroup } from 'react-icons/fa'
 import { Avatar } from '@material-ui/core'
-import { COLOR } from './GlobalStyle'
 import { Link } from 'react-router-dom'
 import { LOCATIONS, toPath } from '../Routes'
 
-type Props = {
-  children?: ReactElement
-}
-
-const NavBar = (props: Props): ReactElement => {
-  const { children, ...rest } = props
+const NavBar = (): ReactElement => {
   return (
     <Wrapper>
       <Items>
@@ -23,7 +17,7 @@ const NavBar = (props: Props): ReactElement => {
           <FaLayerGroup />
         </Link>
       </Items>
-      <Link to={toPath(LOCATIONS.settings)}>
+      <Link to={toPath(LOCATIONS.settings.profile)}>
         <Avatar />
       </Link>
     </Wrapper>
@@ -39,7 +33,7 @@ const Wrapper = styled.div`
   justify-content: space-between;
   padding-top: 160px;
   padding-bottom: 30px;
-
+  background: ${({theme})=>theme.bg.shade};
   @media (max-width: 767.99px) {
     display: none;
   }
@@ -48,7 +42,7 @@ const Wrapper = styled.div`
 const Items = styled.div`
   & > a > svg {
     display: block;
-    color: ${COLOR.primary.shaded};
+    color: ${({theme})=>theme.font.primary};
     margin-left: auto;
     margin-right: auto;
     margin-bottom: 40px;

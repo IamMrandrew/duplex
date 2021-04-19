@@ -8,7 +8,7 @@ const UserService = {
     return axios.post('/api/signup', data, { withCredentials: true })
   },
   logout: () => {
-    return axios.post('api/logout', { withCredentials: true })
+    return axios.post('/api/logout', { withCredentials: true })
   },
   getUser: () => {
     return axios.get('/api/user', { withCredentials: true })
