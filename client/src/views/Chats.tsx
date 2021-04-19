@@ -5,6 +5,7 @@ import { FaPlus } from 'react-icons/fa'
 import Chat from '../components/Chat'
 import { chat } from '../types/chat'
 import { useChatContext } from '../contexts/ChatContext'
+import CreateChatModal from '../components/CreateChatModal'
 
 type Props = {
   children?: ReactElement
@@ -14,14 +15,17 @@ const Chats: React.FC<Props> = () => {
   const chatContext = useChatContext()
   const chats = chatContext.state
 
+  const [showModal, setShowModal] = useState(false)
+
   return (
     <Wrapper>
+      <CreateChatModal showModal={showModal} setShowModal={setShowModal} />
       <Header>
         <Title>Chats</Title>
       </Header>
       <SearchWrapper>
         <SearchBar />
-        <AddButton>
+        <AddButton onClick={() => setShowModal(!showModal)}>
           <FaPlus />
         </AddButton>
       </SearchWrapper>
