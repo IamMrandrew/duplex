@@ -25,18 +25,20 @@ export const GlobalStyle = createGlobalStyle`
 `
 
 export const COLOR = {
-  dark: { // dark mode
+  dark: {
+    // dark mode
     bg: {
-      tint: '#36393F', 
+      tint: '#36393F',
       main: '#2F3136',
       shade: '#202225',
     },
     font: {
       secondary: '#999999', // for details e.g. datetime
       primary: '#FFFFFF', // for main text e.g. title
-      contrast: '#000000' // for message bubble
+      contrast: '#FFFFFF', // for message bubble
     },
-    primary: { // for icon, button
+    primary: {
+      // for icon, button
       tint: '#c3d1e4',
       main: '#4E6482',
       shade: '#455973',
@@ -47,36 +49,37 @@ export const COLOR = {
       main: '#F0595A', // red color, for error text
     },
     message: {
-      incoming: '#8C9DAF',
+      incoming: '#4E6482',
       sender: '#40444B',
-    } 
+    },
   },
-  light: { // light mode
+  light: {
+    // light mode
     bg: {
-      tint: '#FFFFFF', 
-      main: '#F2F3F5',
-      shade: '#E3E5E8',
+      tint: '#FFFFFF',
+      main: '#F8FAFB',
+      shade: '#EFF0F1',
     },
     font: {
       secondary: '#999999', // for details e.g. datetime
       primary: '#000', // for main text e.g. title
-      contrast: '#FFF' // for message bubble
+      contrast: '#FFF', // for message bubble
     },
     primary: {
       tint: '#c3d1e4',
       main: '#8C9DAF',
       shade: '#4E5460',
     },
-    divider: '#E3E3E3',
+    divider: '#EDEDED',
     error: {
       tint: '#F1E1E3', // light red color, for error bg
       main: '#F0595A', // red color, for error text
     },
     message: {
       incoming: '#8C9DAF',
-      sender: '#F9F9F9'
-    } 
-  }
+      sender: '#F9F9F9',
+    },
+  },
 }
 
 export const ResetStyle = createGlobalStyle`

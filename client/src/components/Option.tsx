@@ -15,7 +15,7 @@ const Option: React.FC<Props> = ({ path, isActive }) => {
 
   return (
     <LinkWrapper to={toPath(path || '')}>
-      <Item isActive={isActive}>{toTitleCase(path?.replace("settings/", "") || '')}</Item>
+      <Item isActive={isActive}>{toTitleCase(path?.replace('settings/', '') || '')}</Item>
     </LinkWrapper>
   )
 }
@@ -38,13 +38,13 @@ const Item = styled.div`
   color: inherit;
   font-size: 18px;
   text-align: center;
-  background: ${(props: ItemProps) => (props.isActive ? props.theme.bg.tint : props.theme.bg.main)};
-  color: ${({theme}) => (theme.font.primary)};
-  padding: 14px 7px;
-  margin: 5px 0 5px 0;
+  background: ${(props: ItemProps) => (props.isActive ? props.theme.bg.shade : props.theme.bg.main)};
+  color: ${({ theme }) => theme.font.primary};
+  padding: 14px 16px;
+  /* margin: 5px 0 5px 0; */
   transition: 0s;
-  border-radius: 5px;
+  /* border-radius: 5px; */
   &:hover {
-    background: ${({theme}) => theme.bg.tint};
+    background: ${({ theme }) => theme.bg.shade};
   }
 `

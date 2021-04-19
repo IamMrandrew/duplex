@@ -13,7 +13,7 @@ type Props = {
 const Chat: React.FC<Props> = ({ chat }) => {
   return (
     <Route exact path={toPath(LOCATIONS.chat, chat._id)}>
-      {({ match }) =>
+      {({ match }) => (
         <Wrapper to={`/chat/${chat._id}`} isActive={!!match}>
           <IconWrapper>
             <Icon />
@@ -23,24 +23,25 @@ const Chat: React.FC<Props> = ({ chat }) => {
             <Message>Nice to meet u 😆</Message>
           </ChatWrapper>
         </Wrapper>
-      }
+      )}
     </Route>
   )
 }
 
 export default Chat
 
-
 const Wrapper = styled(Link)`
   display: flex;
   align-items: center;
   text-decoration: none;
   color: inherit;
-  padding: 14px 7px;
-  background: ${(props: {isActive: boolean, theme?: any})=> props.isActive? props.theme.bg.tint:props.theme.bg.main};
-  border-radius: 5px;
+  padding: 14px 16px;
+  background: ${(props: { isActive: boolean; theme?: any }) =>
+    props.isActive ? props.theme.bg.shade : props.theme.bg.main};
+  /* border-radius: 5px; */
+
   &:hover {
-    background: ${({theme})=>theme.bg.tint};
+    background: ${({ theme }) => theme.bg.shade};
   }
 `
 
@@ -55,12 +56,12 @@ const Name = styled.span`
   display: block;
   font-weight: 500;
   font-size: 16px;
-  color: ${({theme})=>theme.font.primary};
+  color: ${({ theme }) => theme.font.primary};
 `
 
 const Message = styled.span`
   display: block;
   font-weight: 400;
   font-size: 14px;
-  color: ${({theme})=>theme.font.secondary};
+  color: ${({ theme }) => theme.font.secondary};
 `

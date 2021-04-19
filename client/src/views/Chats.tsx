@@ -24,10 +24,12 @@ const Chats: React.FC<Props> = () => {
             <FaPlus />
           </AddButton>
         </SearchWrapper>
-        <SectionTitle>Spaces</SectionTitle>
-        {chats.map((chat: any) => (
-          <Chat key={chat._id} chat={chat} />
-        ))}
+        <Section>
+          <SectionTitle>Spaces</SectionTitle>
+          {chats.map((chat: any) => (
+            <Chat key={chat._id} chat={chat} />
+          ))}
+        </Section>
       </ContentSection>
     </Wrapper>
   )
@@ -37,40 +39,47 @@ export default Chats
 
 const Wrapper = styled.div`
   grid-area: secondary;
-  background: ${({theme})=>theme.bg.main};
+  background: ${({ theme }) => theme.bg.tint};
   @media (max-width: 767.99px) {
     padding: 12px;
   }
 `
 const Header = styled.div`
-  padding-top: 20px;
+  padding: 24px;
+  padding-top: 50px;
   padding-bottom: 10px;
   display: flex;
   align-items: center;
-  justify-content: space-around;
-  background-color: ${({theme})=>theme.bg.main};
-  box-shadow: 0 3px 2px -2px gray;
+  justify-content: flex-start;
+  background-color: ${({ theme }) => theme.bg.tint};
   min-height: 60px;
   width: 100%;
 `
 
 const Title = styled.h1`
-  font-size: 18px;
+  font-size: 22px;
   font-weight: 700;
-  text-align: center;
-  color: ${({theme}) => theme.font.primary}
+  color: ${({ theme }) => theme.font.primary};
 `
 
 const ContentSection = styled.div`
-  padding: 0 24px 0 24px;
+  padding: 0 12px 0 12px;
+`
+
+const Section = styled.div`
+  margin-top: 20px;
+  background-color: ${({ theme }) => theme.bg.main};
+  border-radius: 12px;
+  padding-top: 10px;
+  overflow: hidden;
 `
 
 const SectionTitle = styled.h2`
-  margin-top: 20px;
   margin-bottom: 5px;
+  padding: 16px;
   font-size: 17px;
   font-weight: 500;
-  color: ${({theme})=>theme.font.primary}
+  color: ${({ theme }) => theme.font.primary};
 `
 
 const SearchWrapper = styled.div`
@@ -83,8 +92,8 @@ const SearchBar = styled.input`
   display: block;
   flex-basis: calc(100% - 35px - 4px);
   border: none;
-  background-color: ${({theme})=>theme.bg.shade};
-  color: ${({theme})=>theme.font.primary};
+  background-color: ${({ theme }) => theme.bg.shade};
+  color: ${({ theme }) => theme.font.primary};
   padding: 8px 20px;
   border-radius: 12px;
   outline: none;
@@ -94,7 +103,7 @@ const SearchBar = styled.input`
 const AddButton = styled.button`
   width: 35px;
   height: 35px;
-  background-color: ${({theme})=>theme.primary.main};
+  background-color: ${({ theme }) => theme.primary.main};
   border-radius: 12px;
   border: none;
   outline: none;

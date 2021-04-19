@@ -33,7 +33,7 @@ const Wrapper = styled.div`
   justify-content: space-between;
   padding-top: 160px;
   padding-bottom: 30px;
-  background: ${({theme})=>theme.bg.shade};
+  background: ${({ theme }) => theme.bg.tint};
   @media (max-width: 767.99px) {
     display: none;
   }
@@ -42,7 +42,7 @@ const Wrapper = styled.div`
 const Items = styled.div`
   & > a > svg {
     display: block;
-    color: ${({theme})=>theme.font.primary};
+    color: ${({ theme }) => theme.font.primary};
     margin-left: auto;
     margin-right: auto;
     margin-bottom: 40px;

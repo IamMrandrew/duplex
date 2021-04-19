@@ -96,17 +96,18 @@ const ChatArea: React.FC<Props> = () => {
 export default ChatArea
 
 const Wrapper = styled.div`
-  background-color: ${({theme})=>theme.bg.tint};
+  background-color: ${({ theme }) => theme.bg.tint};
 `
 
 const Header = styled.div`
-  padding-top: 20px;
+  padding: 32px;
+  padding-top: 40px;
   padding-bottom: 10px;
   display: flex;
   align-items: center;
-  justify-content: space-around;
-  background-color: ${({theme})=>theme.bg.tint};
-  box-shadow: 0 3px 2px -2px gray;
+  justify-content: flex-start;
+  background-color: ${({ theme }) => theme.bg.tint};
+  box-shadow: 0 3px 2px -2px ${({ theme }) => theme.divider};
 `
 
 const TitleWrapper = styled.div`
@@ -120,7 +121,7 @@ const TitleWrapper = styled.div`
 
 const Content = styled.div`
   overflow-y: auto;
-  height: calc(100vh - 60px - 100px);
+  height: calc(100vh - 80px - 100px);
   padding: 8px 32px;
 
   @media (max-width: 767.99px) {
@@ -138,7 +139,7 @@ const Icon = styled(Avatar)`
 const Name = styled.span`
   font-size: 18px;
   font-weight: 700;
-  color: ${({theme})=>theme.font.primary}
+  color: ${({ theme }) => theme.font.primary};
 `
 
 const InputWrapper = styled.div`
@@ -146,8 +147,8 @@ const InputWrapper = styled.div`
   align-items: center;
   padding: 20px 32px;
   padding-bottom: 32px;
-  background-color: ${({theme})=>theme.bg.tint};
-  box-shadow: 0px 0 5px ${({theme})=>theme.divider};
+  background-color: ${({ theme }) => theme.bg.tint};
+
   @media (max-width: 767.99px) {
     padding: 20px 12px;
   }
@@ -156,8 +157,8 @@ const InputWrapper = styled.div`
 const Input = styled.input`
   width: 100%;
   border: none;
-  background-color: ${({theme})=>theme.bg.main};
-  color: ${({theme})=>theme.font.primary};
+  background-color: ${({ theme }) => theme.bg.shade};
+  color: ${({ theme }) => theme.font.primary};
   padding: 15px;
   border-radius: 18px;
   outline: none;
@@ -165,7 +166,7 @@ const Input = styled.input`
 `
 
 const InputButton = styled.button`
-  background-color: ${({theme})=>theme.primary.main};
+  background-color: ${({ theme }) => theme.primary.main};
   padding: 10px;
   border: none;
   outline: none;
@@ -177,7 +178,7 @@ const InputButton = styled.button`
   cursor: pointer;
 
   > svg {
-    background-color: ${({theme})=>theme.primary.main};
+    background-color: ${({ theme }) => theme.primary.main};
     color: white;
     font-size: 24px;
   }
