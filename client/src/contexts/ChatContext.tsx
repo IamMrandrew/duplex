@@ -4,7 +4,7 @@ import { chat } from '../types/chat'
 type ContextType = {
   state: Array<chat>
   updateState: (newState: Array<chat>) => void
-  updateChatMessage: (id: string, chat: any, message: any) => void
+  updateChatMessage: (id: string, message: any) => void
 }
 
 type Props = {
@@ -26,7 +26,7 @@ const ChatProvider = ({ children }: Props): ReactElement => {
     setState((prevState) => [...prevState, ...newState])
   }
 
-  const updateChatMessage = (id: string, chat: any, message: any) => {
+  const updateChatMessage = (id: string, message: any) => {
     setState(
       state.map((chat) => {
         if (chat._id === id) {

@@ -95,9 +95,9 @@ const ChatArea: React.FC<Props> = () => {
 
   useEffect(() => {
     if (socket) {
-      socket.on('newMessage', (message: any) => {
-        setMessages([...messages, message])
-        chatContext.updateChatMessage(id, chat, message)
+      socket.on('newMessage', (content: any) => {
+        // setMessages([...messages, content.message])
+        chatContext.updateChatMessage(content.id, content.message)
       })
     }
 
@@ -147,7 +147,7 @@ const ChatArea: React.FC<Props> = () => {
               incoming={checkIfIncoming(message)}
               continuing={checkIfContinuous(message, index)}
               endContinuing={checkIfEndContinuous(message, index)}
-              type={chat.type}
+              type={chat ? chat.type : ''}
             />
           ))}
       </Content>
