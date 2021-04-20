@@ -17,36 +17,38 @@ const Chats: React.FC<Props> = () => {
   const [showModal, setShowModal] = useState(false)
 
   return (
-    <Wrapper>
+    <>
       <CreateChatModal showModal={showModal} setShowModal={setShowModal} />
-      <Header>
-        <Title>Chats</Title>
-      </Header>
-      <ContentSection>
-        <SearchWrapper>
-          <SearchBar>
-            <FiSearch />
-            <SearchInput placeholder="Search chat" />
-          </SearchBar>
-          <AddButton onClick={() => setShowModal(!showModal)}>
-            <FaPlus />
-          </AddButton>
-        </SearchWrapper>
-        <Section>
-          <SectionTitle>Spaces</SectionTitle>
-          {chats
-            .sort((a, b) => {
-              return a.messages.length > 0 && b.messages.length > 0
-                ? new Date(b.messages[b.messages.length - 1].createdAt).getTime() -
-                    new Date(a.messages[a.messages.length - 1].createdAt).getTime()
-                : b.messages.length - a.messages.length
-            })
-            .map((chat: any) => (
-              <Chat key={chat._id} chat={chat} />
-            ))}
-        </Section>
-      </ContentSection>
-    </Wrapper>
+      <Wrapper>
+        <Header>
+          <Title>Chats</Title>
+        </Header>
+        <ContentSection>
+          <SearchWrapper>
+            <SearchBar>
+              <FiSearch />
+              <SearchInput placeholder="Search chat" />
+            </SearchBar>
+            <AddButton onClick={() => setShowModal(!showModal)}>
+              <FaPlus />
+            </AddButton>
+          </SearchWrapper>
+          <Section>
+            <SectionTitle>Spaces</SectionTitle>
+            {chats
+              .sort((a, b) => {
+                return a.messages.length > 0 && b.messages.length > 0
+                  ? new Date(b.messages[b.messages.length - 1].createdAt).getTime() -
+                      new Date(a.messages[a.messages.length - 1].createdAt).getTime()
+                  : b.messages.length - a.messages.length
+              })
+              .map((chat: any) => (
+                <Chat key={chat._id} chat={chat} />
+              ))}
+          </Section>
+        </ContentSection>
+      </Wrapper>
+    </>
   )
 }
 
