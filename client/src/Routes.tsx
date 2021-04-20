@@ -1,6 +1,6 @@
-import React, { ReactElement, useState, useEffect, useContext } from 'react'
+import React, { ReactElement, useState, useEffect } from 'react'
 import { Switch, Route, useHistory } from 'react-router-dom'
-import { GlobalStyle, ResetStyle } from './components/GlobalStyle'
+import { COLOR, GlobalStyle, ResetStyle } from './components/GlobalStyle'
 import { AppLayout } from './components/Layout'
 import NavBar from './components/NavBar'
 import Chats from './views/Chats'
@@ -10,12 +10,16 @@ import Login from './views/Login'
 import { useResponsive } from './hooks/useResponsive'
 
 import ChatService from './services/ChatService'
-import { SocketContext, socket } from './contexts/SocketContext'
+import SocketProvider, { useSocketContext } from './contexts/SocketContext'
 import UserService from './services/UserService'
 import { useUserContext } from './contexts/UserContext'
-import EditProfile from './views/EditProfile'
 import Settings from './views/Settings'
 import ChatProvider, { useChatContext } from './contexts/ChatContext'
+import Loading from './views/Loading'
+import Appearance from './views/Appearance'
+import { ThemeProvider } from 'styled-components'
+import { useSettingContext } from './contexts/SettingContext'
+import Profile from './views/Profile'
 
 type Props = {
   children?: ReactElement | Array<ReactElement>
@@ -24,15 +28,21 @@ type Props = {
 export const LOCATIONS = {
   home: 'home',
   onboarding: 'onboarding',
-  profile: 'profile',
-  editProfile: 'editProfile',
   explore: 'explore',
-  settings: 'settings',
+  settings: {
+    profile: 'settings/profile',
+    notification: 'settings/notification',
+    audio: 'settings/audio',
+    appearance: 'settings/appearance',
+  },
   login: 'login',
   chat: 'chat/:id',
 }
 
-export const toPath = (location: string): string => '/' + location
+export const toPath = (location: string, id?: string): string => {
+  if (id) return '/' + location.replace(':id', id)
+  return '/' + location
+}
 
 const Routes = (props: Props): ReactElement => {
   const { children, ...rest } = props
@@ -40,6 +50,7 @@ const Routes = (props: Props): ReactElement => {
   const userState = useUserContext()
   const history = useHistory()
   const [loading, setLoading] = useState(true) // pre render loadings of authorized contents, need a loading view
+  const theme = useSettingContext().state.theme
 
   // OnMount actions for all pages
   useEffect(() => {
@@ -56,6 +67,7 @@ const Routes = (props: Props): ReactElement => {
 
   return (
     <>
+    <ThemeProvider theme={theme === 'light' ? COLOR.light : COLOR.dark}>
       <ResetStyle />
       <GlobalStyle />
       <Switch>
@@ -66,7 +78,7 @@ const Routes = (props: Props): ReactElement => {
           <Login />
         </Route>
         <ChatProvider>
-          <SocketContext.Provider value={{ socket }}>
+          <SocketProvider>
             <App>
               <>
                 {!isMobile() ? (
@@ -79,9 +91,13 @@ const Routes = (props: Props): ReactElement => {
                       <Chats />
                       <ChatArea />
                     </Route>
-                    <Route path={toPath(LOCATIONS.settings)}>
+                    <Route path={toPath(LOCATIONS.settings.profile)}>
                       <Settings />
-                      <EditProfile />
+                      <Profile />
+                    </Route>
+                    <Route path={toPath(LOCATIONS.settings.appearance)}>
+                      <Settings />
+                      <Appearance />
                     </Route>
                   </>
                 ) : (
@@ -92,45 +108,53 @@ const Routes = (props: Props): ReactElement => {
                     <Route path={toPath(LOCATIONS.chat)}>
                       <ChatArea />
                     </Route>
-                    <Route path={toPath(LOCATIONS.settings)}>
+                    <Route path={toPath(LOCATIONS.settings.profile)}>
                       <Settings />
                     </Route>
                   </>
                 )}
               </>
             </App>
-          </SocketContext.Provider>
+          </SocketProvider>
         </ChatProvider>
       </Switch>
+    </ThemeProvider>
     </>
   )
 }
 
 const App = (props: Props): ReactElement => {
   const { children } = props
-  const { socket } = useContext(SocketContext)
+  const { socket, connectSocket }= useSocketContext()
   const { updateState } = useChatContext()
+  const { loggedIn } = useUserContext()
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     ChatService.getChats().then((res) => {
+      setLoading(false)
       updateState(res.data)
     })
 
-    socket.on('connect', () => {
+    socket?.on('connect', () => {
       console.log('Socket connect successfully ')
     })
 
     return () => {
-      socket.close()
+      socket?.close()
       console.log('Socket disconnected')
     }
   }, [])
 
   return (
-    <AppLayout>
-      <NavBar />
-      {children}
-    </AppLayout>
+    <>
+    {loading ? <Loading />:
+      <AppLayout>
+        <NavBar />
+        {children}
+      </AppLayout>
+    }
+    </>
   )
 }
 

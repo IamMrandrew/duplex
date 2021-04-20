@@ -1,18 +1,42 @@
-import React, { createContext } from 'react'
-import io from 'socket.io-client'
+import React, { useState, createContext, useContext, ReactElement } from 'react'
+import io, { Socket } from 'socket.io-client'
 
-interface contextInterface {
-  socket: any
+type ContextType = {
+  socket: Socket | undefined
+  connectSocket: () => void
 }
 
-export const SocketContext = createContext<contextInterface>({
-  socket: null,
-})
+type Props = {
+  children: ReactElement | ReactElement[]
+}
 
-export const socket = io({
-  withCredentials: true,
-})
+const initials = {
+  socket: undefined,
+  connectSocket: () => {},
+}
 
-// export const SocketContextProvider = (props: any) => {
-//   return <SocketContextProvider value={socket}>{props.children}</SocketContextProvider>
-// }
+export const SocketContext = createContext<ContextType>(initials)
+
+const SocketProvider = ({ children }: Props): ReactElement => {
+  const [socket, setSocket] = useState<Socket | undefined>(initials.socket)
+
+  const connectSocket = () => {
+    console.log("create io");
+    setSocket(io({withCredentials: true}))
+  }
+
+  return (
+    <SocketContext.Provider
+      value={{
+        socket,
+        connectSocket,
+      }}
+    >
+      {children}
+    </SocketContext.Provider>
+  )
+}
+
+export const useSocketContext = (): ContextType => useContext(SocketContext)
+
+export default SocketProvider

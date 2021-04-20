@@ -1,6 +1,5 @@
 import styled from 'styled-components'
 import { Link } from 'react-router-dom'
-import { COLOR } from './GlobalStyle'
 import { toPath } from '../Routes'
 
 type Props = {
@@ -16,7 +15,7 @@ const Option: React.FC<Props> = ({ path, isActive }) => {
 
   return (
     <LinkWrapper to={toPath(path || '')}>
-      <Item isActive={isActive}>{toTitleCase(path || '')}</Item>
+      <Item isActive={isActive}>{toTitleCase(path?.replace('settings/', '') || '')}</Item>
     </LinkWrapper>
   )
 }
@@ -29,6 +28,7 @@ const LinkWrapper = styled(Link)`
 `
 type ItemProps = {
   isActive: boolean
+  theme?: any
 }
 
 const Item = styled.div`
@@ -37,8 +37,14 @@ const Item = styled.div`
   text-decoration: none;
   color: inherit;
   font-size: 18px;
-  font-weight: 700;
   text-align: center;
-  padding: 14px 0px;
-  background: ${(props: ItemProps) => (props.isActive ? COLOR.bg.lightgrey : '')};
+  background: ${(props: ItemProps) => (props.isActive ? props.theme.bg.shade : props.theme.bg.main)};
+  color: ${({ theme }) => theme.font.primary};
+  padding: 14px 16px;
+  /* margin: 5px 0 5px 0; */
+  transition: 0s;
+  /* border-radius: 5px; */
+  &:hover {
+    background: ${({ theme }) => theme.bg.shade};
+  }
 `

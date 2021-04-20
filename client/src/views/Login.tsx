@@ -2,18 +2,12 @@ import { Button, TextField } from '@material-ui/core'
 import React, { ChangeEvent, ReactElement, useState } from 'react'
 import { useHistory } from 'react-router'
 import styled from 'styled-components'
-import { COLOR } from '../components/GlobalStyle'
 import { MEDIA_BREAK } from '../components/Layout'
 import { useUserContext } from '../contexts/UserContext'
 import { checkIntegrity, formNoErr, toData, VALIDATORS } from '../formIntegrity'
 import UserServices from '../services/UserService'
 
-type Props = {
-  children?: ReactElement
-}
-
-const Login = (props: Props): ReactElement => {
-  const { children, ...rest } = props
+const Login = (): ReactElement => {
 
   const [isLogin, setIsLogin] = useState(true)
 
@@ -166,7 +160,7 @@ const Wrapper = styled.div`
 const Form = styled.div`
   display: flex;
   flex-direction: column;
-  border: 1px solid ${COLOR.font.grey};
+  border: 1px solid ${({theme})=>theme.font.primary};
   border-radius: 5px;
   padding: 20px;
   @media (max-width: ${MEDIA_BREAK}px) {
@@ -197,7 +191,7 @@ const Btn = styled(Button)`
 const Details = styled.div`
   display: flex;
   flex-direction: row;
-  color: ${COLOR.font.grey};
+  color: ${({theme})=>theme.font.secondary};
   margin-left: 5px;
   margin-bottom: 10px;
   font-size: 14px;
@@ -207,7 +201,7 @@ const Link = styled.div`
   margin-bottom: 10px;
   font-size: 14px;
   margin-left: 5px;
-  color: ${COLOR.font.link};
+  color: ${({theme})=>theme.primary.main};
   cursor: pointer;
   &:hover {
     text-decoration: underline;

@@ -5,11 +5,17 @@ export const GlobalStyle = createGlobalStyle`
     box-sizing: border-box;
     -ms-overflow-style: scrollbar;
   }
+
+  html, body, #root {
+    width: 100%;
+    height: 100%;
+  }
   
   *,
   *::before,
   *::after {
     box-sizing: inherit;
+    transition: 0.1s;
   }
 
   body {
@@ -19,24 +25,60 @@ export const GlobalStyle = createGlobalStyle`
 `
 
 export const COLOR = {
-  bg: {
-    light: '#FFFFFF', // White
-    box: '#F8F9FB', // Searchbar, Input background
-    lightgrey: '#DEE2E7', // Button
-    palegrey: '#FAFAFA',
+  dark: {
+    // dark mode
+    bg: {
+      tint: '#36393F',
+      main: '#2F3136',
+      shade: '#202225',
+    },
+    font: {
+      secondary: '#999999', // for details e.g. datetime
+      primary: '#FFFFFF', // for main text e.g. title
+      contrast: '#FFFFFF', // for message bubble
+    },
+    primary: {
+      // for icon, button
+      tint: '#c3d1e4',
+      main: '#4E6482',
+      shade: '#455973',
+    },
+    divider: '#2B2E33',
+    error: {
+      tint: '#423337', // light red color, for error bg
+      main: '#F0595A', // red color, for error text
+    },
+    message: {
+      incoming: '#4E6482',
+      sender: '#40444B',
+    },
   },
-  font: {
-    grey: '#465462',
-    dark: '#000',
-    link: '#7289da', // randomly choose temp color
-  },
-  primary: {
-    main: '#8C9DAF',
-    shaded: '#455463',
-  },
-  mono: {
-    main: '#202020',
-    tinted: '#4b4b4b',
+  light: {
+    // light mode
+    bg: {
+      tint: '#FFFFFF',
+      main: '#F8FAFB',
+      shade: '#EFF0F1',
+    },
+    font: {
+      secondary: '#999999', // for details e.g. datetime
+      primary: '#000', // for main text e.g. title
+      contrast: '#FFF', // for message bubble
+    },
+    primary: {
+      tint: '#c3d1e4',
+      main: '#8C9DAF',
+      shade: '#4E5460',
+    },
+    divider: '#EDEDED',
+    error: {
+      tint: '#F1E1E3', // light red color, for error bg
+      main: '#F0595A', // red color, for error text
+    },
+    message: {
+      incoming: '#8C9DAF',
+      sender: '#F9F9F9',
+    },
   },
 }
 
@@ -185,4 +227,6 @@ a[href^="tel"] {
 * {
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
   -moz-tap-hightlight-color: rgba(0, 0, 0, 0);
-}`
+}
+
+`
