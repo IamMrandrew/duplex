@@ -44,8 +44,10 @@ const Content = styled.div`
 
 const Bubble = styled.div`
   padding: 12px 20px;
-  background-color: ${(props: { incoming: boolean, theme?: any }) => (props.incoming ? props.theme.message.incoming : props.theme.message.sender)};
-  color: ${(props: { incoming: boolean, theme?: any }) => (props.incoming ? props.theme.font.contrast : props.theme.font.primary)};
+  background-color: ${(props: { incoming: boolean; theme?: any }) =>
+    props.incoming ? props.theme.message.incoming : props.theme.message.sender};
+  color: ${(props: { incoming: boolean; theme?: any }) =>
+    props.incoming ? props.theme.font.contrast : props.theme.font.primary};
   border-radius: 18px;
 `
 
@@ -57,7 +59,7 @@ const Text = styled.span`
 const Name = styled.span`
   font-size: 16px;
   font-weight: 500;
-  color: ${COLOR.primary.shaded};
+  color: ${(props: { incoming: boolean; continuing: boolean; theme?: any }) => props.theme.font.primary};
   display: ${(props: { incoming: boolean; continuing: boolean }) =>
     props.incoming && !props.continuing ? 'block' : 'none'};
   margin-bottom: 3px;

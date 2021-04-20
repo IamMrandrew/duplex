@@ -1,7 +1,6 @@
 import React, { useState } from 'react'
 import styled from 'styled-components/macro'
 import Overlay from './Overlay'
-import { COLOR } from '../components/GlobalStyle'
 import ChatServices from '../services/ChatService'
 import { useChatContext } from '../contexts/ChatContext'
 
@@ -62,7 +61,7 @@ const Wrapper = styled.div`
 
 const Card = styled.div`
   max-width: 370px;
-  background-color: white;
+  background-color: ${({ theme }) => theme.bg.tint};
   border-radius: 12px;
   padding: 40px 30px;
   margin-left: auto;
@@ -75,29 +74,30 @@ const Title = styled.span`
   font-size: 18px;
   font-weight: 600;
   margin-bottom: 30px;
+  color: ${({ theme }) => theme.font.primary};
 `
 
 const Input = styled.input`
   padding: 8px 12px;
-  background-color: ${COLOR.bg.box};
+  background-color: ${({ theme }) => theme.bg.shade};
   border: none;
   outline: none;
   border-radius: 8px;
-  color: ${COLOR.font.grey};
+  color: ${({ theme }) => theme.font.primary};
   font-size: 14px;
   font-weight: 500;
   width: 100%;
   margin-bottom: 12px;
 
   &::placeholder {
-    color: #777777;
+    color: ${({ theme }) => theme.font.secondary};
   }
 `
 
 const Button = styled.button`
   display: block;
   padding: 8px 15px;
-  background-color: ${COLOR.primary.main};
+  background-color: ${({ theme }) => theme.primary.main};
   border: none;
   outline: none;
   border-radius: 12px;
