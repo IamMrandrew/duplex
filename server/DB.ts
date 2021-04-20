@@ -12,8 +12,8 @@ const connect = () => {
 
   const db = mongoose.connection
 
-  db.on('error', () => log(`connection error`))
-  db.once('open', () => log(`successful connection`))
+  db.on('error', () => log(`[MongoDB] connection error`))
+  db.once('open', () => log(`[MongoDB] successful connection`))
 }
 
 export default connect

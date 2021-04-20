@@ -5,7 +5,8 @@ export const MIN_MAIN_COL_WIDTH = 480
 export const MIN_SECONDARY_COL_WIDTH = 260
 export const MAX_SECONDARY_COL_WIDTH = 340
 
-export const MEDIA_BREAK = NAV_WIDTH + MIN_MAIN_COL_WIDTH + MIN_SECONDARY_COL_WIDTH
+// export const MEDIA_BREAK = NAV_WIDTH + MIN_MAIN_COL_WIDTH + MIN_SECONDARY_COL_WIDTH
+export const MEDIA_BREAK = '767.99px'
 
 export const AppLayout = styled.div`
   display: grid;
@@ -14,7 +15,7 @@ export const AppLayout = styled.div`
   grid-template-areas: 'navigation secondary main';
   height: 100vh;
 
-  @media (max-width: 767.99px) {
+  @media (max-width: ${MEDIA_BREAK}) {
     display: block;
   }
 `

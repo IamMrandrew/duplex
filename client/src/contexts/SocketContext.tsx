@@ -21,7 +21,6 @@ const SocketProvider = ({ children }: Props): ReactElement => {
   const [socket, setSocket] = useState<Socket | undefined>(initials.socket)
 
   const connectSocket = () => {
-    console.log("create io");
     setSocket(io({withCredentials: true}))
   }
 
