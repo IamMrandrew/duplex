@@ -67,65 +67,65 @@ const Routes = (props: Props): ReactElement => {
 
   return (
     <>
-    <ThemeProvider theme={theme === 'light' ? COLOR.light : COLOR.dark}>
-      <ResetStyle />
-      <GlobalStyle />
-      <Switch>
-        <Route exact path={toPath(LOCATIONS.onboarding)}>
-          <Onboarding />
-        </Route>
-        <Route exact path={toPath(LOCATIONS.login)}>
-          <Login />
-        </Route>
-        <ChatProvider>
-          <SocketProvider>
-            <App>
-              <>
-                {!isMobile() ? (
-                  <>
-                    <Route exact path={['/', toPath(LOCATIONS.home)]}>
-                      <Chats />
-                      <ChatArea />
-                    </Route>
-                    <Route path={toPath(LOCATIONS.chat)}>
-                      <Chats />
-                      <ChatArea />
-                    </Route>
-                    <Route path={toPath(LOCATIONS.settings.profile)}>
-                      <Settings />
-                      <Profile />
-                    </Route>
-                    <Route path={toPath(LOCATIONS.settings.appearance)}>
-                      <Settings />
-                      <Appearance />
-                    </Route>
-                  </>
-                ) : (
-                  <>
-                    <Route exact path={['/', toPath(LOCATIONS.home)]}>
-                      <Chats />
-                    </Route>
-                    <Route path={toPath(LOCATIONS.chat)}>
-                      <ChatArea />
-                    </Route>
-                    <Route path={toPath(LOCATIONS.settings.profile)}>
-                      <Settings />
-                    </Route>
-                  </>
-                )}
-              </>
-            </App>
-          </SocketProvider>
-        </ChatProvider>
-      </Switch>
-    </ThemeProvider>
+      <ThemeProvider theme={theme === 'light' ? COLOR.light : COLOR.dark}>
+        <ResetStyle />
+        <GlobalStyle />
+        <Switch>
+          <Route exact path={toPath(LOCATIONS.onboarding)}>
+            <Onboarding />
+          </Route>
+          <Route exact path={toPath(LOCATIONS.login)}>
+            <Login />
+          </Route>
+          <ChatProvider>
+            <SocketProvider>
+              <App>
+                <>
+                  {!isMobile() ? (
+                    <>
+                      <Route exact path={['/', toPath(LOCATIONS.home)]}>
+                        <Chats />
+                        <ChatArea />
+                      </Route>
+                      <Route path={toPath(LOCATIONS.chat)}>
+                        <Chats />
+                        <ChatArea />
+                      </Route>
+                      <Route path={toPath(LOCATIONS.settings.profile)}>
+                        <Settings />
+                        <Profile />
+                      </Route>
+                      <Route path={toPath(LOCATIONS.settings.appearance)}>
+                        <Settings />
+                        <Appearance />
+                      </Route>
+                    </>
+                  ) : (
+                    <>
+                      <Route exact path={['/', toPath(LOCATIONS.home)]}>
+                        <Chats />
+                      </Route>
+                      <Route path={toPath(LOCATIONS.chat)}>
+                        <ChatArea />
+                      </Route>
+                      <Route path={toPath(LOCATIONS.settings.profile)}>
+                        <Settings />
+                      </Route>
+                    </>
+                  )}
+                </>
+              </App>
+            </SocketProvider>
+          </ChatProvider>
+        </Switch>
+      </ThemeProvider>
     </>
   )
 }
 
 const App = (props: Props): ReactElement => {
   const { children } = props
-  const { socket, connectSocket }= useSocketContext()
+  const { socket, connectSocket } = useSocketContext()
   const { updateState } = useChatContext()
   const { loggedIn } = useUserContext()
   const [loading, setLoading] = useState(true)
@@ -133,6 +133,7 @@ const App = (props: Props): ReactElement => {
   useEffect(() => {
     ChatService.getChats().then((res) => {
       setLoading(false)
+      console.log(res.data)
       updateState(res.data)
     })
 
@@ -148,12 +149,14 @@ const App = (props: Props): ReactElement => {
 
   return (
     <>
-    {loading ? <Loading />:
-      <AppLayout>
-        <NavBar />
-        {children}
-      </AppLayout>
-    }
+      {loading ? (
+        <Loading />
+      ) : (
+        <AppLayout>
+          <NavBar />
+          {children}
+        </AppLayout>
+      )}
     </>
   )
 }

@@ -21,7 +21,7 @@ const ChatArea: React.FC<Props> = () => {
   const chatContext = useChatContext()
   const { isMobile } = useResponsive()
 
-  const [chat, setChat]: any = useState({})
+  const [chat, setChat]: any = useState(null)
   const [messages, setMessages]: any = useState([])
   const [input, setInput] = useState('')
 
@@ -91,7 +91,13 @@ const ChatArea: React.FC<Props> = () => {
         )}
         <TitleWrapper>
           <Icon></Icon>
-          <Name>{chat ? chat.title : ''}</Name>
+          <Name>
+            {chat
+              ? chat.type === 'Spaces'
+                ? chat.title
+                : chat.users.find((user: any) => user._id !== userState._id).username
+              : ''}
+          </Name>
         </TitleWrapper>
         {isMobile() && <Positioning />}
       </Header>

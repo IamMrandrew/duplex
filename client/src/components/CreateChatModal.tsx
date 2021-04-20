@@ -3,6 +3,8 @@ import styled from 'styled-components/macro'
 import Overlay from './Overlay'
 import ChatServices from '../services/ChatService'
 import { useChatContext } from '../contexts/ChatContext'
+import Tabs from '@material-ui/core/Tabs'
+import Tab from '@material-ui/core/Tab'
 
 type Props = {
   showModal: boolean
@@ -11,18 +13,32 @@ type Props = {
 
 const CreateChatModal: React.FC<Props> = ({ showModal, setShowModal }) => {
   const [title, setTitle] = useState('')
+  const [username, setUsername] = useState('')
+  const [value, setValue] = useState(0)
   const ChatContext = useChatContext()
 
   const setTitleHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
     setTitle(e.target.value)
   }
 
+  const setUsernameHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setUsername(e.target.value)
+  }
+
   const createChatHandler = () => {
-    const data = { type: 'Spaces', title }
+    const data = value ? { type: 'Direct', username } : { type: 'Spaces', title }
     setShowModal(!showModal)
-    ChatServices.createChat(data).then((res) => {
-      ChatContext.updateState([res.data])
-    })
+    ChatServices.createChat(data)
+      .then((res) => {
+        ChatContext.updateState([res.data])
+      })
+      .catch((err) => {
+        console.log(err)
+      })
+  }
+
+  const tabsChangeHandler = (event: React.ChangeEvent<{}>, newValue: number) => {
+    setValue(newValue)
   }
 
   return (
@@ -31,7 +47,21 @@ const CreateChatModal: React.FC<Props> = ({ showModal, setShowModal }) => {
       <Wrapper showModal={showModal}>
         <Card showModal={showModal}>
           <Title>Create a new chat</Title>
-          <Input onChange={setTitleHandler} value={title} placeholder="New group name"></Input>
+          <CustomTabs
+            value={value}
+            indicatorColor="primary"
+            textColor="primary"
+            onChange={tabsChangeHandler}
+            aria-label="disabled tabs example"
+          >
+            <Tab label="Spaces" />
+            <Tab label="Direct Message" />
+          </CustomTabs>
+          <Input
+            onChange={value ? setUsernameHandler : setTitleHandler}
+            value={value ? username : title}
+            placeholder={value ? 'Enter his/her username' : 'New group name'}
+          ></Input>
           <Button onClick={createChatHandler}>Create</Button>
         </Card>
       </Wrapper>
@@ -108,4 +138,20 @@ const Button = styled.button`
   margin-right: left;
   color: white;
   cursor: pointer;
+`
+const CustomTabs = styled(Tabs)`
+  margin-bottom: 20px;
+
+  .MuiTab-textColorPrimary.Mui-selected {
+    color: ${({ theme }) => theme.primary.main};
+  }
+
+  .PrivateTabIndicator-colorPrimary-2 {
+    background-color: ${({ theme }) => theme.primary.main};
+  }
+
+  .MuiTab-root {
+    text-transform: none;
+    font-size: 16px;
+  }
 `

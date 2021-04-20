@@ -36,6 +36,21 @@ const Chats: React.FC<Props> = () => {
           <Section>
             <SectionTitle>Spaces</SectionTitle>
             {chats
+              .filter((chat) => chat.type === 'Spaces')
+              .sort((a, b) => {
+                return a.messages.length > 0 && b.messages.length > 0
+                  ? new Date(b.messages[b.messages.length - 1].createdAt).getTime() -
+                      new Date(a.messages[a.messages.length - 1].createdAt).getTime()
+                  : b.messages.length - a.messages.length
+              })
+              .map((chat: any) => (
+                <Chat key={chat._id} chat={chat} />
+              ))}
+          </Section>
+          <Section>
+            <SectionTitle>Direct Messages</SectionTitle>
+            {chats
+              .filter((chat) => chat.type === 'Direct')
               .sort((a, b) => {
                 return a.messages.length > 0 && b.messages.length > 0
                   ? new Date(b.messages[b.messages.length - 1].createdAt).getTime() -

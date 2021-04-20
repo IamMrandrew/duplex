@@ -4,13 +4,18 @@ import { Avatar } from '@material-ui/core'
 import styled from 'styled-components/macro'
 import { chat } from '../types/chat'
 import { LOCATIONS, toPath } from '../Routes'
+import { useUserContext } from '../contexts/UserContext'
 
 type Props = {
   chat: chat
 }
 
 const Chat: React.FC<Props> = ({ chat }) => {
+  const userState = useUserContext()
+
   const trimmedContent = (): string => {
+    // console.log(chat.users.find((user: any) => true))
+
     return chat.messages.length > 0
       ? chat.messages[chat.messages.length - 1].content.length > 32
         ? chat.messages[chat.messages.length - 1].content.substring(0, 32) + '...'
@@ -26,7 +31,11 @@ const Chat: React.FC<Props> = ({ chat }) => {
             <Icon />
           </IconWrapper>
           <ChatWrapper>
-            <Name>{chat.title}</Name>
+            <Name>
+              {chat.type === 'Spaces'
+                ? chat.title
+                : chat.users.find((user: any) => user._id !== userState.state._id).username}
+            </Name>
             <Message>{trimmedContent()}</Message>
           </ChatWrapper>
         </Wrapper>
