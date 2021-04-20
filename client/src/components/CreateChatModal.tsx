@@ -5,6 +5,7 @@ import ChatServices from '../services/ChatService'
 import { useChatContext } from '../contexts/ChatContext'
 import Tabs from '@material-ui/core/Tabs'
 import Tab from '@material-ui/core/Tab'
+import { MEDIA_BREAK } from './Layout'
 
 type Props = {
   showModal: boolean
@@ -83,7 +84,7 @@ const Wrapper = styled.div`
   pointer-events: none;
   transition: all 300ms cubic-bezier(0.18, 0.89, 0.43, 1.19);
 
-  @media (max-width: 767.99px) {
+  @media (max-width: ${MEDIA_BREAK}) {
     bottom: 30px;
     transform: ${(props: { showModal: boolean }) => (props.showModal ? 'translate(-50%)' : 'translate(-50%, 100%)')};
   }
