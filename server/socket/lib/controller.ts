@@ -29,25 +29,25 @@ const Controller = {
       if (chat) {
         chat.messages.forEach((message: any) => {
           if (message.readers.find((reader: any) => reader == extSocket.userData.userId)) {
-            return false
           } else {
             message.readers = [...message.readers, extSocket.userData.userId]
-            return true
           }
         })
 
         chat
           .save()
           .then((chat: any) => {
-            console.log(chat)
+            console.log('saved')
           })
           .catch((err: any) => {
             console.log(err)
           })
       }
+
+      return true
     } catch (error) {
       console.log(error)
-      return
+      return false
     }
   },
 }

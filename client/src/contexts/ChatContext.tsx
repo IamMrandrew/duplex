@@ -3,6 +3,7 @@ import { chat } from '../types/chat'
 
 type ContextType = {
   state: Array<chat>
+  setState: (newState: Array<chat>) => void
   updateState: (newState: Array<chat>) => void
   updateChatMessage: (id: string, message: any) => void
 }
@@ -13,6 +14,7 @@ type Props = {
 
 export const ChatContext = createContext<ContextType>({
   state: [],
+  setState: () => {},
   updateState: () => {},
   updateChatMessage: () => {},
 })
@@ -41,6 +43,7 @@ const ChatProvider = ({ children }: Props): ReactElement => {
     <ChatContext.Provider
       value={{
         state,
+        setState,
         updateState,
         updateChatMessage,
       }}

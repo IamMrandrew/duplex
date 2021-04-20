@@ -14,19 +14,25 @@ const Chat: React.FC<Props> = ({ chat }) => {
   const userState = useUserContext()
 
   const trimmedContent = (): string => {
-    // console.log(chat.users.find((user: any) => true))
-
-    return chat.messages.length > 0
-      ? chat.messages[chat.messages.length - 1].content.length > 32
-        ? chat.messages[chat.messages.length - 1].content.substring(0, 32) + '...'
-        : chat.messages[chat.messages.length - 1].content.substring(0, 32)
-      : ''
+    if (chat.messages && chat.messages.length && chat.messages[chat.messages.length - 1].content) {
+      return chat.messages.length > 0
+        ? chat.messages[chat.messages.length - 1].content.length > 32
+          ? chat.messages[chat.messages.length - 1].content.substring(0, 32) + '...'
+          : chat.messages[chat.messages.length - 1].content.substring(0, 32)
+        : ''
+    }
+    return ''
   }
 
   const checkIfRead = (): boolean => {
-    if (chat.messages.length > 0) {
+    if (chat.messages.length <= 0) {
+      return true
+    }
+
+    if (chat.messages.length > 0 && chat.messages[chat.messages.length - 1].readers) {
       return chat.messages[chat.messages.length - 1].readers.find((reader: any) => reader === userState.state._id)
     }
+
     return false
   }
 

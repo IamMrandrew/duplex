@@ -48,7 +48,10 @@ export default (httpServer: any) => {
       try {
         const read = await controller.readMessage(extSocket, { id })
         const userId = extSocket.userData.userId
-        io.emit('finishedRead', { id, userId })
+        if (read) {
+          console.log('emit')
+          io.emit('finishedRead', { id, userId })
+        }
       } catch (err) {
         console.log(err)
       }

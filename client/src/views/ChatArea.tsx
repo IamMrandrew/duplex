@@ -57,6 +57,7 @@ const ChatArea: React.FC<Props> = () => {
     setInput('')
   }
 
+  // Identify message type
   const checkIfIncoming = (message: any): boolean => {
     return !(userState._id === message.sender._id)
   }
@@ -77,10 +78,9 @@ const ChatArea: React.FC<Props> = () => {
 
   // }
 
+  // When user enter chat
   useEffect(() => {
     socket?.emit('join', { id })
-
-    setChat(chatContext.state.find((chat) => chat._id === id))
 
     socket?.emit('readMessage', {
       id: id,
@@ -91,29 +91,43 @@ const ChatArea: React.FC<Props> = () => {
     }
   }, [socket, id])
 
+  // Find chat from chats
+  useEffect(() => {
+    if (chatContext.state.find((chat) => chat._id === id)) {
+      setChat(chatContext.state.find((chat) => chat._id === id))
+    }
+  }, [socket, id, chatContext.state])
+
+  // Set messages from chat
   useEffect(() => {
     if (chat) {
       setMessages(chat.messages)
     }
   }, [chat])
 
+  // Socket listening event (New message received and Read message update)
   useEffect(() => {
     if (socket) {
       socket.on('newMessage', (content: any) => {
-        // setMessages([...messages, content.message])
         chatContext.updateChatMessage(content.id, content.message)
+
+        socket?.emit('readMessage', {
+          id: id,
+        })
       })
 
       socket.on('finishedRead', (content: any) => {
-        console.log(chatContext.state)
-        chatContext.updateState(
+        chatContext.setState(
           chatContext.state.map((chat: any) => {
             if (chat._id === content.id) {
               return {
                 ...chat,
-                messages: [
-                  chat.messages.map((message: any) => ({ ...message, readers: [...message.readers, content.userId] })),
-                ],
+                messages: chat.messages.map((message: any) => {
+                  if (!message.readers.find((reader: any) => reader === content.userId)) {
+                    return { ...message, readers: [...message.readers, content.userId] }
+                  }
+                  return message
+                }),
               }
             }
             return chat
@@ -126,7 +140,7 @@ const ChatArea: React.FC<Props> = () => {
       socket?.off('newMessage')
       socket?.off('finishedRead')
     }
-  }, [socket, messages])
+  }, [socket, id, messages, chatContext])
 
   return (
     <Wrapper>
@@ -162,6 +176,7 @@ const ChatArea: React.FC<Props> = () => {
       </Header>
       <Content>
         {messages &&
+          messages.length > 0 &&
           messages.map((message: any, index: number) => (
             <Message
               key={message._id}

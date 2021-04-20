@@ -13,7 +13,6 @@ type Props = {
 
 const Chats: React.FC<Props> = () => {
   const chatContext = useChatContext()
-  const chats = chatContext.state
 
   const [showModal, setShowModal] = useState(false)
 
@@ -36,7 +35,7 @@ const Chats: React.FC<Props> = () => {
           </SearchWrapper>
           <Section>
             <SectionTitle>Spaces</SectionTitle>
-            {chats
+            {chatContext.state
               .filter((chat) => chat.type === 'Spaces')
               .sort((a, b) => {
                 return a.messages.length > 0 && b.messages.length > 0
@@ -50,7 +49,7 @@ const Chats: React.FC<Props> = () => {
           </Section>
           <Section>
             <SectionTitle>Direct Messages</SectionTitle>
-            {chats
+            {chatContext.state
               .filter((chat) => chat.type === 'Direct')
               .sort((a, b) => {
                 return a.messages.length > 0 && b.messages.length > 0
