@@ -23,6 +23,13 @@ const Chat: React.FC<Props> = ({ chat }) => {
       : ''
   }
 
+  const checkIfRead = (): boolean => {
+    if (chat.messages.length > 0) {
+      return chat.messages[chat.messages.length - 1].readers.find((reader: any) => reader === userState.state._id)
+    }
+    return false
+  }
+
   return (
     <Route exact path={toPath(LOCATIONS.chat, chat._id)}>
       {({ match }) => (
@@ -37,6 +44,7 @@ const Chat: React.FC<Props> = ({ chat }) => {
                 : chat.users.find((user: any) => user._id !== userState.state._id).username}
             </Name>
             <Message>{trimmedContent()}</Message>
+            <Noti read={checkIfRead()}></Noti>
           </ChatWrapper>
         </Wrapper>
       )}
@@ -47,6 +55,7 @@ const Chat: React.FC<Props> = ({ chat }) => {
 export default Chat
 
 const Wrapper = styled(Link)`
+  position: relative;
   display: flex;
   align-items: center;
   text-decoration: none;
@@ -80,4 +89,15 @@ const Message = styled.span`
   font-weight: 400;
   font-size: 14px;
   color: ${({ theme }) => theme.font.secondary};
+`
+
+const Noti = styled.div`
+  position: absolute;
+  bottom: 24px;
+  right: 16px;
+  width: 15px;
+  height: 15px;
+  border-radius: 50%;
+  background-color: ${({ theme }) => theme.primary.main};
+  display: ${(props: { read: boolean; theme: any }) => (props.read ? 'none' : 'block')};
 `

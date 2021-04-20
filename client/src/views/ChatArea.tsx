@@ -82,10 +82,14 @@ const ChatArea: React.FC<Props> = () => {
 
     setChat(chatContext.state.find((chat) => chat._id === id))
 
+    socket?.emit('readMessage', {
+      id: id,
+    })
+
     return () => {
       socket?.emit('leave', { id })
     }
-  }, [socket, id, chatContext.state])
+  }, [socket, id])
 
   useEffect(() => {
     if (chat) {
@@ -99,10 +103,28 @@ const ChatArea: React.FC<Props> = () => {
         // setMessages([...messages, content.message])
         chatContext.updateChatMessage(content.id, content.message)
       })
+
+      socket.on('finishedRead', (content: any) => {
+        console.log(chatContext.state)
+        chatContext.updateState(
+          chatContext.state.map((chat: any) => {
+            if (chat._id === content.id) {
+              return {
+                ...chat,
+                messages: [
+                  chat.messages.map((message: any) => ({ ...message, readers: [...message.readers, content.userId] })),
+                ],
+              }
+            }
+            return chat
+          }),
+        )
+      })
     }
 
     return () => {
       socket?.off('newMessage')
+      socket?.off('finishedRead')
     }
   }, [socket, messages])
 
