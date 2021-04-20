@@ -20,6 +20,7 @@ import Appearance from './views/Appearance'
 import { ThemeProvider } from 'styled-components'
 import { useSettingContext } from './contexts/SettingContext'
 import Profile from './views/Profile'
+import { getUrlLastSegmant } from './utils'
 
 type Props = {
   children?: ReactElement | Array<ReactElement>
@@ -59,9 +60,11 @@ const Routes = (props: Props): ReactElement => {
         setLoading(false)
         userState.updateState(res.data)
       })
-      .catch((err) => {
+      .catch(() => {
         setLoading(false)
-        history.push(toPath(LOCATIONS.onboarding))
+        const currentPage = getUrlLastSegmant()
+        if(currentPage !== LOCATIONS.onboarding && currentPage !== LOCATIONS.login)
+          history.push(toPath(LOCATIONS.onboarding))
       })
   }, [])
 
@@ -135,16 +138,21 @@ const App = (props: Props): ReactElement => {
       setLoading(false)
       updateState(res.data)
     })
+  }, [])
 
-    socket?.on('connect', () => {
-      console.log('Socket connect successfully ')
-    })
-
+  useEffect(()=>{
+    if(loggedIn()) {
+      connectSocket()
+      socket?.on('connect', () => {
+        console.log('Socket connect successfully ')
+      })
+    }
+    
     return () => {
       socket?.close()
       console.log('Socket disconnected')
     }
-  }, [])
+  }, [loggedIn()])
 
   return (
     <>

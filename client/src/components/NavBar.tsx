@@ -5,6 +5,7 @@ import { FaLayerGroup } from 'react-icons/fa'
 import { Avatar } from '@material-ui/core'
 import { Link } from 'react-router-dom'
 import { LOCATIONS, toPath } from '../Routes'
+import { MEDIA_BREAK } from './Layout'
 
 const NavBar = (): ReactElement => {
   return (
@@ -37,7 +38,7 @@ const Wrapper = styled.div`
   z-index: 100;
   box-shadow: 3px 0px 2px -2px ${({ theme }) => theme.divider};
 
-  @media (max-width: 767.99px) {
+  @media (max-width: ${MEDIA_BREAK}) {
     display: none;
   }
 `

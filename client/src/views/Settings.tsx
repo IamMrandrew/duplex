@@ -5,6 +5,7 @@ import { LOCATIONS, toPath } from '../Routes'
 import Option from '../components/Option'
 import { useUserContext } from '../contexts/UserContext'
 import UserService from '../services/UserService'
+import { MEDIA_BREAK } from '../components/Layout'
 
 type Props = {
   children?: ReactElement
@@ -58,7 +59,7 @@ const Wrapper = styled.div`
   background: ${({ theme }) => theme.bg.tint};
   box-shadow: 3px 0px 2px -2px ${({ theme }) => theme.divider};
   z-index: 50;
-  @media (max-width: 767.99px) {
+  @media (max-width: ${MEDIA_BREAK}) {
     padding: 12px;
   }
 `
