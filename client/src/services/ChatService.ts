@@ -6,11 +6,11 @@ const ChatServices = {
   },
 
   createChat: (data: any) => {
-    return axios.post('/api/login', data, { withCredentials: true })
+    return axios.post('/api/chat', data, { withCredentials: true })
   },
 
   joinChat: (data: any) => {
-    return axios.post('/api/signup', data, { withCredentials: true })
+    return axios.post('/api/chat', data, { withCredentials: true })
   },
 }
 

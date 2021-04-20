@@ -1,12 +1,14 @@
 import React, { ReactElement, useState, useEffect } from 'react'
-import { useParams } from 'react-router-dom'
+import { Link, useParams } from 'react-router-dom'
 import styled from 'styled-components/macro'
 import { Avatar } from '@material-ui/core'
 import { IoMdSend } from 'react-icons/io'
+import { FaChevronLeft } from 'react-icons/fa'
 import Message from '../components/Message'
 import { useSocketContext } from '../contexts/SocketContext'
 import { useUserContext } from '../contexts/UserContext'
 import { useChatContext } from '../contexts/ChatContext'
+import { useResponsive } from '../hooks/useResponsive'
 
 type Props = {
   children?: ReactElement
@@ -17,6 +19,7 @@ const ChatArea: React.FC<Props> = () => {
   const { socket } = useSocketContext()
   const userState = useUserContext().state
   const chatContext = useChatContext()
+  const { isMobile } = useResponsive()
 
   const [chat, setChat]: any = useState({})
   const [messages, setMessages]: any = useState([])
@@ -26,7 +29,8 @@ const ChatArea: React.FC<Props> = () => {
     setInput(e.target.value)
   }
 
-  const sendMessageHandler = () => {
+  const sendMessageHandler = (e: React.FormEvent) => {
+    e.preventDefault()
     if (socket) {
       socket.emit('message', {
         id: id,
@@ -36,8 +40,16 @@ const ChatArea: React.FC<Props> = () => {
     setInput('')
   }
 
-  const checkIfIncoming = (message: any) => {
+  const checkIfIncoming = (message: any): boolean => {
     return !(userState._id === message.sender._id)
+  }
+
+  const checkIfContinuous = (message: any, index: number): boolean => {
+    return messages[index - 1] ? message.sender._id === messages[index - 1].sender._id : false
+  }
+
+  const checkIfEndContinuous = (message: any, index: number): boolean => {
+    return messages[index + 1] ? message.sender._id !== messages[index + 1].sender._id : false
   }
 
   useEffect(() => {
@@ -72,20 +84,32 @@ const ChatArea: React.FC<Props> = () => {
   return (
     <Wrapper>
       <Header>
+        {isMobile() && (
+          <BackButton to="/">
+            <FaChevronLeft />
+          </BackButton>
+        )}
         <TitleWrapper>
           <Icon></Icon>
           <Name>{chat ? chat.title : ''}</Name>
         </TitleWrapper>
+        {isMobile() && <Positioning />}
       </Header>
       <Content>
         {messages &&
-          messages.map((message: any) => (
-            <Message key={message._id} message={message} incoming={checkIfIncoming(message)} />
+          messages.map((message: any, index: number) => (
+            <Message
+              key={message._id}
+              message={message}
+              incoming={checkIfIncoming(message)}
+              continuing={checkIfContinuous(message, index)}
+              endContinuing={checkIfEndContinuous(message, index)}
+            />
           ))}
       </Content>
-      <InputWrapper>
+      <InputWrapper onSubmit={sendMessageHandler}>
         <Input value={input} onChange={inputHandler} />
-        <InputButton onClick={sendMessageHandler}>
+        <InputButton>
           <IoMdSend />
         </InputButton>
       </InputWrapper>
@@ -142,7 +166,7 @@ const Name = styled.span`
   color: ${({ theme }) => theme.font.primary};
 `
 
-const InputWrapper = styled.div`
+const InputWrapper = styled.form`
   display: flex;
   align-items: center;
   padding: 20px 32px;
@@ -183,3 +207,22 @@ const InputButton = styled.button`
     font-size: 24px;
   }
 `
+
+const BackButton = styled(Link)`
+  background: none;
+  padding: 10px;
+  border: none;
+  outline: none;
+  border-radius: 16px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+
+  > svg {
+    color: black;
+    font-size: 18px;
+  }
+`
+
+const Positioning = styled.div``

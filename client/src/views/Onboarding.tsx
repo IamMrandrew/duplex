@@ -23,7 +23,7 @@ const Onboarding = (): ReactElement => {
       <HeroContainer>
         <FlexRow>
           <IconWrapper>
-            <DuplexIcon color={COLOR.dark.primary.shade}/>
+            <DuplexIcon color={COLOR.dark.primary.shade} />
           </IconWrapper>
           <H1>Duplex</H1>
         </FlexRow>
@@ -42,7 +42,7 @@ export default Onboarding
 const Wrapper = styled.div`
   display: grid;
   width: 100%;
-  grid-template-rows: ;
+  /* grid-template-rows: ; */
 `
 
 const Nav = styled.div`
@@ -69,12 +69,12 @@ const HeroContainer = styled.div`
 
 const H1 = styled.h1`
   font-size: 2em;
-  color: ${({theme})=>theme.font.main};
+  color: ${({ theme }) => theme.font.main};
   padding: 5px;
 `
 
 const Text = styled.div`
-  color: ${({theme})=>theme.font.main};
+  color: ${({ theme }) => theme.font.main};
   font-size: 16px;
   padding: 5px;
 `
@@ -91,5 +91,5 @@ const IconWrapper = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  background: ${COLOR.dark.primary.tint}
+  background: ${COLOR.dark.primary.tint};
 `
