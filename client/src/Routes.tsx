@@ -63,7 +63,6 @@ const Routes = (props: Props): ReactElement => {
       .catch(() => {
         setLoading(false)
         const currentPage = getUrlLastSegmant()
-        console.log(currentPage === LOCATIONS.login)
         if(currentPage !== LOCATIONS.onboarding && currentPage !== LOCATIONS.login)
           history.push(toPath(LOCATIONS.onboarding))
       })
@@ -139,18 +138,21 @@ const App = (props: Props): ReactElement => {
       setLoading(false)
       updateState(res.data)
     })
+  }, [])
 
-    if(loggedIn()) connectSocket()
-
-    socket?.on('connect', () => {
-      console.log('Socket connect successfully ')
-    })
-
+  useEffect(()=>{
+    if(loggedIn()) {
+      connectSocket()
+      socket?.on('connect', () => {
+        console.log('Socket connect successfully ')
+      })
+    }
+    
     return () => {
       socket?.close()
       console.log('Socket disconnected')
     }
-  }, [])
+  }, [loggedIn()])
 
   return (
     <>
