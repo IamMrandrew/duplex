@@ -22,9 +22,10 @@ const Controller = {
         res.status(500).json(err)
       })
   },
-  createChat: (req: Request, res: Response) => {
-    const chat = new Chat({ _id: new mongoose.Types.ObjectId(), type: req.body.type })
+  createChat: async (req: Request, res: Response) => {
+    const chat = new Chat({ _id: new mongoose.Types.ObjectId(), type: req.body.type, messages: [] })
     chat.users.push(req.userData.userId)
+    const user = await User.findById(req.userData.userId)
     if (req.body.type === 'Direct') {
       User.findOne({ username: req.body.username })
         .then((user: any) => {
@@ -42,6 +43,7 @@ const Controller = {
           res.status(500).json(error)
         })
     } else {
+      chat.messages.push({ content: user.username + ' created a spaces' })
       chat.title = req.body.title
       chat
         .save()
@@ -60,7 +62,17 @@ const Controller = {
           { _id: req.params.id, type: 'Spaces', users: { $nin: [user._id] } },
           { $push: { users: user } },
         )
-          .then((result: any) => {
+          .then(async (result: any) => {
+            const chat = await Chat.findOne({ _id: req.params.id })
+            chat.messages.push({ content: user.username + ' joined' })
+            chat
+              .save()
+              .then((chat: any) => {
+                res.status(200).json(chat)
+              })
+              .catch((err: any) => {
+                res.status(400).json(err)
+              })
             res.status(200).json('Successfully joined')
           })
           .catch((error: any) => {

@@ -16,15 +16,18 @@ type Props = {
 
 const Message: React.FC<Props> = ({ message, incoming, continuing, endContinuing, type }) => {
   return (
-    <Wrapper incoming={incoming} endContinuing={endContinuing}>
-      <Content>
-        <Name incoming={incoming} continuing={continuing} type={type}>
-          {message.sender.username}
-        </Name>
-        <Bubble incoming={incoming}>
-          <Text>{message.content}</Text>
-        </Bubble>
-      </Content>
+    <Wrapper system={!message.sender} incoming={incoming} endContinuing={endContinuing}>
+      {!message.sender && <Text system={!message.sender}>{message.content}</Text>}
+      {message.sender && (
+        <Content>
+          <Name incoming={incoming} continuing={continuing} type={type}>
+            {message.sender.username}
+          </Name>
+          <Bubble incoming={incoming}>
+            <Text system={!message.sender}>{message.content}</Text>
+          </Bubble>
+        </Content>
+      )}
     </Wrapper>
   )
 }
@@ -33,9 +36,10 @@ export default Message
 
 const Wrapper = styled.div`
   display: flex;
-  justify-content: ${(props: { incoming: boolean; endContinuing: boolean }) =>
-    props.incoming ? 'flex-left' : 'flex-end'};
-  margin-top: 4px;
+  justify-content: ${(props: { system: boolean; incoming: boolean; endContinuing: boolean }) =>
+    props.incoming ? 'flex-left' : props.system ? 'center' : 'flex-end'};
+  margin-top: ${(props: { system: boolean; incoming: boolean; endContinuing: boolean }) =>
+    props.system ? '16px' : '4px'};
   margin-bottom: ${(props: { incoming: boolean; endContinuing: boolean }) => (props.endContinuing ? '8px' : '4px')};
 `
 
@@ -55,6 +59,7 @@ const Bubble = styled.div`
 const Text = styled.span`
   font-size: 16px;
   font-weight: 400;
+  color: ${(props: { system: boolean; theme: any }) => (props.system ? props.theme.font.secondary : 'inherit')};
 `
 
 const Name = styled.span`

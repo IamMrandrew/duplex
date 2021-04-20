@@ -59,15 +59,32 @@ const ChatArea: React.FC<Props> = () => {
 
   // Identify message type
   const checkIfIncoming = (message: any): boolean => {
-    return !(userState._id === message.sender._id)
+    if (message.sender) {
+      return !(userState._id === message.sender._id)
+    }
+    return false
   }
 
   const checkIfContinuous = (message: any, index: number): boolean => {
-    return messages[index - 1] ? message.sender._id === messages[index - 1].sender._id : false
+    if (message.sender) {
+      return messages[index - 1]
+        ? messages[index - 1].sender
+          ? message.sender._id === messages[index - 1].sender._id
+          : false
+        : false
+    }
+    return false
   }
 
   const checkIfEndContinuous = (message: any, index: number): boolean => {
-    return messages[index + 1] ? message.sender._id !== messages[index + 1].sender._id : false
+    if (message.sender) {
+      return messages[index + 1]
+        ? messages[index + 1].sender
+          ? message.sender._id !== messages[index + 1].sender._id
+          : false
+        : false
+    }
+    return false
   }
 
   // const createPeer = (userToSignal, callerId, stream) => {
