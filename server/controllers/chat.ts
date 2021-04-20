@@ -56,12 +56,15 @@ const Controller = {
   joinChat: (req: Request, res: Response) => {
     User.findById(req.userData.userId)
       .then((user: any) => {
-        Chat.findByIdAndUpdate(req.body.id, { $push: { users: user } })
+        Chat.findOneAndUpdate(
+          { _id: req.params.id, type: 'Spaces', users: { $nin: [user._id] } },
+          { $push: { users: user } },
+        )
           .then((result: any) => {
             res.status(200).json('Successfully joined')
           })
           .catch((error: any) => {
-            res.status(500).json(error)
+            res.status(500).json('Wrong id or joining same spaces or trying to join a direct message')
           })
       })
       .catch((error: any) => {
