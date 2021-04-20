@@ -34,6 +34,9 @@ const Wrapper = styled.div`
   padding-top: 160px;
   padding-bottom: 30px;
   background: ${({ theme }) => theme.bg.tint};
+  z-index: 100;
+  box-shadow: 3px 0px 2px -2px ${({ theme }) => theme.divider};
+
   @media (max-width: 767.99px) {
     display: none;
   }
