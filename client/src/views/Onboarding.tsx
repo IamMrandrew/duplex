@@ -1,21 +1,16 @@
 import { COLOR } from '../components/GlobalStyle'
 import React, { ReactElement } from 'react'
 import styled from 'styled-components'
-import { useHistory } from 'react-router'
 import { LOCATIONS, toPath } from '../Routes'
 import { Link } from 'react-router-dom'
+import DuplexIcon from '../components/DuplexIcon'
 
-type Props = {
-  children?: ReactElement
-}
+const Onboarding = (): ReactElement => {
+  // const history = useHistory()
 
-const Onboarding = (props: Props): ReactElement => {
-  const { children, ...rest } = props
-  const history = useHistory()
-
-  const redirect = () => {
-    history.push(toPath(LOCATIONS.login))
-  }
+  // const redirect = () => {
+  //   history.push(toPath(LOCATIONS.login))
+  // }
 
   return (
     <Wrapper>
@@ -26,14 +21,18 @@ const Onboarding = (props: Props): ReactElement => {
         <NavItem to={toPath(LOCATIONS.login)}>Log in</NavItem>
       </Nav>
       <HeroContainer>
-        <H1>Duplex</H1>
+        <FlexRow>
+          <IconWrapper>
+            <DuplexIcon color={COLOR.dark.primary.shade}/>
+          </IconWrapper>
+          <H1>Duplex</H1>
+        </FlexRow>
         <Text>
           Imagine chatting in a spacious place. Not happy
           <br />
           with that? How about having two, or more.
         </Text>
       </HeroContainer>
-      {children}
     </Wrapper>
   )
 }
@@ -70,12 +69,27 @@ const HeroContainer = styled.div`
 
 const H1 = styled.h1`
   font-size: 2em;
-  color: ${COLOR.font.grey};
+  color: ${({theme})=>theme.font.main};
   padding: 5px;
 `
 
 const Text = styled.div`
-  color: ${COLOR.font.grey};
+  color: ${({theme})=>theme.font.main};
   font-size: 16px;
   padding: 5px;
+`
+
+const FlexRow = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+`
+
+const IconWrapper = styled.div`
+  padding: 14px;
+  border-radius: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: ${COLOR.dark.primary.tint}
 `

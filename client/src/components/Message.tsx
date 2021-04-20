@@ -1,6 +1,5 @@
 import React from 'react'
 import styled from 'styled-components/macro'
-import { COLOR } from './GlobalStyle'
 
 type Props = {
   message: {
@@ -31,12 +30,12 @@ const Wrapper = styled.div`
 
 const Bubble = styled.div`
   padding: 12px 20px;
-  background-color: ${(props: { incoming: boolean }) => (props.incoming ? COLOR.primary.main : 'white')};
-  color: ${(props: { incoming: boolean }) => (props.incoming ? 'white' : COLOR.mono.main)};
+  background-color: ${(props: { incoming: boolean, theme?: any }) => (props.incoming ? props.theme.message.incoming : props.theme.message.sender)};
+  color: ${(props: { incoming: boolean, theme?: any }) => (props.incoming ? props.theme.font.contrast : props.theme.font.primary)};
   border-radius: 18px;
 `
 
 const Text = styled.span`
   font-size: 16px;
-  font-weight: 500;
+  font-weight: 400;
 `

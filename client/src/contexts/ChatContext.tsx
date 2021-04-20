@@ -1,8 +1,6 @@
 import React, { useState, createContext, useContext, ReactElement } from 'react'
 import { chat } from '../types/chat'
 
-type Obj = Record<string, any>
-
 type ContextType = {
   state: Array<chat>
   updateState: (newState: Array<chat>) => void

@@ -1,12 +1,10 @@
-import React, { ReactElement, useState, useEffect, useContext } from 'react'
+import React, { ReactElement, useState, useEffect } from 'react'
 import { useParams } from 'react-router-dom'
 import styled from 'styled-components/macro'
 import { Avatar } from '@material-ui/core'
-import { COLOR } from '../components/GlobalStyle'
 import { IoMdSend } from 'react-icons/io'
 import Message from '../components/Message'
-import { chat } from '../types/chat'
-import { SocketContext } from '../contexts/SocketContext'
+import { useSocketContext } from '../contexts/SocketContext'
 import { useUserContext } from '../contexts/UserContext'
 import { useChatContext } from '../contexts/ChatContext'
 
@@ -16,7 +14,7 @@ type Props = {
 
 const ChatArea: React.FC<Props> = () => {
   const { id } = useParams<{ id: string }>()
-  const { socket } = useContext(SocketContext)
+  const { socket } = useSocketContext()
   const userState = useUserContext().state
   const chatContext = useChatContext()
 
@@ -43,12 +41,12 @@ const ChatArea: React.FC<Props> = () => {
   }
 
   useEffect(() => {
-    socket.emit('join', { id })
+    socket?.emit('join', { id })
 
     setChat(chatContext.state.find((chat) => chat._id === id))
 
     return () => {
-      socket.emit('leave', { id })
+      socket?.emit('leave', { id })
     }
   }, [socket, id, chatContext.state])
 
@@ -67,7 +65,7 @@ const ChatArea: React.FC<Props> = () => {
     }
 
     return () => {
-      socket.off('newMessage')
+      socket?.off('newMessage')
     }
   }, [socket, messages])
 
@@ -98,16 +96,18 @@ const ChatArea: React.FC<Props> = () => {
 export default ChatArea
 
 const Wrapper = styled.div`
-  background-color: ${COLOR.bg.palegrey};
+  background-color: ${({ theme }) => theme.bg.tint};
 `
 
 const Header = styled.div`
-  padding-top: 20px;
+  padding: 32px;
+  padding-top: 40px;
   padding-bottom: 10px;
   display: flex;
   align-items: center;
-  justify-content: space-around;
-  background-color: ${COLOR.bg.light};
+  justify-content: flex-start;
+  background-color: ${({ theme }) => theme.bg.tint};
+  box-shadow: 0 3px 2px -2px ${({ theme }) => theme.divider};
 `
 
 const TitleWrapper = styled.div`
@@ -120,8 +120,8 @@ const TitleWrapper = styled.div`
 `
 
 const Content = styled.div`
-  overflow-y: scroll;
-  height: calc(100vh - 60px - 100px);
+  overflow-y: auto;
+  height: calc(100vh - 80px - 100px);
   padding: 8px 32px;
 
   @media (max-width: 767.99px) {
@@ -139,6 +139,7 @@ const Icon = styled(Avatar)`
 const Name = styled.span`
   font-size: 18px;
   font-weight: 700;
+  color: ${({ theme }) => theme.font.primary};
 `
 
 const InputWrapper = styled.div`
@@ -146,7 +147,7 @@ const InputWrapper = styled.div`
   align-items: center;
   padding: 20px 32px;
   padding-bottom: 32px;
-  background-color: ${COLOR.bg.light};
+  background-color: ${({ theme }) => theme.bg.tint};
 
   @media (max-width: 767.99px) {
     padding: 20px 12px;
@@ -156,7 +157,8 @@ const InputWrapper = styled.div`
 const Input = styled.input`
   width: 100%;
   border: none;
-  background-color: ${COLOR.bg.box};
+  background-color: ${({ theme }) => theme.bg.shade};
+  color: ${({ theme }) => theme.font.primary};
   padding: 15px;
   border-radius: 18px;
   outline: none;
@@ -164,7 +166,7 @@ const Input = styled.input`
 `
 
 const InputButton = styled.button`
-  background-color: ${COLOR.primary.shaded};
+  background-color: ${({ theme }) => theme.primary.main};
   padding: 10px;
   border: none;
   outline: none;
@@ -176,7 +178,8 @@ const InputButton = styled.button`
   cursor: pointer;
 
   > svg {
-    color: ${COLOR.bg.light};
+    background-color: ${({ theme }) => theme.primary.main};
+    color: white;
     font-size: 24px;
   }
 `
