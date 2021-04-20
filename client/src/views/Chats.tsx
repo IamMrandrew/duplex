@@ -66,19 +66,20 @@ const Wrapper = styled.div`
 `
 const Header = styled.div`
   padding: 24px;
-  padding-top: 50px;
+  padding-top: 40px;
   padding-bottom: 10px;
   display: flex;
   align-items: center;
   justify-content: flex-start;
   background-color: ${({ theme }) => theme.bg.tint};
-  min-height: 60px;
   width: 100%;
 `
 
 const Title = styled.h1`
   font-size: 22px;
   font-weight: 700;
+  min-height: 30px;
+  line-height: 30px;
   color: ${({ theme }) => theme.font.primary};
 `
 

@@ -56,13 +56,15 @@ export default Settings
 const Wrapper = styled.div`
   grid-area: secondary;
   background: ${({ theme }) => theme.bg.tint};
+  box-shadow: 3px 0px 2px -2px ${({ theme }) => theme.divider};
+  z-index: 50;
   @media (max-width: 767.99px) {
     padding: 12px;
   }
 `
 const Header = styled.div`
   padding: 24px;
-  padding-top: 20px;
+  padding-top: 50px;
   padding-bottom: 10px;
   display: flex;
   align-items: center;
@@ -72,9 +74,11 @@ const Header = styled.div`
   width: 100%;
 `
 const Title = styled.h1`
-  font-size: 18px;
+  font-size: 22px;
   font-weight: 700;
   text-align: center;
+  min-height: 30px;
+  line-height: 30px;
   color: ${({ theme }) => theme.font.primary};
 `
 const ContentSection = styled.div`
