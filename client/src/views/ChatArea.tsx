@@ -219,6 +219,7 @@ const ChatArea: React.FC<Props> = () => {
                   incoming={checkIfIncoming(message)}
                   continuing={checkIfContinuous(message, index)}
                   endContinuing={checkIfEndContinuous(message, index)}
+                  type={chat ? chat.type : ''}
                 />
               ))}
           </Content>
