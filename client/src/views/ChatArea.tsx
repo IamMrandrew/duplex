@@ -76,6 +76,7 @@ const ChatArea: React.FC<Props> = () => {
   }
 
   useEffect(() => {
+    scrollBottom()
     socket?.emit('join', { id })
 
     setChat(chatContext.state.find((chat) => chat._id === id))
@@ -86,15 +87,16 @@ const ChatArea: React.FC<Props> = () => {
   }, [socket, id, chatContext.state])
 
   useEffect(() => {
+    scrollBottom()
     if (chat) {
       setMessages(chat.messages)
-      scrollBottom()
     }
     console.log('ref');
     contentRef.current?.scrollIntoView({behavior: 'smooth'})
   }, [chat])
 
   useEffect(() => {
+    scrollBottom()
     if (socket) {
       socket.on('newMessage', (message: any) => {
         setMessages([...messages, message])

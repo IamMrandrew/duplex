@@ -7,9 +7,7 @@ import { Button, IconButton } from '@material-ui/core'
 import { MEDIA_BREAK } from './Layout'
 import { AiOutlineAudio, AiOutlineAudioMuted } from 'react-icons/ai'
 import { BsFillVolumeMuteFill, BsFillVolumeUpFill } from 'react-icons/bs'
-import AvVideocamOff from 'material-ui/svg-icons/av/videocam-off'
 import { FiCamera, FiCameraOff } from 'react-icons/fi'
-import { useUserContext } from '../contexts/UserContext'
 
 
 type Props={
@@ -19,8 +17,8 @@ type Props={
 }
 
 const videoConstraints = {
-  height: window.innerHeight / 2,
-  width: window.innerWidth / 2,
+  // height: window.innerHeight / 2,
+  // width: window.innerWidth / 2,
 }
 
 
@@ -211,8 +209,9 @@ const Wrapper = styled.div`
   display: ${(props: {displayingVideo: boolean})=>props.displayingVideo?`flex`:`none`};
   flex-direction: column;
   overflow-y: auto;
-  height: calc(100vh - 80px - 100px);
   padding: 8px 32px;
+  transition: 0.5s;
+  height: calc(100vh - 80px - 100px);
 
   @media (max-width: ${MEDIA_BREAK}) {
     padding: 12px;
@@ -231,6 +230,10 @@ const Video = styled.video`
   background: black;
   width: 47.5%;
   margin-bottom: 1%;
+  @media (max-width: ${MEDIA_BREAK}) {
+    width: calc(100vw - 24px);
+    height: 250px;
+  }
 `
 
 const OperationRow = styled.div`
@@ -250,19 +253,51 @@ const BackToChatBtn = styled(Button)`
     &:hover{
         background: ${({theme})=>theme.primary.shade};
     }
+    @media (max-width: ${MEDIA_BREAK}) {
+      font-size: 12px;
+      padding: 3px 6px;
+    }
   }
 `
 
 const VideoOperationRow = styled.div`
   display: flex;
   flex-direction: row;
+  grid-gap: 5px;
 `
 
-const MuteSelfBtn = styled(IconButton)``
+const MuteSelfBtn = styled(IconButton)`
+  &.MuiButtonBase-root {
+    background: ${({theme})=>theme.primary.main};
+    color: ${({theme})=>theme.font.contrast};
+    border-radius: 40%;
+    &:hover {
+      background: ${({theme})=>theme.primary.shade};
+    }
+  }
+`
 
-const MuteOthersBtn = styled(IconButton)``
+const MuteOthersBtn = styled(IconButton)`
+  &.MuiButtonBase-root {
+    background: ${({theme})=>theme.primary.main};
+    color: ${({theme})=>theme.font.contrast};
+    border-radius: 40%;
+    &:hover {
+      background: ${({theme})=>theme.primary.shade};
+    }
+  }
+`
 
-const CloseCamBtn = styled(IconButton)``
+const CloseCamBtn = styled(IconButton)`
+  &.MuiButtonBase-root {
+    background: ${({theme})=>theme.primary.main};
+    color: ${({theme})=>theme.font.contrast};
+    border-radius: 40%;
+    &:hover {
+      background: ${({theme})=>theme.primary.shade};
+    }
+  }
+`
 
 const LeaveCallBtn = styled(Button)`
   &.MuiButtonBase-root {
@@ -270,6 +305,10 @@ const LeaveCallBtn = styled(Button)`
     background: ${({theme})=>theme.error.main};
     &:hover{
         background: ${({theme})=>theme.error.shade};
+    }
+    @media (max-width: ${MEDIA_BREAK}) {
+      font-size: 12px;
+      padding: 3px 6px;
     }
   }
 `
