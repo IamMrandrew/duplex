@@ -37,10 +37,23 @@ export default (httpServer: any) => {
         try {
           const message = await controller.saveMessage(extSocket, { id, content })
 
-          io.to(id).emit('newMessage', message)
+          io.emit('newMessage', { id, message })
         } catch (err) {
           console.log(err)
         }
+      }
+    })
+
+    extSocket.on('readMessage', async ({ id }) => {
+      try {
+        const read = await controller.readMessage(extSocket, { id })
+        const userId = extSocket.userData.userId
+        if (read) {
+          console.log('emit')
+          io.emit('finishedRead', { id, userId })
+        }
+      } catch (err) {
+        console.log(err)
       }
     })
   })

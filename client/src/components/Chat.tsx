@@ -4,18 +4,36 @@ import { Avatar } from '@material-ui/core'
 import styled from 'styled-components/macro'
 import { chat } from '../types/chat'
 import { LOCATIONS, toPath } from '../Routes'
+import { useUserContext } from '../contexts/UserContext'
 
 type Props = {
   chat: chat
 }
 
 const Chat: React.FC<Props> = ({ chat }) => {
+  const userState = useUserContext()
+
   const trimmedContent = (): string => {
-    return chat.messages.length > 0
-      ? chat.messages[chat.messages.length - 1].content.length > 32
-        ? chat.messages[chat.messages.length - 1].content.substring(0, 32) + '...'
-        : chat.messages[chat.messages.length - 1].content.substring(0, 32)
-      : ''
+    if (chat.messages && chat.messages.length && chat.messages[chat.messages.length - 1].content) {
+      return chat.messages.length > 0
+        ? chat.messages[chat.messages.length - 1].content.length > 32
+          ? chat.messages[chat.messages.length - 1].content.substring(0, 32) + '...'
+          : chat.messages[chat.messages.length - 1].content.substring(0, 32)
+        : ''
+    }
+    return ''
+  }
+
+  const checkIfRead = (): boolean => {
+    if (chat.messages.length <= 0) {
+      return true
+    }
+
+    if (chat.messages.length > 0 && chat.messages[chat.messages.length - 1].readers) {
+      return chat.messages[chat.messages.length - 1].readers.find((reader: any) => reader === userState.state._id)
+    }
+
+    return false
   }
 
   return (
@@ -26,8 +44,13 @@ const Chat: React.FC<Props> = ({ chat }) => {
             <Icon />
           </IconWrapper>
           <ChatWrapper>
-            <Name>{chat.title}</Name>
+            <Name>
+              {chat.type === 'Spaces'
+                ? chat.title
+                : chat.users.find((user: any) => user._id !== userState.state._id).username}
+            </Name>
             <Message>{trimmedContent()}</Message>
+            <Noti read={checkIfRead()}></Noti>
           </ChatWrapper>
         </Wrapper>
       )}
@@ -38,6 +61,7 @@ const Chat: React.FC<Props> = ({ chat }) => {
 export default Chat
 
 const Wrapper = styled(Link)`
+  position: relative;
   display: flex;
   align-items: center;
   text-decoration: none;
@@ -71,4 +95,15 @@ const Message = styled.span`
   font-weight: 400;
   font-size: 14px;
   color: ${({ theme }) => theme.font.secondary};
+`
+
+const Noti = styled.div`
+  position: absolute;
+  bottom: 24px;
+  right: 16px;
+  width: 15px;
+  height: 15px;
+  border-radius: 50%;
+  background-color: ${({ theme }) => theme.primary.main};
+  display: ${(props: { read: boolean; theme: any }) => (props.read ? 'none' : 'block')};
 `

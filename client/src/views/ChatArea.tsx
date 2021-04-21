@@ -1,7 +1,7 @@
 import React, { ReactElement, useState, useEffect, useRef } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import styled from 'styled-components/macro'
-import { Avatar, IconButton} from '@material-ui/core'
+import { Avatar, IconButton } from '@material-ui/core'
 import { IoMdSend } from 'react-icons/io'
 import { BsFillCameraVideoFill } from 'react-icons/bs'
 import { AiFillPhone } from 'react-icons/ai'
@@ -24,11 +24,10 @@ const ChatArea: React.FC<Props> = () => {
   const userState = useUserContext().state
   const chatContext = useChatContext()
   const { isMobile } = useResponsive()
-  
-  const userVideo = useRef()
-  
 
-  const [chat, setChat]: any = useState({})
+  const userVideo = useRef()
+
+  const [chat, setChat]: any = useState(null)
   const [messages, setMessages]: any = useState([])
   const [input, setInput] = useState('')
 
@@ -38,7 +37,7 @@ const ChatArea: React.FC<Props> = () => {
   }
 
   const vidoeCallClickHandler = () => {
-    navigator.mediaDevices.getUserMedia({video: videoConstraints, audio: true}).then(stream => {
+    navigator.mediaDevices.getUserMedia({ video: videoConstraints, audio: true }).then((stream) => {
       // userVideo.current.srcObject = stream
     })
   }
@@ -58,16 +57,34 @@ const ChatArea: React.FC<Props> = () => {
     setInput('')
   }
 
+  // Identify message type
   const checkIfIncoming = (message: any): boolean => {
-    return !(userState._id === message.sender._id)
+    if (message.sender) {
+      return !(userState._id === message.sender._id)
+    }
+    return false
   }
 
   const checkIfContinuous = (message: any, index: number): boolean => {
-    return messages[index - 1] ? message.sender._id === messages[index - 1].sender._id : false
+    if (message.sender) {
+      return messages[index - 1]
+        ? messages[index - 1].sender
+          ? message.sender._id === messages[index - 1].sender._id
+          : false
+        : false
+    }
+    return false
   }
 
   const checkIfEndContinuous = (message: any, index: number): boolean => {
-    return messages[index + 1] ? message.sender._id !== messages[index + 1].sender._id : false
+    if (message.sender) {
+      return messages[index + 1]
+        ? messages[index + 1].sender
+          ? message.sender._id !== messages[index + 1].sender._id
+          : false
+        : false
+    }
+    return false
   }
 
   // const createPeer = (userToSignal, callerId, stream) => {
@@ -78,34 +95,69 @@ const ChatArea: React.FC<Props> = () => {
 
   // }
 
+  // When user enter chat
   useEffect(() => {
     socket?.emit('join', { id })
 
-    setChat(chatContext.state.find((chat) => chat._id === id))
+    socket?.emit('readMessage', {
+      id: id,
+    })
 
     return () => {
       socket?.emit('leave', { id })
     }
+  }, [socket, id])
+
+  // Find chat from chats
+  useEffect(() => {
+    if (chatContext.state.find((chat) => chat._id === id)) {
+      setChat(chatContext.state.find((chat) => chat._id === id))
+    }
   }, [socket, id, chatContext.state])
 
+  // Set messages from chat
   useEffect(() => {
     if (chat) {
       setMessages(chat.messages)
     }
   }, [chat])
 
+  // Socket listening event (New message received and Read message update)
   useEffect(() => {
     if (socket) {
-      socket.on('newMessage', (message: any) => {
-        setMessages([...messages, message])
-        chatContext.updateChatMessage(id, chat, message)
+      socket.on('newMessage', (content: any) => {
+        chatContext.updateChatMessage(content.id, content.message)
+
+        socket?.emit('readMessage', {
+          id: id,
+        })
+      })
+
+      socket.on('finishedRead', (content: any) => {
+        chatContext.setState(
+          chatContext.state.map((chat: any) => {
+            if (chat._id === content.id) {
+              return {
+                ...chat,
+                messages: chat.messages.map((message: any) => {
+                  if (!message.readers.find((reader: any) => reader === content.userId)) {
+                    return { ...message, readers: [...message.readers, content.userId] }
+                  }
+                  return message
+                }),
+              }
+            }
+            return chat
+          }),
+        )
       })
     }
 
     return () => {
       socket?.off('newMessage')
+      socket?.off('finishedRead')
     }
-  }, [socket, messages])
+  }, [socket, id, messages, chatContext])
 
   return (
     <Wrapper>
@@ -117,14 +169,20 @@ const ChatArea: React.FC<Props> = () => {
         )}
         <TitleWrapper>
           <Icon></Icon>
-          <Name>{chat ? chat.title : ''}</Name>
+          <Name>
+            {chat
+              ? chat.type === 'Spaces'
+                ? chat.title
+                : chat.users.find((user: any) => user._id !== userState._id).username
+              : ''}
+          </Name>
           <OperationWrapper>
-            <Tooltip title='Video Call'>
+            <Tooltip title="Video Call">
               <IconBtn>
                 <BsFillCameraVideoFill />
               </IconBtn>
             </Tooltip>
-            <Tooltip title='Phone Call'>
+            <Tooltip title="Phone Call">
               <IconBtn>
                 <AiFillPhone />
               </IconBtn>
@@ -135,6 +193,7 @@ const ChatArea: React.FC<Props> = () => {
       </Header>
       <Content>
         {messages &&
+          messages.length > 0 &&
           messages.map((message: any, index: number) => (
             <Message
               key={message._id}
@@ -142,6 +201,7 @@ const ChatArea: React.FC<Props> = () => {
               incoming={checkIfIncoming(message)}
               continuing={checkIfContinuous(message, index)}
               endContinuing={checkIfEndContinuous(message, index)}
+              type={chat ? chat.type : ''}
             />
           ))}
       </Content>
@@ -229,7 +289,7 @@ const OperationWrapper = styled.div`
 
 const IconBtn = styled(IconButton)`
   &.MuiButtonBase-root {
-    color: ${({theme})=>theme.font.primary}
+    color: ${({ theme }) => theme.font.primary};
   }
 `
 
@@ -275,7 +335,7 @@ const BackButton = styled(Link)`
   cursor: pointer;
 
   > svg {
-    color: ${({theme})=>theme.font.primary};
+    color: ${({ theme }) => theme.font.primary};
     font-size: 18px;
   }
 `
