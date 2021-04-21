@@ -23,7 +23,7 @@ const Onboarding = (): ReactElement => {
           </IconWrapper> */}
           <Icon src={DuplexIcon} />
           <NavItems>
-            <NavItem to={toPath(LOCATIONS.login)} toEnd>
+            <NavItem to={toPath(LOCATIONS.login)} $toEnd>
               Sign up
             </NavItem>
             <NavItem to={toPath(LOCATIONS.login)}>Log in</NavItem>
@@ -60,7 +60,7 @@ const Nav = styled.div`
 `
 
 type NavItemProps = {
-  toEnd?: boolean
+  $toEnd?: boolean
 }
 
 const NavItems = styled.div``
@@ -70,7 +70,7 @@ const NavItem = styled(Link)`
   color: ${({ theme }) => theme.primary.shade};
   font-weight: 500;
   padding: 5px 10px 5px 10px;
-  margin-left: ${(props: NavItemProps) => (props.toEnd ? `auto` : `none`)};
+  margin-left: ${(props: NavItemProps) => (props.$toEnd ? `auto` : `none`)};
 `
 
 const CustomContainer = styled(Container)`

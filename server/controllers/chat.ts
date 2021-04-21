@@ -23,7 +23,12 @@ const Controller = {
       })
   },
   createChat: async (req: Request, res: Response) => {
-    const chat = new Chat({ _id: new mongoose.Types.ObjectId(), type: req.body.type, messages: [] })
+    const chat = new Chat({
+      _id: new mongoose.Types.ObjectId(),
+      type: req.body.type,
+      mode: req.body.mode,
+      messages: [],
+    })
     chat.users.push(req.userData.userId)
     const user = await User.findById(req.userData.userId)
     if (req.body.type === 'Direct') {
@@ -43,7 +48,9 @@ const Controller = {
           res.status(500).json(error)
         })
     } else {
-      chat.messages.push({ content: user.username + ' created a spaces' })
+      chat.messages.push({
+        content: chat.mode === 'Conversation' ? user.profile[1].name : user.profile[0].name + ' created a spaces',
+      })
       chat.title = req.body.title
       chat
         .save()
@@ -64,7 +71,9 @@ const Controller = {
         )
           .then(async (result: any) => {
             const chat = await Chat.findOne({ _id: req.params.id })
-            chat.messages.push({ content: user.username + ' joined' })
+            chat.messages.push({
+              content: chat.mode === 'Conversation' ? user.profile[1].name : user.profile[0].name + ' joined',
+            })
             chat
               .save()
               .then((chat: any) => {

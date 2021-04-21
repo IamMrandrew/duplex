@@ -14,7 +14,7 @@ const NavBar = (): ReactElement => {
         <Link to={toPath(LOCATIONS.home)}>
           <MdLayers />
         </Link>
-        <Link to={toPath(LOCATIONS.home)}>
+        <Link to={toPath(LOCATIONS.conversation)}>
           <FaLayerGroup />
         </Link>
       </Items>

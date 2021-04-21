@@ -6,6 +6,7 @@ import Chat from '../components/Chat'
 import { useChatContext } from '../contexts/ChatContext'
 import CreateChatModal from '../components/CreateChatModal'
 import { MEDIA_BREAK } from '../components/Layout'
+import { useRouteMatch } from 'react-router-dom'
 
 type Props = {
   children?: ReactElement
@@ -13,15 +14,16 @@ type Props = {
 
 const Chats: React.FC<Props> = () => {
   const chatContext = useChatContext()
-
   const [showModal, setShowModal] = useState(false)
+
+  let matchChat = useRouteMatch('/conversation')
 
   return (
     <>
-      <CreateChatModal showModal={showModal} setShowModal={setShowModal} />
+      <CreateChatModal showModal={showModal} setShowModal={setShowModal} matchChat={matchChat} />
       <Wrapper>
         <Header>
-          <Title>Chats</Title>
+          <Title>{matchChat ? 'Conversation' : 'Chats'}</Title>
         </Header>
         <ContentSection>
           <SearchWrapper>
@@ -37,6 +39,7 @@ const Chats: React.FC<Props> = () => {
             <SectionTitle>Spaces</SectionTitle>
             {chatContext.state
               .filter((chat) => chat.type === 'Spaces')
+              .filter((chat) => (matchChat ? chat.mode === 'Conversation' : chat.mode === 'Chat'))
               .sort((a, b) => {
                 return a.messages.length > 0 && b.messages.length > 0
                   ? new Date(b.messages[b.messages.length - 1].createdAt).getTime() -
@@ -51,6 +54,7 @@ const Chats: React.FC<Props> = () => {
             <SectionTitle>Direct Messages</SectionTitle>
             {chatContext.state
               .filter((chat) => chat.type === 'Direct')
+              .filter((chat) => (matchChat ? chat.mode === 'Conversation' : chat.mode === 'Chat'))
               .sort((a, b) => {
                 return a.messages.length > 0 && b.messages.length > 0
                   ? new Date(b.messages[b.messages.length - 1].createdAt).getTime() -
