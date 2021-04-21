@@ -94,6 +94,7 @@ export default (httpServer: any) => {
       }
       console.log(rooms)
       extSocket.broadcast.emit('user left', extSocket.id)
+    })
 
     extSocket.on('readMessage', async ({ id }) => {
       try {
@@ -108,6 +109,5 @@ export default (httpServer: any) => {
       }
     })
   })
-
   return io
 }
