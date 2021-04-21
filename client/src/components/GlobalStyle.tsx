@@ -4,6 +4,7 @@ export const GlobalStyle = createGlobalStyle`
   html {
     box-sizing: border-box;
     -ms-overflow-style: scrollbar;
+    overflow-y: hidden;
   }
 
   html, body, #root {
@@ -15,7 +16,6 @@ export const GlobalStyle = createGlobalStyle`
   *::before,
   *::after {
     box-sizing: inherit;
-    transition: 0.1s;
   }
 
   body {
@@ -47,6 +47,7 @@ export const COLOR = {
     error: {
       tint: '#423337', // light red color, for error bg
       main: '#F0595A', // red color, for error text
+      shade: '#d64f50',
     },
     message: {
       incoming: '#4E6482',
@@ -74,6 +75,7 @@ export const COLOR = {
     error: {
       tint: '#F1E1E3', // light red color, for error bg
       main: '#F0595A', // red color, for error text
+      shade: '#d64f50',
     },
     message: {
       incoming: '#8C9DAF',

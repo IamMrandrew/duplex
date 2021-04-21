@@ -1,7 +1,7 @@
-import React, { ReactElement, useState, useEffect, useRef } from 'react'
+import React, { ReactElement, useState, useEffect, RefObject, useRef } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import styled from 'styled-components/macro'
-import { Avatar, IconButton } from '@material-ui/core'
+import { Avatar, Badge, IconButton} from '@material-ui/core'
 import { IoMdSend } from 'react-icons/io'
 import { BsFillCameraVideoFill } from 'react-icons/bs'
 import { AiFillPhone } from 'react-icons/ai'
@@ -11,8 +11,11 @@ import { useSocketContext } from '../contexts/SocketContext'
 import { useUserContext } from '../contexts/UserContext'
 import { useChatContext } from '../contexts/ChatContext'
 import { useResponsive } from '../hooks/useResponsive'
-import Tooltip from '../components/Tooltip'
 import { MEDIA_BREAK } from '../components/Layout'
+import Tooltip from '../components/Tooltip'
+import Peer from 'simple-peer'
+import VideoContainer from '../components/VideoContainer'
+import { COLOR } from '../components/GlobalStyle'
 
 type Props = {
   children?: ReactElement
@@ -24,22 +27,22 @@ const ChatArea: React.FC<Props> = () => {
   const userState = useUserContext().state
   const chatContext = useChatContext()
   const { isMobile } = useResponsive()
+  const contentRef = useRef() as RefObject<HTMLDivElement>
+  
+  // video call vars
+  const [videoCalling, setVideoCalling] = useState(false) // terminate video call
+  const [displayingVideo, setDisplayingVideo] = useState(false) // can go back to text chating without terminating the video call
 
-  const userVideo = useRef()
 
   const [chat, setChat]: any = useState(null)
   const [messages, setMessages]: any = useState([])
   const [input, setInput] = useState('')
-
-  const videoConstraints = {
-    height: window.innerHeight / 2,
-    width: window.innerWidth / 2,
-  }
-
+  
   const vidoeCallClickHandler = () => {
-    navigator.mediaDevices.getUserMedia({ video: videoConstraints, audio: true }).then((stream) => {
-      // userVideo.current.srcObject = stream
-    })
+    if(setVideoCalling){
+      setVideoCalling(true)
+      setDisplayingVideo(true)
+    }
   }
 
   const inputHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -87,16 +90,13 @@ const ChatArea: React.FC<Props> = () => {
     return false
   }
 
-  // const createPeer = (userToSignal, callerId, stream) => {
-
-  // }
-
-  // const addPeer = (incomingSignal, callerId, stream) => {
-
-  // }
+  const scrollBottom = () => {
+    contentRef.current?.scrollTo({top: contentRef.current.scrollHeight, behavior: 'smooth'})
+  }
 
   // When user enter chat
   useEffect(() => {
+    scrollBottom()
     socket?.emit('join', { id })
 
     socket?.emit('readMessage', {
@@ -117,13 +117,17 @@ const ChatArea: React.FC<Props> = () => {
 
   // Set messages from chat
   useEffect(() => {
+    scrollBottom()
     if (chat) {
       setMessages(chat.messages)
     }
+    console.log('ref');
+    contentRef.current?.scrollIntoView({behavior: 'smooth'})
   }, [chat])
 
   // Socket listening event (New message received and Read message update)
   useEffect(() => {
+    scrollBottom()
     if (socket) {
       socket.on('newMessage', (content: any) => {
         chatContext.updateChatMessage(content.id, content.message)
@@ -177,10 +181,20 @@ const ChatArea: React.FC<Props> = () => {
               : ''}
           </Name>
           <OperationWrapper>
-            <Tooltip title="Video Call">
-              <IconBtn>
-                <BsFillCameraVideoFill />
-              </IconBtn>
+            <Tooltip title={videoCalling && !displayingVideo ? 'Back to the call': 'Video Call'}>
+              {
+                videoCalling ? (
+                  <Identifier badgeContent=' ' color='error' overlap='circle' variant='dot'>
+                    <IconBtn onClick={vidoeCallClickHandler}>
+                      <BsFillCameraVideoFill />
+                    </IconBtn>
+                  </Identifier>
+                ) : (
+                  <IconBtn onClick={vidoeCallClickHandler}>
+                    <BsFillCameraVideoFill />
+                  </IconBtn>
+                )
+              }
             </Tooltip>
             <Tooltip title="Phone Call">
               <IconBtn>
@@ -191,20 +205,26 @@ const ChatArea: React.FC<Props> = () => {
         </TitleWrapper>
         {isMobile() && <Positioning />}
       </Header>
-      <Content>
-        {messages &&
-          messages.length > 0 &&
-          messages.map((message: any, index: number) => (
-            <Message
-              key={message._id}
-              message={message}
-              incoming={checkIfIncoming(message)}
-              continuing={checkIfContinuous(message, index)}
-              endContinuing={checkIfEndContinuous(message, index)}
-              type={chat ? chat.type : ''}
-            />
-          ))}
-      </Content>
+      {
+        videoCalling && <VideoContainer displayingVideo={displayingVideo} setDisplayingVideo={setDisplayingVideo} setVideoCalling={setVideoCalling}/>
+      }
+      {
+        !displayingVideo && (
+          <Content ref={contentRef}>
+            {messages &&
+              messages.map((message: any, index: number) => (
+                <Message
+                  key={message._id}
+                  message={message}
+                  incoming={checkIfIncoming(message)}
+                  continuing={checkIfContinuous(message, index)}
+                  endContinuing={checkIfEndContinuous(message, index)}
+                  type={chat ? chat.type : ''}
+                />
+              ))}
+          </Content>
+        )
+      }
       <InputWrapper onSubmit={sendMessageHandler}>
         <Input value={input} onChange={inputHandler} />
         <InputButton>
@@ -337,6 +357,13 @@ const BackButton = styled(Link)`
   > svg {
     color: ${({ theme }) => theme.font.primary};
     font-size: 18px;
+  }
+`
+
+const Identifier = styled(Badge)`
+  &.MuiBadge-root > .MuiBadge-badge{
+    top: 25%;
+    right: 27%;
   }
 `
 

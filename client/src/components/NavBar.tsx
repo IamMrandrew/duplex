@@ -37,6 +37,7 @@ const Wrapper = styled.div`
   background: ${({ theme }) => theme.bg.tint};
   z-index: 100;
   box-shadow: 3px 0px 2px -2px ${({ theme }) => theme.divider};
+  transition: 0.1s;
 
   @media (max-width: ${MEDIA_BREAK}) {
     display: none;

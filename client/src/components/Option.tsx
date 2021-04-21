@@ -25,6 +25,7 @@ export default Option
 const LinkWrapper = styled(Link)`
   text-decoration: none;
   color: inherit;
+  transition: 0.1s;
 `
 type ItemProps = {
   isActive: boolean
@@ -44,6 +45,7 @@ const Item = styled.div`
   /* margin: 5px 0 5px 0; */
   transition: 0s;
   /* border-radius: 5px; */
+  transition: 0.1s;
   &:hover {
     background: ${({ theme }) => theme.bg.shade};
   }
