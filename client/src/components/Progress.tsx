@@ -9,24 +9,23 @@ const Progress: React.FC = () => {
 
   return (
     <Wrapper>
-        <CircleOuter></CircleOuter>
-        <CircleInner></CircleInner>
-        <IconWrapper>
-          <DuplexIcon color={theme === 'dark' ? COLOR.dark.font.primary : COLOR.light.font.primary}/>
-        </IconWrapper>
+      <CircleOuter></CircleOuter>
+      <CircleInner></CircleInner>
+      <IconWrapper>
+        <DuplexIcon color={theme === 'dark' ? COLOR.dark.primary.shade : COLOR.light.primary.shade} />
+      </IconWrapper>
     </Wrapper>
   )
 }
 
 export default Progress
 
-
-const size = 180;
+const size = 180
 
 const animation = keyframes`
   0% {
-    top: ${size*0.5}px;
-    left: ${size*0.5}px;
+    top: ${size * 0.5}px;
+    left: ${size * 0.5}px;
     width: 48px;
     height: 48px;
     opacity: 1;
@@ -42,16 +41,16 @@ const animation = keyframes`
 `
 
 const Wrapper = styled.div`
-    display: inline-block;
-    position: relative;
-    width: ${size+48}px;
-    height: ${size+48}px;
+  display: inline-block;
+  position: relative;
+  width: ${size + 48}px;
+  height: ${size + 48}px;
 `
 
 const CircleOuter = styled.div`
   position: absolute;
-  border: 4px solid ${({theme})=>theme.bg.shade};
-  background: ${({theme})=>theme.bg.shade};
+  border: 4px solid ${({ theme }) => theme.bg.shade};
+  background: ${({ theme }) => theme.bg.shade};
   opacity: 1;
   border-radius: 50%;
   animation: ${animation} 1.2s cubic-bezier(0, 0.2, 0.8, 1) infinite;
@@ -59,8 +58,8 @@ const CircleOuter = styled.div`
 
 const CircleInner = styled.div`
   position: absolute;
-  border: 4px solid ${({theme})=>theme.bg.shade};
-  background: ${({theme})=>theme.bg.shade};
+  border: 4px solid ${({ theme }) => theme.bg.shade};
+  background: ${({ theme }) => theme.bg.shade};
   opacity: 1;
   border-radius: 50%;
   animation: ${animation} 1.2s cubic-bezier(0, 0.2, 0.8, 1) infinite;
@@ -72,5 +71,5 @@ const IconWrapper = styled.div`
   justify-content: center;
   align-items: center;
   width: 100%;
-  height: 100%;      
+  height: 100%;
 `

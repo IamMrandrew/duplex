@@ -53,6 +53,9 @@ export const COLOR = {
       incoming: '#4E6482',
       sender: '#40444B',
     },
+    nav: {
+      main: '#ffffff',
+    },
   },
   light: {
     // light mode
@@ -80,6 +83,9 @@ export const COLOR = {
     message: {
       incoming: '#8C9DAF',
       sender: '#F9F9F9',
+    },
+    nav: {
+      main: '#455973',
     },
   },
 }
