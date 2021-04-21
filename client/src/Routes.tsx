@@ -40,6 +40,7 @@ export const LOCATIONS = {
   invitation: 'invitation/:id',
   login: 'login',
   chat: 'chat/:id',
+  conversation: 'conversation/:id',
 }
 
 export const toPath = (location: string, id?: string): string => {
@@ -65,7 +66,7 @@ const Routes = (props: Props): ReactElement => {
       .catch(() => {
         setLoading(false)
         const currentPage = getUrlLastSegmant()
-        if(currentPage !== LOCATIONS.onboarding && currentPage !== LOCATIONS.login)
+        if (currentPage !== LOCATIONS.onboarding && currentPage !== LOCATIONS.login)
           history.push(toPath(LOCATIONS.onboarding))
       })
   }, [])
@@ -92,7 +93,7 @@ const Routes = (props: Props): ReactElement => {
                         <Chats />
                         <ChatArea />
                       </Route>
-                      <Route path={toPath(LOCATIONS.chat)}>
+                      <Route path={[toPath(LOCATIONS.chat), toPath(LOCATIONS.conversation)]}>
                         <Chats />
                         <ChatArea />
                       </Route>
@@ -113,7 +114,7 @@ const Routes = (props: Props): ReactElement => {
                       <Route exact path={['/', toPath(LOCATIONS.home)]}>
                         <Chats />
                       </Route>
-                      <Route path={toPath(LOCATIONS.chat)}>
+                      <Route path={[toPath(LOCATIONS.chat), toPath(LOCATIONS.conversation)]}>
                         <ChatArea />
                       </Route>
                       <Route path={toPath(LOCATIONS.settings.profile)}>
@@ -146,8 +147,8 @@ const App = (props: Props): ReactElement => {
       setState(res.data)
     })
     const theme = getCookieTheme()
-    if(theme){
-      updateSetting({theme: theme})
+    if (theme) {
+      updateSetting({ theme: theme })
     }
 
     socket?.on('update messages', () => {
@@ -158,14 +159,14 @@ const App = (props: Props): ReactElement => {
     })
   }, [window.location.href])
 
-  useEffect(()=>{
-    if(loggedIn()) {
+  useEffect(() => {
+    if (loggedIn()) {
       connectSocket()
       socket?.on('connect', () => {
         console.log('Socket connect successfully ')
       })
     }
-    
+
     return () => {
       socket?.close()
       console.log('Socket disconnected')

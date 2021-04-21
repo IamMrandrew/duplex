@@ -1,7 +1,7 @@
 import React, { ReactElement, useState, useEffect, RefObject, useRef } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import styled from 'styled-components/macro'
-import { Avatar, Badge, IconButton} from '@material-ui/core'
+import { Avatar, Badge, IconButton } from '@material-ui/core'
 import { IoMdSend } from 'react-icons/io'
 import { BsFillCameraVideoFill, BsFillPersonPlusFill } from 'react-icons/bs'
 import { AiFillPhone } from 'react-icons/ai'
@@ -30,7 +30,7 @@ const ChatArea: React.FC<Props> = () => {
   const chatContext = useChatContext()
   const { isMobile } = useResponsive()
   const contentRef = useRef() as RefObject<HTMLDivElement>
-  
+
   // video call vars
   const [videoCalling, setVideoCalling] = useState(false) // terminate video call
   const [displayingVideo, setDisplayingVideo] = useState(false) // can go back to text chating without terminating the video call
@@ -40,9 +40,9 @@ const ChatArea: React.FC<Props> = () => {
   const [chat, setChat]: any = useState(null)
   const [messages, setMessages]: any = useState([])
   const [input, setInput] = useState('')
-  
+
   const vidoeCallClickHandler = () => {
-    if(setVideoCalling){
+    if (setVideoCalling) {
       setVideoCalling(true)
       setDisplayingVideo(true)
     }
@@ -94,7 +94,7 @@ const ChatArea: React.FC<Props> = () => {
   }
 
   const scrollBottom = () => {
-    contentRef.current?.scrollTo({top: contentRef.current.scrollHeight, behavior: 'smooth'})
+    contentRef.current?.scrollTo({ top: contentRef.current.scrollHeight, behavior: 'smooth' })
   }
 
   // When user enter chat
@@ -181,7 +181,9 @@ const ChatArea: React.FC<Props> = () => {
               {chat
                 ? chat.type === 'Spaces'
                   ? chat.title
-                  : chat.users.find((user: any) => user._id !== userState._id).username
+                  : chat.mode === 'Conversation'
+                  ? chat.users.find((user: any) => user._id !== userState._id).profile[1].name
+                  : chat.users.find((user: any) => user._id !== userState._id).profile[0].name
                 : ''}
             </Name>
             <OperationWrapper>
@@ -192,20 +194,18 @@ const ChatArea: React.FC<Props> = () => {
                   </IconBtn>
                 )
               }
-              <Tooltip title={videoCalling && !displayingVideo ? 'Back to the call': 'Video Call'}>
-                {
-                  videoCalling ? (
-                    <Identifier badgeContent=' ' color='error' overlap='circle' variant='dot'>
-                      <IconBtn onClick={vidoeCallClickHandler}>
-                        <BsFillCameraVideoFill />
-                      </IconBtn>
-                    </Identifier>
-                  ) : (
+              <Tooltip title={videoCalling && !displayingVideo ? 'Back to the call' : 'Video Call'}>
+                {videoCalling ? (
+                  <Identifier badgeContent=" " color="error" overlap="circle" variant="dot">
                     <IconBtn onClick={vidoeCallClickHandler}>
                       <BsFillCameraVideoFill />
                     </IconBtn>
-                  )
-                }
+                  </Identifier>
+                ) : (
+                  <IconBtn onClick={vidoeCallClickHandler}>
+                    <BsFillCameraVideoFill />
+                  </IconBtn>
+                )}
               </Tooltip>
               <Tooltip title="Phone Call">
                 <IconBtn>
@@ -216,26 +216,29 @@ const ChatArea: React.FC<Props> = () => {
           </TitleWrapper>
           {isMobile() && <Positioning />}
         </Header>
-        {
-          videoCalling && <VideoContainer displayingVideo={displayingVideo} setDisplayingVideo={setDisplayingVideo} setVideoCalling={setVideoCalling}/>
-        }
-        {
-          !displayingVideo && (
-            <Content ref={contentRef}>
-              {messages &&
-                messages.map((message: any, index: number) => (
-                  <Message
-                    key={message._id}
-                    message={message}
-                    incoming={checkIfIncoming(message)}
-                    continuing={checkIfContinuous(message, index)}
-                    endContinuing={checkIfEndContinuous(message, index)}
-                    type={chat ? chat.type : ''}
-                  />
-                ))}
-            </Content>
-          )
-        }
+        {videoCalling && (
+          <VideoContainer
+            displayingVideo={displayingVideo}
+            setDisplayingVideo={setDisplayingVideo}
+            setVideoCalling={setVideoCalling}
+          />
+        )}
+        {!displayingVideo && (
+          <Content ref={contentRef}>
+            {messages &&
+              messages.map((message: any, index: number) => (
+                <Message
+                  key={message._id}
+                  message={message}
+                  incoming={checkIfIncoming(message)}
+                  continuing={checkIfContinuous(message, index)}
+                  endContinuing={checkIfEndContinuous(message, index)}
+                  type={chat ? chat.type : ''}
+                  mode={chat ? chat.mode : ''}
+                />
+              ))}
+          </Content>
+        )}
         <InputWrapper onSubmit={sendMessageHandler}>
           <Input value={input} onChange={inputHandler} />
           <InputButton>
@@ -373,7 +376,7 @@ const BackButton = styled(Link)`
 `
 
 const Identifier = styled(Badge)`
-  &.MuiBadge-root > .MuiBadge-badge{
+  &.MuiBadge-root > .MuiBadge-badge {
     top: 25%;
     right: 27%;
   }

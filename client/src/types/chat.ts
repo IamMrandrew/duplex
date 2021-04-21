@@ -3,6 +3,7 @@ export type chat = {
   title: string
   type: string
   users: any[]
+  mode: string
   messages: any
   createAt: string
 }
