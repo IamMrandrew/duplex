@@ -39,7 +39,7 @@ const Chat: React.FC<Props> = ({ chat }) => {
   return (
     <Route exact path={toPath(LOCATIONS.chat, chat._id)}>
       {({ match }) => (
-        <Wrapper to={`/chat/${chat._id}`} isActive={!!match}>
+        <Wrapper to={`/chat/${chat._id}`} $isActive={!!match}>
           <IconWrapper>
             <Icon />
           </IconWrapper>
@@ -67,8 +67,8 @@ const Wrapper = styled(Link)`
   text-decoration: none;
   color: inherit;
   padding: 14px 16px;
-  background: ${(props: { isActive: boolean; theme?: any }) =>
-    props.isActive ? props.theme.bg.shade : props.theme.bg.main};
+  background: ${(props: { $isActive: boolean; theme?: any }) =>
+    props.$isActive ? props.theme.bg.shade : props.theme.bg.main};
   /* border-radius: 5px; */
 
   &:hover {

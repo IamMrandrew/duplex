@@ -34,16 +34,16 @@ const Settings: React.FC<Props> = () => {
       <ContentSection>
         <Section>
           <Route exact path={toPath(LOCATIONS.settings.profile)}>
-            {({ match }) => <Option path={LOCATIONS.settings.profile} isActive={!!match} />}
+            {({ match }) => <Option path={LOCATIONS.settings.profile} $isActive={!!match} />}
           </Route>
           {/* <Route exact path={toPath(LOCATIONS.notificationSetting)}>
-          {({ match }) => <Option title={`Notification setting`} isActive={!!match} />}
+          {({ match }) => <Option title={`Notification setting`} $isActive={!!match} />}
         </Route> */}
           {/* <Route exact path={toPath(LOCATIONS.audioSetting)}>
-          {({ match }) => <Option title={`Audio setting`} isActive={!!match} />}
+          {({ match }) => <Option title={`Audio setting`} $isActive={!!match} />}
         </Route> */}
           <Route exact path={toPath(LOCATIONS.settings.appearance)}>
-            {({ match }) => <Option path={LOCATIONS.settings.appearance} isActive={!!match} />}
+            {({ match }) => <Option path={LOCATIONS.settings.appearance} $isActive={!!match} />}
           </Route>
         </Section>
         <LogoutBtn onClick={handleLogout}>Logout</LogoutBtn>
