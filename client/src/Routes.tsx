@@ -20,7 +20,7 @@ import Appearance from './views/Appearance'
 import { ThemeProvider } from 'styled-components'
 import { useSettingContext } from './contexts/SettingContext'
 import Profile from './views/Profile'
-import { getUrlLastSegmant } from './utils'
+import { getCookieTheme, getUrlLastSegmant } from './utils'
 import PeerProvider from './contexts/PeerContext'
 
 type Props = {
@@ -134,6 +134,7 @@ const App = (props: Props): ReactElement => {
   const { socket, connectSocket }= useSocketContext()
   const { updateState } = useChatContext()
   const { loggedIn } = useUserContext()
+  const updateSetting = useSettingContext().updateState
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
@@ -141,6 +142,10 @@ const App = (props: Props): ReactElement => {
       setLoading(false)
       updateState(res.data)
     })
+    const theme = getCookieTheme()
+    if(theme){
+      updateSetting({theme: theme})
+    }
   }, [])
 
   useEffect(()=>{

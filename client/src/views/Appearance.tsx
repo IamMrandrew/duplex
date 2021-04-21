@@ -10,6 +10,7 @@ const Appearance: React.FC = () => {
 
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
     updateState({theme: (event.target as HTMLInputElement).value as 'light' | 'dark'})
+    document.cookie = `theme_mode=${(event.target as HTMLInputElement).value};path=/`
   }
 
   return (
