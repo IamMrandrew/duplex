@@ -47,7 +47,7 @@ const Wrapper = styled.div`
 const Items = styled.div`
   & > a > svg {
     display: block;
-    color: ${({ theme }) => theme.font.primary};
+    color: ${({ theme }) => theme.nav.main};
     margin-left: auto;
     margin-right: auto;
     margin-bottom: 40px;
