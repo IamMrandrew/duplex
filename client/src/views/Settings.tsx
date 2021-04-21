@@ -59,6 +59,7 @@ const Wrapper = styled.div`
   background: ${({ theme }) => theme.bg.tint};
   box-shadow: 3px 0px 2px -2px ${({ theme }) => theme.divider};
   z-index: 50;
+  transition: 0.1s;
   @media (max-width: ${MEDIA_BREAK}) {
     padding: 12px;
   }
@@ -73,6 +74,7 @@ const Header = styled.div`
   background-color: ${({ theme }) => theme.bg.tint};
   min-height: 60px;
   width: 100%;
+  transition: 0.1s;
 `
 const Title = styled.h1`
   font-size: 22px;
@@ -81,9 +83,11 @@ const Title = styled.h1`
   min-height: 30px;
   line-height: 30px;
   color: ${({ theme }) => theme.font.primary};
+  transition: 0.1s;
 `
 const ContentSection = styled.div`
   padding: 12px 24px 0 24px;
+  transition: 0.1s;
 `
 
 const Section = styled.div`
@@ -91,6 +95,7 @@ const Section = styled.div`
   background-color: ${({ theme }) => theme.bg.main};
   border-radius: 12px;
   overflow: hidden;
+  transition: 0.1s;
 `
 
 const LogoutBtn = styled.div`
@@ -106,6 +111,7 @@ const LogoutBtn = styled.div`
   margin: 5px 0 5px 0;
   border-radius: 5px;
   color: ${({ theme }) => theme.error.main};
+  transition: 0.1s;
   &:hover {
     background: ${({ theme }) => theme.error.tint};
   }

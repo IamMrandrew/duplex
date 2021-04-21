@@ -31,6 +31,7 @@ const Wrapper = styled.div`
   padding: 60px 40px 80px;
   background: ${({theme})=>theme.bg.tint};
   color: ${({theme})=>theme.font.primary};
+  transition: 0.1s;
 `
 
 const Label = styled(FormLabel)`

@@ -21,6 +21,7 @@ import { ThemeProvider } from 'styled-components'
 import { useSettingContext } from './contexts/SettingContext'
 import Profile from './views/Profile'
 import { getUrlLastSegmant } from './utils'
+import PeerProvider from './contexts/PeerContext'
 
 type Props = {
   children?: ReactElement | Array<ReactElement>
@@ -82,42 +83,44 @@ const Routes = (props: Props): ReactElement => {
         </Route>
         <ChatProvider>
           <SocketProvider>
-            <App>
-              <>
-                {!isMobile() ? (
-                  <>
-                    <Route exact path={['/', toPath(LOCATIONS.home)]}>
-                      <Chats />
-                      <ChatArea />
-                    </Route>
-                    <Route path={toPath(LOCATIONS.chat)}>
-                      <Chats />
-                      <ChatArea />
-                    </Route>
-                    <Route path={toPath(LOCATIONS.settings.profile)}>
-                      <Settings />
-                      <Profile />
-                    </Route>
-                    <Route path={toPath(LOCATIONS.settings.appearance)}>
-                      <Settings />
-                      <Appearance />
-                    </Route>
-                  </>
-                ) : (
-                  <>
-                    <Route exact path={['/', toPath(LOCATIONS.home)]}>
-                      <Chats />
-                    </Route>
-                    <Route path={toPath(LOCATIONS.chat)}>
-                      <ChatArea />
-                    </Route>
-                    <Route path={toPath(LOCATIONS.settings.profile)}>
-                      <Settings />
-                    </Route>
-                  </>
-                )}
-              </>
-            </App>
+            <PeerProvider>
+              <App>
+                <>
+                  {!isMobile() ? (
+                    <>
+                      <Route exact path={['/', toPath(LOCATIONS.home)]}>
+                        <Chats />
+                        <ChatArea />
+                      </Route>
+                      <Route path={toPath(LOCATIONS.chat)}>
+                        <Chats />
+                        <ChatArea />
+                      </Route>
+                      <Route path={toPath(LOCATIONS.settings.profile)}>
+                        <Settings />
+                        <Profile />
+                      </Route>
+                      <Route path={toPath(LOCATIONS.settings.appearance)}>
+                        <Settings />
+                        <Appearance />
+                      </Route>
+                    </>
+                  ) : (
+                    <>
+                      <Route exact path={['/', toPath(LOCATIONS.home)]}>
+                        <Chats />
+                      </Route>
+                      <Route path={toPath(LOCATIONS.chat)}>
+                        <ChatArea />
+                      </Route>
+                      <Route path={toPath(LOCATIONS.settings.profile)}>
+                        <Settings />
+                      </Route>
+                    </>
+                  )}
+                </>
+              </App>
+            </PeerProvider>
           </SocketProvider>
         </ChatProvider>
       </Switch>

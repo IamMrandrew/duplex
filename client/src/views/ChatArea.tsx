@@ -1,4 +1,4 @@
-import React, { ReactElement, useState, useEffect, useRef } from 'react'
+import React, { ReactElement, useState, useEffect } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import styled from 'styled-components/macro'
 import { Avatar, IconButton} from '@material-ui/core'
@@ -11,8 +11,10 @@ import { useSocketContext } from '../contexts/SocketContext'
 import { useUserContext } from '../contexts/UserContext'
 import { useChatContext } from '../contexts/ChatContext'
 import { useResponsive } from '../hooks/useResponsive'
-import Tooltip from '../components/Tooltip'
 import { MEDIA_BREAK } from '../components/Layout'
+import Tooltip from '../components/Tooltip'
+import Peer from 'simple-peer'
+import VideoContainer from '../components/VideoContainer'
 
 type Props = {
   children?: ReactElement
@@ -25,22 +27,19 @@ const ChatArea: React.FC<Props> = () => {
   const chatContext = useChatContext()
   const { isMobile } = useResponsive()
   
-  const userVideo = useRef()
-  
+  // video call vars
+  const [videoCalling, setVideoCalling] = useState(false)
+  const [displayingVideo, setDisplayingVideo] = useState(false)
 
   const [chat, setChat]: any = useState({})
   const [messages, setMessages]: any = useState([])
   const [input, setInput] = useState('')
-
-  const videoConstraints = {
-    height: window.innerHeight / 2,
-    width: window.innerWidth / 2,
-  }
-
+  
   const vidoeCallClickHandler = () => {
-    navigator.mediaDevices.getUserMedia({video: videoConstraints, audio: true}).then(stream => {
-      // userVideo.current.srcObject = stream
-    })
+    if(setVideoCalling){
+      setVideoCalling(true)
+      setDisplayingVideo(true)
+    }
   }
 
   const inputHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -70,13 +69,42 @@ const ChatArea: React.FC<Props> = () => {
     return messages[index + 1] ? message.sender._id !== messages[index + 1].sender._id : false
   }
 
-  // const createPeer = (userToSignal, callerId, stream) => {
+  const createPeer = (userToSignal:string, callerId: string, stream:MediaStream) => {
+    const newPeer = new Peer({
+      initiator: true,
+      trickle: false,
+      stream,
+    })
 
-  // }
+    newPeer.on('signal', signal => {
+      console.log('sendingSignal')
+      socket?.emit('sendSignal', {userToSignal, callerId, signal})
+    })
 
-  // const addPeer = (incomingSignal, callerId, stream) => {
+    return newPeer
+  }
 
-  // }
+  const addPeer = (incomingSignal:string, callerId:string, stream:MediaStream) => {
+    const newPeer = new Peer({
+      initiator: false,
+      trickle: false,
+      stream,
+    })
+
+    newPeer.on('signal', signal => {
+      socket?.emit('returnSignal', {signal, callerId})
+    })
+
+    newPeer.signal(incomingSignal)
+
+    return newPeer
+  }
+
+  useEffect(()=>{
+    return () => {
+      socket?.emit('leaveVideoCall', { id })
+    }
+  }, [])
 
   useEffect(() => {
     socket?.emit('join', { id })
@@ -120,7 +148,7 @@ const ChatArea: React.FC<Props> = () => {
           <Name>{chat ? chat.title : ''}</Name>
           <OperationWrapper>
             <Tooltip title='Video Call'>
-              <IconBtn>
+              <IconBtn onClick={vidoeCallClickHandler}>
                 <BsFillCameraVideoFill />
               </IconBtn>
             </Tooltip>
@@ -133,18 +161,25 @@ const ChatArea: React.FC<Props> = () => {
         </TitleWrapper>
         {isMobile() && <Positioning />}
       </Header>
-      <Content>
-        {messages &&
-          messages.map((message: any, index: number) => (
-            <Message
-              key={message._id}
-              message={message}
-              incoming={checkIfIncoming(message)}
-              continuing={checkIfContinuous(message, index)}
-              endContinuing={checkIfEndContinuous(message, index)}
-            />
-          ))}
-      </Content>
+      {
+        videoCalling && <VideoContainer displayingVideo={displayingVideo} setDisplayingVideo={setDisplayingVideo} setVideoCalling={setVideoCalling}/>
+      }
+      {
+        !displayingVideo && (
+          <Content>
+            {messages &&
+              messages.map((message: any, index: number) => (
+                <Message
+                  key={message._id}
+                  message={message}
+                  incoming={checkIfIncoming(message)}
+                  continuing={checkIfContinuous(message, index)}
+                  endContinuing={checkIfEndContinuous(message, index)}
+                />
+              ))}
+          </Content>
+        )
+      }
       <InputWrapper onSubmit={sendMessageHandler}>
         <Input value={input} onChange={inputHandler} />
         <InputButton>
@@ -229,7 +264,7 @@ const OperationWrapper = styled.div`
 
 const IconBtn = styled(IconButton)`
   &.MuiButtonBase-root {
-    color: ${({theme})=>theme.font.primary}
+    color: ${({theme})=>theme.font.primary};
   }
 `
 
