@@ -13,6 +13,9 @@ const UserService = {
   getUser: () => {
     return axios.get('/api/user', { withCredentials: true })
   },
+  updateProfile: (data: any) => {
+    return axios.put('/api/user', data, { withCredentials: true })
+  },
 }
 
 export default UserService

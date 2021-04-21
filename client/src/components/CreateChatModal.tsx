@@ -10,9 +10,10 @@ import { MEDIA_BREAK } from './Layout'
 type Props = {
   showModal: boolean
   setShowModal: any
+  matchChat: any
 }
 
-const CreateChatModal: React.FC<Props> = ({ showModal, setShowModal }) => {
+const CreateChatModal: React.FC<Props> = ({ showModal, setShowModal, matchChat }) => {
   const [title, setTitle] = useState('')
   const [username, setUsername] = useState('')
   const [value, setValue] = useState(0)
@@ -27,7 +28,13 @@ const CreateChatModal: React.FC<Props> = ({ showModal, setShowModal }) => {
   }
 
   const createChatHandler = () => {
-    const data = value ? { type: 'Direct', username } : { type: 'Spaces', title }
+    const data = matchChat
+      ? value
+        ? { type: 'Direct', mode: 'Conversation', username }
+        : { type: 'Spaces', mode: 'Conversation', title }
+      : value
+      ? { type: 'Direct', mode: 'Chat', username }
+      : { type: 'Spaces', mode: 'Chat', title }
     setShowModal(!showModal)
     ChatServices.createChat(data)
       .then((res) => {
@@ -47,7 +54,7 @@ const CreateChatModal: React.FC<Props> = ({ showModal, setShowModal }) => {
       <Overlay showModal={showModal} setShowModal={setShowModal} />
       <Wrapper showModal={showModal}>
         <Card showModal={showModal}>
-          <Title>Create a new chat</Title>
+          <Title>Create a new {matchChat ? 'conversation' : 'chat'}</Title>
           <CustomTabs
             value={value}
             indicatorColor="primary"

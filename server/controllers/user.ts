@@ -8,6 +8,9 @@ import { isEmail, log, ONE_DAY, sendError } from '../utils'
 const Controller = {
   signup: (req: Request, res: Response) => {
     const newUser = req.body
+    newUser.profile = []
+    newUser.profile.push({ name: req.body.username, bio: 'Hello world from chat!' })
+    newUser.profile.push({ name: req.body.username, bio: 'Hello world from conversation!' })
     bcrypt.hash(newUser.password, 10, (err, hash) => {
       if (err) return sendError(res, 500, 'failed to hash password')
       newUser.password = hash
@@ -93,6 +96,18 @@ const Controller = {
       })
       .catch((err: any) => {
         sendError(res, 500, err.toString(), err)
+      })
+  },
+  updateProfile: (req: Request, res: Response) => {
+    User.findOne({ _id: req.userData.userId })
+      .then((user: any) => {
+        user.profile[req.body.selected].name = req.body.name
+        user.profile[req.body.selected].bio = req.body.bio
+        user.save()
+        return res.status(202).json(user)
+      })
+      .catch((err: any) => {
+        return sendError(res, 500, 'Error in updating user profile', err)
       })
   },
 }
