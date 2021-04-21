@@ -6,22 +6,24 @@ type Props = {
     content: string
     sender: {
       username: string
+      profile: Array<{ name: string }>
     }
   }
   incoming: boolean
   continuing: boolean
   endContinuing: boolean
   type: string
+  mode: string
 }
 
-const Message: React.FC<Props> = ({ message, incoming, continuing, endContinuing, type }) => {
+const Message: React.FC<Props> = ({ message, incoming, continuing, endContinuing, type, mode }) => {
   return (
     <Wrapper system={!message.sender} incoming={incoming} endContinuing={endContinuing}>
       {!message.sender && <Text system={!message.sender}>{message.content}</Text>}
       {message.sender && (
         <Content>
           <Name incoming={incoming} continuing={continuing} type={type}>
-            {message.sender.username}
+            {mode === 'Conversation' ? message.sender.profile[1].name : message.sender.profile[0].name}
           </Name>
           <Bubble incoming={incoming}>
             <Text system={!message.sender}>{message.content}</Text>

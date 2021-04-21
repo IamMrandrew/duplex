@@ -39,7 +39,10 @@ const Chat: React.FC<Props> = ({ chat }) => {
   return (
     <Route exact path={toPath(LOCATIONS.chat, chat._id)}>
       {({ match }) => (
-        <Wrapper to={`/chat/${chat._id}`} $isActive={!!match}>
+        <Wrapper
+          to={chat.mode === 'Conversation' ? `/conversation/${chat._id}` : `/chat/${chat._id}`}
+          $isActive={!!match}
+        >
           <IconWrapper>
             <Icon />
           </IconWrapper>
@@ -47,7 +50,9 @@ const Chat: React.FC<Props> = ({ chat }) => {
             <Name>
               {chat.type === 'Spaces'
                 ? chat.title
-                : chat.users.find((user: any) => user._id !== userState.state._id).username}
+                : chat.mode === 'Conversation'
+                ? chat.users.find((user: any) => user._id !== userState.state._id).profile[1].name
+                : chat.users.find((user: any) => user._id !== userState.state._id).profile[0].name}
             </Name>
             <Message>{trimmedContent()}</Message>
             <Noti read={checkIfRead()}></Noti>
