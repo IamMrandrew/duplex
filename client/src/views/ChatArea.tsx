@@ -189,9 +189,11 @@ const ChatArea: React.FC<Props> = () => {
             <OperationWrapper>
               {
                 chat && chat.type === 'Spaces' && (
-                  <IconBtn onClick={()=>{setShowModal(true)}}>
-                    <BsFillPersonPlusFill />
-                  </IconBtn>
+                  <Tooltip title='Invite People'>
+                    <IconBtn onClick={()=>{setShowModal(true)}}>
+                      <BsFillPersonPlusFill />
+                    </IconBtn>
+                  </Tooltip>
                 )
               }
               <Tooltip title={videoCalling && !displayingVideo ? 'Back to the call' : 'Video Call'}>
