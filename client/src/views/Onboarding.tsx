@@ -15,7 +15,7 @@ const Onboarding = (): ReactElement => {
   return (
     <Wrapper>
       <Nav>
-        <NavItem to={toPath(LOCATIONS.login)} toEnd>
+        <NavItem to={toPath(LOCATIONS.login)} $toEnd>
           Sign up
         </NavItem>
         <NavItem to={toPath(LOCATIONS.login)}>Log in</NavItem>
@@ -51,13 +51,13 @@ const Nav = styled.div`
 `
 
 type NavItemProps = {
-  toEnd?: boolean
+  $toEnd?: boolean
 }
 
 const NavItem = styled(Link)`
   cursor: pointer;
   padding: 5px 10px 5px 10px;
-  margin-left: ${(props: NavItemProps) => (props.toEnd ? `auto` : `none`)};
+  margin-left: ${(props: NavItemProps) => (props.$toEnd ? `auto` : `none`)};
 `
 
 const HeroContainer = styled.div`
