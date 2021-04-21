@@ -3,7 +3,7 @@ import { Link, useParams } from 'react-router-dom'
 import styled from 'styled-components/macro'
 import { Avatar, Badge, IconButton } from '@material-ui/core'
 import { IoMdSend } from 'react-icons/io'
-import { BsFillCameraVideoFill } from 'react-icons/bs'
+import { BsFillCameraVideoFill, BsFillPersonPlusFill } from 'react-icons/bs'
 import { AiFillPhone } from 'react-icons/ai'
 import { FaChevronLeft } from 'react-icons/fa'
 import Message from '../components/Message'
@@ -16,6 +16,8 @@ import Tooltip from '../components/Tooltip'
 import Peer from 'simple-peer'
 import VideoContainer from '../components/VideoContainer'
 import { COLOR } from '../components/GlobalStyle'
+import InviteModal from '../components/InviteModal'
+import ChatService from '../services/ChatService'
 
 type Props = {
   children?: ReactElement
@@ -32,6 +34,8 @@ const ChatArea: React.FC<Props> = () => {
   // video call vars
   const [videoCalling, setVideoCalling] = useState(false) // terminate video call
   const [displayingVideo, setDisplayingVideo] = useState(false) // can go back to text chating without terminating the video call
+
+  const [showModal, setShowModal] = useState(false)
 
   const [chat, setChat]: any = useState(null)
   const [messages, setMessages]: any = useState([])
@@ -120,8 +124,7 @@ const ChatArea: React.FC<Props> = () => {
     if (chat) {
       setMessages(chat.messages)
     }
-    console.log('ref')
-    contentRef.current?.scrollIntoView({ behavior: 'smooth' })
+    contentRef.current?.scrollIntoView({behavior: 'smooth'})
   }, [chat])
 
   // Socket listening event (New message received and Read message update)
@@ -163,77 +166,89 @@ const ChatArea: React.FC<Props> = () => {
   }, [socket, id, messages, chatContext])
 
   return (
-    <Wrapper>
-      <Header>
-        {isMobile() && (
-          <BackButton to="/">
-            <FaChevronLeft />
-          </BackButton>
-        )}
-        <TitleWrapper>
-          <Icon></Icon>
-          <Name>
-            {chat
-              ? chat.type === 'Spaces'
-                ? chat.title
-                : chat.mode === 'Conversation'
-                ? chat.users.find((user: any) => user._id !== userState._id).profile[1].name
-                : chat.users.find((user: any) => user._id !== userState._id).profile[0].name
-              : ''}
-          </Name>
-          <OperationWrapper>
-            <Tooltip title={videoCalling && !displayingVideo ? 'Back to the call' : 'Video Call'}>
-              {videoCalling ? (
-                <Identifier badgeContent=" " color="error" overlap="circle" variant="dot">
+    <>
+      <InviteModal showModal={showModal} setShowModal={setShowModal}/>
+      <Wrapper>
+        <Header>
+          {isMobile() && (
+            <BackButton to="/">
+              <FaChevronLeft />
+            </BackButton>
+          )}
+          <TitleWrapper>
+            <Icon></Icon>
+            <Name>
+              {chat
+                ? chat.type === 'Spaces'
+                  ? chat.title
+                  : chat.mode === 'Conversation'
+                  ? chat.users.find((user: any) => user._id !== userState._id).profile[1].name
+                  : chat.users.find((user: any) => user._id !== userState._id).profile[0].name
+                : ''}
+            </Name>
+            <OperationWrapper>
+              {
+                chat && chat.type === 'Spaces' && (
+                  <Tooltip title='Invite People'>
+                    <IconBtn onClick={()=>{setShowModal(true)}}>
+                      <BsFillPersonPlusFill />
+                    </IconBtn>
+                  </Tooltip>
+                )
+              }
+              <Tooltip title={videoCalling && !displayingVideo ? 'Back to the call' : 'Video Call'}>
+                {videoCalling ? (
+                  <Identifier badgeContent=" " color="error" overlap="circle" variant="dot">
+                    <IconBtn onClick={vidoeCallClickHandler}>
+                      <BsFillCameraVideoFill />
+                    </IconBtn>
+                  </Identifier>
+                ) : (
                   <IconBtn onClick={vidoeCallClickHandler}>
                     <BsFillCameraVideoFill />
                   </IconBtn>
-                </Identifier>
-              ) : (
-                <IconBtn onClick={vidoeCallClickHandler}>
-                  <BsFillCameraVideoFill />
+                )}
+              </Tooltip>
+              <Tooltip title="Phone Call">
+                <IconBtn>
+                  <AiFillPhone />
                 </IconBtn>
-              )}
-            </Tooltip>
-            <Tooltip title="Phone Call">
-              <IconBtn>
-                <AiFillPhone />
-              </IconBtn>
-            </Tooltip>
-          </OperationWrapper>
-        </TitleWrapper>
-        {isMobile() && <Positioning />}
-      </Header>
-      {videoCalling && (
-        <VideoContainer
-          displayingVideo={displayingVideo}
-          setDisplayingVideo={setDisplayingVideo}
-          setVideoCalling={setVideoCalling}
-        />
-      )}
-      {!displayingVideo && (
-        <Content ref={contentRef}>
-          {messages &&
-            messages.map((message: any, index: number) => (
-              <Message
-                key={message._id}
-                message={message}
-                incoming={checkIfIncoming(message)}
-                continuing={checkIfContinuous(message, index)}
-                endContinuing={checkIfEndContinuous(message, index)}
-                type={chat ? chat.type : ''}
-                mode={chat ? chat.mode : ''}
-              />
-            ))}
-        </Content>
-      )}
-      <InputWrapper onSubmit={sendMessageHandler}>
-        <Input value={input} onChange={inputHandler} />
-        <InputButton>
-          <IoMdSend />
-        </InputButton>
-      </InputWrapper>
-    </Wrapper>
+              </Tooltip>
+            </OperationWrapper>
+          </TitleWrapper>
+          {isMobile() && <Positioning />}
+        </Header>
+        {videoCalling && (
+          <VideoContainer
+            displayingVideo={displayingVideo}
+            setDisplayingVideo={setDisplayingVideo}
+            setVideoCalling={setVideoCalling}
+          />
+        )}
+        {!displayingVideo && (
+          <Content ref={contentRef}>
+            {messages &&
+              messages.map((message: any, index: number) => (
+                <Message
+                  key={message._id}
+                  message={message}
+                  incoming={checkIfIncoming(message)}
+                  continuing={checkIfContinuous(message, index)}
+                  endContinuing={checkIfEndContinuous(message, index)}
+                  type={chat ? chat.type : ''}
+                  mode={chat ? chat.mode : ''}
+                />
+              ))}
+          </Content>
+        )}
+        <InputWrapper onSubmit={sendMessageHandler}>
+          <Input value={input} onChange={inputHandler} />
+          <InputButton>
+            <IoMdSend />
+          </InputButton>
+        </InputWrapper>
+      </Wrapper>
+    </>
   )
 }
 

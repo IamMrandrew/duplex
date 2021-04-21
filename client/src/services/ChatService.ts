@@ -9,8 +9,8 @@ const ChatServices = {
     return axios.post('/api/chat', data, { withCredentials: true })
   },
 
-  joinChat: (data: any) => {
-    return axios.post('/api/chat', data, { withCredentials: true })
+  joinChat: ( chatId:string ) => {
+    return axios.get(`/api/chat/${chatId}`, { withCredentials: true })
   },
 }
 

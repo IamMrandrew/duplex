@@ -49,6 +49,11 @@ export const COLOR = {
       main: '#F0595A', // red color, for error text
       shade: '#d64f50',
     },
+    success: {
+      tint: '#48C28B',
+      main: '#3CA374',
+      shade: '#399C6F',
+    },
     message: {
       incoming: '#4E6482',
       sender: '#40444B',
@@ -76,6 +81,11 @@ export const COLOR = {
       tint: '#F1E1E3', // light red color, for error bg
       main: '#F0595A', // red color, for error text
       shade: '#d64f50',
+    },
+    success: {
+      tint: '#48C28B',
+      main: '#3CA374',
+      shade: '#399C6F',
     },
     message: {
       incoming: '#8C9DAF',

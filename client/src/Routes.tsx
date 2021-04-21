@@ -1,5 +1,5 @@
 import React, { ReactElement, useState, useEffect } from 'react'
-import { Switch, Route, useHistory } from 'react-router-dom'
+import { Switch, Route, useHistory, useParams } from 'react-router-dom'
 import { COLOR, GlobalStyle, ResetStyle } from './components/GlobalStyle'
 import { AppLayout } from './components/Layout'
 import NavBar from './components/NavBar'
@@ -21,6 +21,7 @@ import { ThemeProvider } from 'styled-components'
 import { useSettingContext } from './contexts/SettingContext'
 import Profile from './views/Profile'
 import { getCookieTheme, getUrlLastSegmant } from './utils'
+import Invitation from './views/Invitation'
 
 type Props = {
   children?: ReactElement | Array<ReactElement>
@@ -36,6 +37,7 @@ export const LOCATIONS = {
     audio: 'settings/audio',
     appearance: 'settings/appearance',
   },
+  invitation: 'invitation/:id',
   login: 'login',
   chat: 'chat/:id',
   conversation: 'conversation/:id',
@@ -103,6 +105,9 @@ const Routes = (props: Props): ReactElement => {
                         <Settings />
                         <Appearance />
                       </Route>
+                      <Route path={toPath(LOCATIONS.invitation)}>
+                        <Invitation />
+                      </Route>
                     </>
                   ) : (
                     <>
@@ -130,7 +135,7 @@ const Routes = (props: Props): ReactElement => {
 const App = (props: Props): ReactElement => {
   const { children } = props
   const { socket, connectSocket } = useSocketContext()
-  const { updateState } = useChatContext()
+  const { setState } = useChatContext()
   const { loggedIn } = useUserContext()
   const updateSetting = useSettingContext().updateState
   const [loading, setLoading] = useState(true)
@@ -139,13 +144,20 @@ const App = (props: Props): ReactElement => {
     ChatService.getChats().then((res) => {
       setLoading(false)
       console.log(res.data)
-      updateState(res.data)
+      setState(res.data)
     })
     const theme = getCookieTheme()
     if (theme) {
       updateSetting({ theme: theme })
     }
-  }, [])
+
+    socket?.on('update messages', () => {
+      console.log('update')
+      ChatService.getChats().then((res) => {
+        setState(res.data)
+      })
+    })
+  }, [window.location.href])
 
   useEffect(() => {
     if (loggedIn()) {
