@@ -29,9 +29,15 @@ export default class UserRoutes extends Routes {
     this.router.route('/users').get(auth, (req: Request, res: Response) => {
       controller.listUsers(req, res)
     })
+
     this.router.route('/user').get(auth, (req: Request, res: Response) => {
       controller.getUser(req, res)
     })
+
+    this.router.route('/user').put(auth, (req: Request, res: Response) => {
+      controller.updateProfile(req, res)
+    })
+
     this.router.route('/user/:userId').delete(auth, (req: Request, res: Response) => {
       controller.deleteUser(req, res)
     })
