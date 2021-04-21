@@ -1,7 +1,7 @@
-import React, { ReactElement, useState, useEffect } from 'react'
+import React, { ReactElement, useState, useEffect, RefObject, useRef } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import styled from 'styled-components/macro'
-import { Avatar, IconButton} from '@material-ui/core'
+import { Avatar, Badge, IconButton} from '@material-ui/core'
 import { IoMdSend } from 'react-icons/io'
 import { BsFillCameraVideoFill } from 'react-icons/bs'
 import { AiFillPhone } from 'react-icons/ai'
@@ -15,6 +15,7 @@ import { MEDIA_BREAK } from '../components/Layout'
 import Tooltip from '../components/Tooltip'
 import Peer from 'simple-peer'
 import VideoContainer from '../components/VideoContainer'
+import { COLOR } from '../components/GlobalStyle'
 
 type Props = {
   children?: ReactElement
@@ -26,10 +27,11 @@ const ChatArea: React.FC<Props> = () => {
   const userState = useUserContext().state
   const chatContext = useChatContext()
   const { isMobile } = useResponsive()
+  const contentRef = useRef() as RefObject<HTMLDivElement>
   
   // video call vars
-  const [videoCalling, setVideoCalling] = useState(false)
-  const [displayingVideo, setDisplayingVideo] = useState(false)
+  const [videoCalling, setVideoCalling] = useState(false) // terminate video call
+  const [displayingVideo, setDisplayingVideo] = useState(false) // can go back to text chating without terminating the video call
 
   const [chat, setChat]: any = useState({})
   const [messages, setMessages]: any = useState([])
@@ -69,42 +71,9 @@ const ChatArea: React.FC<Props> = () => {
     return messages[index + 1] ? message.sender._id !== messages[index + 1].sender._id : false
   }
 
-  const createPeer = (userToSignal:string, callerId: string, stream:MediaStream) => {
-    const newPeer = new Peer({
-      initiator: true,
-      trickle: false,
-      stream,
-    })
-
-    newPeer.on('signal', signal => {
-      console.log('sendingSignal')
-      socket?.emit('sendSignal', {userToSignal, callerId, signal})
-    })
-
-    return newPeer
+  const scrollBottom = () => {
+    contentRef.current?.scrollTo({top: contentRef.current.scrollHeight, behavior: 'smooth'})
   }
-
-  const addPeer = (incomingSignal:string, callerId:string, stream:MediaStream) => {
-    const newPeer = new Peer({
-      initiator: false,
-      trickle: false,
-      stream,
-    })
-
-    newPeer.on('signal', signal => {
-      socket?.emit('returnSignal', {signal, callerId})
-    })
-
-    newPeer.signal(incomingSignal)
-
-    return newPeer
-  }
-
-  useEffect(()=>{
-    return () => {
-      socket?.emit('leaveVideoCall', { id })
-    }
-  }, [])
 
   useEffect(() => {
     socket?.emit('join', { id })
@@ -119,7 +88,10 @@ const ChatArea: React.FC<Props> = () => {
   useEffect(() => {
     if (chat) {
       setMessages(chat.messages)
+      scrollBottom()
     }
+    console.log('ref');
+    contentRef.current?.scrollIntoView({behavior: 'smooth'})
   }, [chat])
 
   useEffect(() => {
@@ -147,10 +119,20 @@ const ChatArea: React.FC<Props> = () => {
           <Icon></Icon>
           <Name>{chat ? chat.title : ''}</Name>
           <OperationWrapper>
-            <Tooltip title='Video Call'>
-              <IconBtn onClick={vidoeCallClickHandler}>
-                <BsFillCameraVideoFill />
-              </IconBtn>
+            <Tooltip title={videoCalling && !displayingVideo ? 'Back to the call': 'Video Call'}>
+              {
+                videoCalling ? (
+                  <Identifier badgeContent=' ' color='error' overlap='circle' variant='dot'>
+                    <IconBtn onClick={vidoeCallClickHandler}>
+                      <BsFillCameraVideoFill />
+                    </IconBtn>
+                  </Identifier>
+                ) : (
+                  <IconBtn onClick={vidoeCallClickHandler}>
+                    <BsFillCameraVideoFill />
+                  </IconBtn>
+                )
+              }
             </Tooltip>
             <Tooltip title='Phone Call'>
               <IconBtn>
@@ -166,7 +148,7 @@ const ChatArea: React.FC<Props> = () => {
       }
       {
         !displayingVideo && (
-          <Content>
+          <Content ref={contentRef}>
             {messages &&
               messages.map((message: any, index: number) => (
                 <Message
@@ -312,6 +294,13 @@ const BackButton = styled(Link)`
   > svg {
     color: ${({theme})=>theme.font.primary};
     font-size: 18px;
+  }
+`
+
+const Identifier = styled(Badge)`
+  &.MuiBadge-root > .MuiBadge-badge{
+    top: 25%;
+    right: 27%;
   }
 `
 
