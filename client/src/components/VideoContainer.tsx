@@ -32,6 +32,9 @@ const VideoContainer: React.FC<Props> = ({ displayingVideo, setDisplayingVideo, 
   const userStream = useRef<MediaStream>()
 
   useEffect(() => {
+    console.log('PEERS', peers)
+  }, [peers])
+  useEffect(() => {
     navigator.mediaDevices.getUserMedia({ video: videoConstraints, audio: true }).then((stream: MediaStream) => {
       console.log('joining room')
       userStream.current = stream
@@ -50,6 +53,7 @@ const VideoContainer: React.FC<Props> = ({ displayingVideo, setDisplayingVideo, 
             peer,
           })
         })
+        console.log('On all users', peers)
         setPeers(peers)
       })
 
@@ -66,7 +70,8 @@ const VideoContainer: React.FC<Props> = ({ displayingVideo, setDisplayingVideo, 
             peerID: payload.callerID,
           }
           console.log(peers)
-          setPeers((users) => [...users, peerObj])
+          console.log(peerObj)
+          setPeers([...peers, peerObj])
         }
       })
 
@@ -94,6 +99,10 @@ const VideoContainer: React.FC<Props> = ({ displayingVideo, setDisplayingVideo, 
     })
     return () => {
       console.log('leaving room')
+      socket?.off('all users')
+      socket?.off('user joined')
+      socket?.off('receiving returned signal')
+      socket?.off('user left')
       socket?.emit('leave room')
       userStream.current?.getTracks().forEach((track: MediaStreamTrack) => {
         track.stop()
