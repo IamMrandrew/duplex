@@ -33,7 +33,8 @@ const ChatArea: React.FC<Props> = () => {
   const [videoCalling, setVideoCalling] = useState(false) // terminate video call
   const [displayingVideo, setDisplayingVideo] = useState(false) // can go back to text chating without terminating the video call
 
-  const [chat, setChat]: any = useState({})
+
+  const [chat, setChat]: any = useState(null)
   const [messages, setMessages]: any = useState([])
   const [input, setInput] = useState('')
   
@@ -59,33 +60,62 @@ const ChatArea: React.FC<Props> = () => {
     setInput('')
   }
 
+  // Identify message type
   const checkIfIncoming = (message: any): boolean => {
-    return !(userState._id === message.sender._id)
+    if (message.sender) {
+      return !(userState._id === message.sender._id)
+    }
+    return false
   }
 
   const checkIfContinuous = (message: any, index: number): boolean => {
-    return messages[index - 1] ? message.sender._id === messages[index - 1].sender._id : false
+    if (message.sender) {
+      return messages[index - 1]
+        ? messages[index - 1].sender
+          ? message.sender._id === messages[index - 1].sender._id
+          : false
+        : false
+    }
+    return false
   }
 
   const checkIfEndContinuous = (message: any, index: number): boolean => {
-    return messages[index + 1] ? message.sender._id !== messages[index + 1].sender._id : false
+    if (message.sender) {
+      return messages[index + 1]
+        ? messages[index + 1].sender
+          ? message.sender._id !== messages[index + 1].sender._id
+          : false
+        : false
+    }
+    return false
   }
 
   const scrollBottom = () => {
     contentRef.current?.scrollTo({top: contentRef.current.scrollHeight, behavior: 'smooth'})
   }
 
+  // When user enter chat
   useEffect(() => {
     scrollBottom()
     socket?.emit('join', { id })
 
-    setChat(chatContext.state.find((chat) => chat._id === id))
+    socket?.emit('readMessage', {
+      id: id,
+    })
 
     return () => {
       socket?.emit('leave', { id })
     }
+  }, [socket, id])
+
+  // Find chat from chats
+  useEffect(() => {
+    if (chatContext.state.find((chat) => chat._id === id)) {
+      setChat(chatContext.state.find((chat) => chat._id === id))
+    }
   }, [socket, id, chatContext.state])
 
+  // Set messages from chat
   useEffect(() => {
     scrollBottom()
     if (chat) {
@@ -95,19 +125,43 @@ const ChatArea: React.FC<Props> = () => {
     contentRef.current?.scrollIntoView({behavior: 'smooth'})
   }, [chat])
 
+  // Socket listening event (New message received and Read message update)
   useEffect(() => {
     scrollBottom()
     if (socket) {
-      socket.on('newMessage', (message: any) => {
-        setMessages([...messages, message])
-        chatContext.updateChatMessage(id, chat, message)
+      socket.on('newMessage', (content: any) => {
+        chatContext.updateChatMessage(content.id, content.message)
+
+        socket?.emit('readMessage', {
+          id: id,
+        })
+      })
+
+      socket.on('finishedRead', (content: any) => {
+        chatContext.setState(
+          chatContext.state.map((chat: any) => {
+            if (chat._id === content.id) {
+              return {
+                ...chat,
+                messages: chat.messages.map((message: any) => {
+                  if (!message.readers.find((reader: any) => reader === content.userId)) {
+                    return { ...message, readers: [...message.readers, content.userId] }
+                  }
+                  return message
+                }),
+              }
+            }
+            return chat
+          }),
+        )
       })
     }
 
     return () => {
       socket?.off('newMessage')
+      socket?.off('finishedRead')
     }
-  }, [socket, messages])
+  }, [socket, id, messages, chatContext])
 
   return (
     <Wrapper>
@@ -119,7 +173,13 @@ const ChatArea: React.FC<Props> = () => {
         )}
         <TitleWrapper>
           <Icon></Icon>
-          <Name>{chat ? chat.title : ''}</Name>
+          <Name>
+            {chat
+              ? chat.type === 'Spaces'
+                ? chat.title
+                : chat.users.find((user: any) => user._id !== userState._id).username
+              : ''}
+          </Name>
           <OperationWrapper>
             <Tooltip title={videoCalling && !displayingVideo ? 'Back to the call': 'Video Call'}>
               {
@@ -136,7 +196,7 @@ const ChatArea: React.FC<Props> = () => {
                 )
               }
             </Tooltip>
-            <Tooltip title='Phone Call'>
+            <Tooltip title="Phone Call">
               <IconBtn>
                 <AiFillPhone />
               </IconBtn>
@@ -248,7 +308,7 @@ const OperationWrapper = styled.div`
 
 const IconBtn = styled(IconButton)`
   &.MuiButtonBase-root {
-    color: ${({theme})=>theme.font.primary};
+    color: ${({ theme }) => theme.font.primary};
   }
 `
 
@@ -294,7 +354,7 @@ const BackButton = styled(Link)`
   cursor: pointer;
 
   > svg {
-    color: ${({theme})=>theme.font.primary};
+    color: ${({ theme }) => theme.font.primary};
     font-size: 18px;
   }
 `

@@ -14,12 +14,12 @@ export default class ChatRoutes extends Routes {
       controller.getChats(req, res)
     })
 
-    this.router.route(`/chat`).post(auth, (req: Request, res: Response) => {
-      controller.createChat(req, res)
+    this.router.route(`/chat/:id`).get(auth, (req: Request, res: Response) => {
+      controller.joinChat(req, res)
     })
 
-    this.router.route(`/chat`).put(auth, (req: Request, res: Response) => {
-      controller.joinChat(req, res)
+    this.router.route(`/chat`).post(auth, (req: Request, res: Response) => {
+      controller.createChat(req, res)
     })
   }
 }

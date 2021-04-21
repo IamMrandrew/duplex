@@ -2,7 +2,7 @@ export type chat = {
   _id: string
   title: string
   type: string
-  user: any
+  users: any
   messages: any
   createAt: string
 }

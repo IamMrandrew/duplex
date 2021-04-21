@@ -6,11 +6,11 @@ import User from '../models/user'
 const Controller = {
   getChats: (req: Request, res: Response) => {
     Chat.find({})
-      .populate('messages.sender')
+      .populate('users messages.sender')
       .then((chats: any) => {
         Promise.all(
           chats.map((chat: any) => {
-            if (chat.users.find((user: string) => user == req.userData.userId)) {
+            if (chat.users.find((user: any) => user._id == req.userData.userId)) {
               return chat
             }
           }),
@@ -22,29 +22,61 @@ const Controller = {
         res.status(500).json(err)
       })
   },
-  createChat: (req: Request, res: Response) => {
-    const chat = new Chat(req.body)
-    chat._id = new mongoose.Types.ObjectId()
+  createChat: async (req: Request, res: Response) => {
+    const chat = new Chat({ _id: new mongoose.Types.ObjectId(), type: req.body.type, messages: [] })
     chat.users.push(req.userData.userId)
-    console.log(chat)
-    chat
-      .save()
-      .then((chat: any) => {
-        res.status(200).json(chat)
-      })
-      .catch((err: any) => {
-        res.status(400).json(err)
-      })
+    const user = await User.findById(req.userData.userId)
+    if (req.body.type === 'Direct') {
+      User.findOne({ username: req.body.username })
+        .then((user: any) => {
+          chat.users.push(user._id)
+          chat
+            .save()
+            .then((chat: any) => {
+              res.status(200).json(chat)
+            })
+            .catch((err: any) => {
+              res.status(400).json(err)
+            })
+        })
+        .catch((error: any) => {
+          res.status(500).json(error)
+        })
+    } else {
+      chat.messages.push({ content: user.username + ' created a spaces' })
+      chat.title = req.body.title
+      chat
+        .save()
+        .then((chat: any) => {
+          res.status(200).json(chat)
+        })
+        .catch((err: any) => {
+          res.status(400).json(err)
+        })
+    }
   },
   joinChat: (req: Request, res: Response) => {
     User.findById(req.userData.userId)
       .then((user: any) => {
-        Chat.findByIdAndUpdate(req.body.id, { $push: { users: user } })
-          .then((result: any) => {
+        Chat.findOneAndUpdate(
+          { _id: req.params.id, type: 'Spaces', users: { $nin: [user._id] } },
+          { $push: { users: user } },
+        )
+          .then(async (result: any) => {
+            const chat = await Chat.findOne({ _id: req.params.id })
+            chat.messages.push({ content: user.username + ' joined' })
+            chat
+              .save()
+              .then((chat: any) => {
+                res.status(200).json(chat)
+              })
+              .catch((err: any) => {
+                res.status(400).json(err)
+              })
             res.status(200).json('Successfully joined')
           })
           .catch((error: any) => {
-            res.status(500).json(error)
+            res.status(500).json('Wrong id or joining same spaces or trying to join a direct message')
           })
       })
       .catch((error: any) => {
