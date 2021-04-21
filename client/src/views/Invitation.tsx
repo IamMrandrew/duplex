@@ -18,12 +18,6 @@ const Invitation: React.FC = () => {
 
   useEffect(()=>{
     ChatServices.joinChat(id).then(()=>{
-      // ChatServices.getChats().then((res) => {
-      //   setLoading(false)
-      //   setState(res.data)
-      //   history.push(toPath(LOCATIONS.chat, id))
-      //   socket?.emit('joined spaces')
-      // })
       history.push(toPath(LOCATIONS.chat, id))
       socket?.emit('joined spaces')
     }).catch((err)=>{

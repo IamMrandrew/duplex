@@ -108,8 +108,7 @@ export default (httpServer: any) => {
       }
     })
 
-    extSocket.on('joined spaces', async (id) => {
-      console.log('joined spaces')
+    extSocket.on('joined spaces', async () => {
       io.emit('update messages')
     })
   })
