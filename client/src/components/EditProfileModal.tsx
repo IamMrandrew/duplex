@@ -17,8 +17,10 @@ const EditProfileModal: React.FC<Props> = ({ showModal, setShowModal, selected }
   const [bio, setBio] = useState<string>('')
 
   useEffect(() => {
-    setName(userContext.state.profile[selected].name)
-    setBio(userContext.state.profile[selected].bio)
+    if (userContext.state && userContext.state.profile) {
+      setName(userContext.state.profile[selected].name)
+      setBio(userContext.state.profile[selected].bio)
+    }
   }, [userContext.state.profile, selected])
 
   const setNameHandler = (e: React.ChangeEvent<HTMLInputElement>) => {

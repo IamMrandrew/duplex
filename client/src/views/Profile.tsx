@@ -33,8 +33,8 @@ const Profile: React.FC<Props> = () => {
               <Icon />
             </IconWrapper>
             <InfoWrapper>
-              <Name>{userContext.state ? userContext.state.profile[0].name : ''}</Name>
-              <Bio>{userContext.state ? userContext.state.profile[0].bio : ''}</Bio>
+              <Name>{userContext.state && userContext.state.profile ? userContext.state.profile[0].name : ''}</Name>
+              <Bio>{userContext.state && userContext.state.profile ? userContext.state.profile[0].bio : ''}</Bio>
             </InfoWrapper>
           </Card>
           <SectionTitle>Conversation</SectionTitle>
@@ -43,8 +43,8 @@ const Profile: React.FC<Props> = () => {
               <Icon />
             </IconWrapper>
             <InfoWrapper>
-              <Name>{userContext.state ? userContext.state.profile[1].name : ''}</Name>
-              <Bio>{userContext.state ? userContext.state.profile[1].bio : ''}</Bio>
+              <Name>{userContext.state && userContext.state.profile ? userContext.state.profile[1].name : ''}</Name>
+              <Bio>{userContext.state && userContext.state.profile ? userContext.state.profile[1].bio : ''}</Bio>
             </InfoWrapper>
           </Card>
         </Content>
