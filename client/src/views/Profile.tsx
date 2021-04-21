@@ -101,6 +101,7 @@ const Card = styled.div`
   display: flex;
   align-items: center;
   margin-bottom: 40px;
+  cursor: pointer;
 `
 
 const IconWrapper = styled.div`
