@@ -11,11 +11,11 @@ import { getUrlLastSegmant } from '../utils'
 
 const Login = (): ReactElement => {
 
-  const redirectAs = () => {
+  const redirectedAs = () => {
     return getUrlLastSegmant() === LOCATIONS.login ? true : false
   }
 
-  const [isLogin, setIsLogin] = useState(redirectAs())
+  const [isLogin, setIsLogin] = useState(redirectedAs())
 
   return <Wrapper>{isLogin ? <LoginForm setIsLogin={setIsLogin} /> : <SignupForm setIsLogin={setIsLogin} />}</Wrapper>
 }
