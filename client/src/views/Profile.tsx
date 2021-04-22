@@ -3,6 +3,9 @@ import styled from 'styled-components/macro'
 import { useUserContext } from '../contexts/UserContext'
 import { Avatar } from '@material-ui/core'
 import EditProfileModal from '../components/EditProfileModal'
+import { useResponsive } from '../hooks/useResponsive'
+import { Link } from 'react-router-dom'
+import { FaChevronLeft } from 'react-icons/fa'
 
 type Props = {
   children?: ReactElement
@@ -12,6 +15,7 @@ const Profile: React.FC<Props> = () => {
   const userContext = useUserContext()
   const [showModal, setShowModal] = useState(false)
   const [selected, setSelected] = useState(0)
+  const { isMobile } = useResponsive()
 
   const editHandler = (select: number) => {
     setShowModal(!showModal)
@@ -23,6 +27,11 @@ const Profile: React.FC<Props> = () => {
       <EditProfileModal showModal={showModal} setShowModal={setShowModal} selected={selected} />
       <Wrapper>
         <Header>
+          {isMobile() && (
+            <BackButton to={'/settings'}>
+              <FaChevronLeft />
+            </BackButton>
+          )}
           <Title>Profile</Title>
         </Header>
         <Content>
@@ -58,6 +67,7 @@ export default Profile
 const Wrapper = styled.div`
   background: ${({ theme }) => theme.bg.tint};
   color: ${({ theme }) => theme.font.primary};
+  height: 100vh;
 `
 
 const Header = styled.div`
@@ -131,4 +141,21 @@ const Name = styled.span`
 const Bio = styled.div`
   font-size: 15px;
   font-weight: 500;
+`
+
+const BackButton = styled(Link)`
+  background: none;
+  border: none;
+  outline: none;
+  border-radius: 16px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  margin-right: 10px;
+
+  > svg {
+    color: ${({ theme }) => theme.font.primary};
+    font-size: 18px;
+  }
 `

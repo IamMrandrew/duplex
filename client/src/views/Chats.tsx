@@ -1,28 +1,37 @@
 import React, { ReactElement, useState } from 'react'
 import styled from 'styled-components/macro'
-import { FaPlus } from 'react-icons/fa'
+import { FaPlus, FaChevronRight } from 'react-icons/fa'
 import { FiSearch } from 'react-icons/fi'
 import Chat from '../components/Chat'
 import { useChatContext } from '../contexts/ChatContext'
 import CreateChatModal from '../components/CreateChatModal'
 import { MEDIA_BREAK } from '../components/Layout'
 import { useRouteMatch } from 'react-router-dom'
+import { useResponsive } from '../hooks/useResponsive'
 
 type Props = {
   children?: ReactElement
+  setShowNav: any
+  showNav: boolean
 }
 
-const Chats: React.FC<Props> = () => {
+const Chats: React.FC<Props> = ({ setShowNav, showNav }) => {
   const chatContext = useChatContext()
   const [showModal, setShowModal] = useState(false)
+  const { isMobile } = useResponsive()
 
   let matchChat = useRouteMatch('/conversation')
 
   return (
     <>
       <CreateChatModal showModal={showModal} setShowModal={setShowModal} matchChat={matchChat} />
-      <Wrapper>
+      <Wrapper showNav={showNav}>
         <Header>
+          {isMobile() && (
+            <BackButton showNav={showNav} onClick={() => setShowNav((prev: any) => !prev)}>
+              <FaChevronRight />
+            </BackButton>
+          )}
           <Title>{matchChat ? 'Conversation' : 'Chats'}</Title>
         </Header>
         <ContentSection>
@@ -82,6 +91,8 @@ const Wrapper = styled.div`
   @media (max-width: ${MEDIA_BREAK}) {
     padding: 12px;
     height: 100vh;
+    transform: ${(props: { showNav: boolean }) => (props.showNav ? 'translateX(85px)' : 'translateX(0)')};
+    transition: all 300ms cubic-bezier(0.18, 0.89, 0.43, 1.19);
   }
 `
 const Header = styled.div`
@@ -179,5 +190,24 @@ const AddButton = styled.button`
   > svg {
     color: white;
     font-size: 16px;
+  }
+`
+
+const BackButton = styled.button`
+  background: none;
+  border: none;
+  outline: none;
+  border-radius: 16px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  margin-right: 10px;
+
+  > svg {
+    color: ${({ theme }) => theme.font.primary};
+    font-size: 18px;
+    transform: ${(props: { showNav: boolean }) => (props.showNav ? 'rotate(180deg)' : 'rotate(0deg)')};
+    transition: all 300ms cubic-bezier(0.18, 0.89, 0.43, 1.19);
   }
 `
