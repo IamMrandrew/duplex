@@ -6,14 +6,18 @@ import Option from '../components/Option'
 import { useUserContext } from '../contexts/UserContext'
 import UserService from '../services/UserService'
 import { MEDIA_BREAK } from '../components/Layout'
+import { FaChevronRight } from 'react-icons/fa'
+import { useResponsive } from '../hooks/useResponsive'
 
 type Props = {
-  children?: ReactElement
+  setShowNav: any
+  showNav: boolean
 }
 
-const Settings: React.FC<Props> = () => {
+const Settings: React.FC<Props> = ({ showNav, setShowNav }) => {
   const { logout } = useUserContext()
   const history = useHistory()
+  const { isMobile } = useResponsive()
 
   const handleLogout = () => {
     UserService.logout()
@@ -27,8 +31,13 @@ const Settings: React.FC<Props> = () => {
   }
 
   return (
-    <Wrapper>
+    <Wrapper showNav={showNav}>
       <Header>
+        {isMobile() && (
+          <BackButton showNav={showNav} onClick={() => setShowNav((prev: any) => !prev)}>
+            <FaChevronRight />
+          </BackButton>
+        )}
         <Title>Settings</Title>
       </Header>
       <ContentSection>
@@ -62,6 +71,8 @@ const Wrapper = styled.div`
   transition: 0.1s;
   @media (max-width: ${MEDIA_BREAK}) {
     padding: 12px;
+    transform: ${(props: { showNav: boolean }) => (props.showNav ? 'translateX(85px)' : 'translateX(0)')};
+    transition: all 300ms cubic-bezier(0.18, 0.89, 0.43, 1.19);
   }
 `
 const Header = styled.div`
@@ -114,5 +125,24 @@ const LogoutBtn = styled.div`
   transition: 0.1s;
   &:hover {
     background: ${({ theme }) => theme.error.tint};
+  }
+`
+
+const BackButton = styled.button`
+  background: none;
+  border: none;
+  outline: none;
+  border-radius: 16px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  margin-right: 10px;
+
+  > svg {
+    color: ${({ theme }) => theme.font.primary};
+    font-size: 18px;
+    transform: ${(props: { showNav: boolean }) => (props.showNav ? 'rotate(180deg)' : 'rotate(0deg)')};
+    transition: all 300ms cubic-bezier(0.18, 0.89, 0.43, 1.19);
   }
 `

@@ -32,6 +32,7 @@ export const LOCATIONS = {
   onboarding: 'onboarding',
   explore: 'explore',
   settings: {
+    root: 'settings',
     profile: 'settings/profile',
     notification: 'settings/notification',
     audio: 'settings/audio',
@@ -56,6 +57,7 @@ const Routes = (props: Props): ReactElement => {
   const history = useHistory()
   const [loading, setLoading] = useState(true) // pre render loadings of authorized contents, need a loading view
   const theme = useSettingContext().state.theme
+  const [showNav, setShowNav] = useState(false)
 
   // OnMount actions for all pages
   useEffect(() => {
@@ -89,24 +91,24 @@ const Routes = (props: Props): ReactElement => {
           </Route>
           <ChatProvider>
             <SocketProvider>
-              <App>
+              <App showNav={showNav} setShowNav={setShowNav}>
                 <>
                   {!isMobile() ? (
                     <>
                       <Route exact path={['/', toPath(LOCATIONS.home)]}>
-                        <Chats />
+                        <Chats setShowNav={setShowNav} showNav={showNav} />
                         <ChatArea />
                       </Route>
-                      <Route path={[toPath(LOCATIONS.chat), toPath(LOCATIONS.conversation)]}>
-                        <Chats />
+                      <Route path={[toPath(LOCATIONS.chat), toPath(LOCATIONS.conversation), '/chat', '/conversation']}>
+                        <Chats setShowNav={setShowNav} showNav={showNav} />
                         <ChatArea />
                       </Route>
-                      <Route path={toPath(LOCATIONS.settings.profile)}>
-                        <Settings />
+                      <Route exact path={[toPath(LOCATIONS.settings.profile), '/settings']}>
+                        <Settings setShowNav={setShowNav} showNav={showNav} />
                         <Profile />
                       </Route>
                       <Route path={toPath(LOCATIONS.settings.appearance)}>
-                        <Settings />
+                        <Settings setShowNav={setShowNav} showNav={showNav} />
                         <Appearance />
                       </Route>
                       <Route path={toPath(LOCATIONS.invitation)}>
@@ -115,14 +117,20 @@ const Routes = (props: Props): ReactElement => {
                     </>
                   ) : (
                     <>
-                      <Route exact path={['/', toPath(LOCATIONS.home)]}>
-                        <Chats />
+                      <Route exact path={['/', toPath(LOCATIONS.home), '/chat', '/conversation']}>
+                        <Chats setShowNav={setShowNav} showNav={showNav} />
                       </Route>
                       <Route path={[toPath(LOCATIONS.chat), toPath(LOCATIONS.conversation)]}>
                         <ChatArea />
                       </Route>
+                      <Route exact path={toPath(LOCATIONS.settings.root)}>
+                        <Settings setShowNav={setShowNav} showNav={showNav} />
+                      </Route>
                       <Route path={toPath(LOCATIONS.settings.profile)}>
-                        <Settings />
+                        <Profile />
+                      </Route>
+                      <Route path={toPath(LOCATIONS.settings.appearance)}>
+                        <Appearance />
                       </Route>
                     </>
                   )}
@@ -136,8 +144,14 @@ const Routes = (props: Props): ReactElement => {
   )
 }
 
-const App = (props: Props): ReactElement => {
-  const { children } = props
+type AppProps = {
+  children?: ReactElement | Array<ReactElement>
+  showNav: boolean
+  setShowNav: any
+}
+
+const App = (props: AppProps): ReactElement => {
+  const { children, showNav, setShowNav } = props
   const { socket, connectSocket } = useSocketContext()
   const { setState } = useChatContext()
   const { loggedIn } = useUserContext()
@@ -183,7 +197,7 @@ const App = (props: Props): ReactElement => {
         <Loading />
       ) : (
         <AppLayout>
-          <NavBar />
+          <NavBar showNav={showNav} setShowNav={setShowNav} />
           {children}
         </AppLayout>
       )}

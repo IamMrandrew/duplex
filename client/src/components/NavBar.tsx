@@ -11,24 +11,29 @@ import DuplexIcon from '../assets/duplex-icon.svg'
 import { COLOR } from './GlobalStyle'
 import { useSettingContext } from '../contexts/SettingContext'
 
-const NavBar = (): ReactElement => {
+type Props = {
+  showNav: boolean
+  setShowNav: any
+}
+
+const NavBar: React.FC<Props> = ({ showNav, setShowNav }) => {
   const { theme } = useSettingContext().state
 
   return (
-    <Wrapper>
+    <Wrapper showNav={showNav}>
       <Items>
-        <Link to={toPath(LOCATIONS.home)}>
+        <Link to={toPath(LOCATIONS.home)} onClick={() => setShowNav((prev: any) => !prev)}>
           {/* <DuplexIcon color={theme === 'dark' ? COLOR.dark.primary.shade : COLOR.light.primary.shade} /> */}
           <Icon src={DuplexIcon} />
         </Link>
-        <Link to={toPath(LOCATIONS.home)}>
+        <Link to={toPath(LOCATIONS.home)} onClick={() => setShowNav((prev: any) => !prev)}>
           <MdLayers />
         </Link>
-        <Link to={toPath(LOCATIONS.conversation, ' ')}>
+        <Link to={'/conversation'} onClick={() => setShowNav((prev: any) => !prev)}>
           <FaLayerGroup />
         </Link>
       </Items>
-      <Link to={toPath(LOCATIONS.settings.profile)}>
+      <Link to={toPath(LOCATIONS.settings.root)} onClick={() => setShowNav((prev: any) => !prev)}>
         <Avatar />
       </Link>
     </Wrapper>
@@ -50,7 +55,13 @@ const Wrapper = styled.div`
   transition: 0.1s;
 
   @media (max-width: ${MEDIA_BREAK}) {
-    display: none;
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 85px;
+    transform: ${(props: { showNav: boolean }) => (props.showNav ? 'translateX(0)' : 'translateX(-100%)')};
+    transition: all 300ms cubic-bezier(0.18, 0.89, 0.43, 1.19);
   }
 `
 
