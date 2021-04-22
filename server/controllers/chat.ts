@@ -49,7 +49,10 @@ const Controller = {
         })
     } else {
       chat.messages.push({
-        content: chat.mode === 'Conversation' ? user.profile[1].name : user.profile[0].name + ' created a spaces',
+        content:
+          chat.mode === 'Conversation'
+            ? user.profile[1].name + ' created a spaces'
+            : user.profile[0].name + ' created a spaces',
       })
       chat.title = req.body.title
       chat
