@@ -23,7 +23,7 @@ const Onboarding = (): ReactElement => {
           </IconWrapper> */}
           <Icon src={DuplexIcon} />
           <NavItems>
-            <NavItem to={toPath(LOCATIONS.login)} $toEnd>
+            <NavItem to={toPath(LOCATIONS.signup)} $toEnd>
               Sign up
             </NavItem>
             <NavItem to={toPath(LOCATIONS.login)}>Log in</NavItem>

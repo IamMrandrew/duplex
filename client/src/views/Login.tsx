@@ -5,11 +5,16 @@ import styled from 'styled-components'
 import { MEDIA_BREAK } from '../components/Layout'
 import { useUserContext } from '../contexts/UserContext'
 import { checkIntegrity, formNoErr, toData, VALIDATORS } from '../formIntegrity'
+import { LOCATIONS } from '../Routes'
 import UserServices from '../services/UserService'
+import { getUrlLastSegmant } from '../utils'
 
 const Login = (): ReactElement => {
+  const redirectedAs = () => {
+    return getUrlLastSegmant() === LOCATIONS.login ? true : false
+  }
 
-  const [isLogin, setIsLogin] = useState(true)
+  const [isLogin, setIsLogin] = useState(redirectedAs())
 
   return <Wrapper>{isLogin ? <LoginForm setIsLogin={setIsLogin} /> : <SignupForm setIsLogin={setIsLogin} />}</Wrapper>
 }
@@ -54,7 +59,7 @@ const LoginForm = (props: FormProps) => {
 
   return (
     <Form>
-      <Title>Welcome!</Title>
+      <Title>Welcome back</Title>
       <TextInput
         id="emailOrUsername"
         label="Email or Username"
@@ -65,7 +70,7 @@ const LoginForm = (props: FormProps) => {
       />
       <TextInput
         id="password"
-        label="password"
+        label="Password"
         variant="outlined"
         type="password"
         onChange={handleInputChange}
@@ -118,7 +123,7 @@ const SignupForm = (props: FormProps) => {
       <Title>Create a new account</Title>
       <TextInput
         id="email"
-        label="email"
+        label="Email"
         variant="outlined"
         onChange={handleInputChange}
         error={!!input.email.errMsg}
@@ -126,7 +131,7 @@ const SignupForm = (props: FormProps) => {
       />
       <TextInput
         id="username"
-        label="username"
+        label="Username"
         variant="outlined"
         onChange={handleInputChange}
         error={!!input.username.errMsg}
@@ -134,7 +139,7 @@ const SignupForm = (props: FormProps) => {
       />
       <TextInput
         id="password"
-        label="password"
+        label="Password"
         type="password"
         variant="outlined"
         onChange={handleInputChange}
@@ -142,7 +147,7 @@ const SignupForm = (props: FormProps) => {
         helperText={input.password.errMsg}
       />
       <Btn variant="contained" onClick={handleSubmit}>
-        Login
+        Sign up
       </Btn>
       <Link onClick={() => setIsLogin(true)}>Already have an account?</Link>
     </Form>
@@ -155,14 +160,17 @@ const Wrapper = styled.div`
   align-items: center;
   width: 100%;
   height: 100vh;
+  background-color: ${({ theme }) => theme.primary.main};
 `
 
 const Form = styled.div`
   display: flex;
   flex-direction: column;
-  border: 1px solid ${({theme})=>theme.font.primary};
+  /* border: 1px solid ${({ theme }) => theme.font.primary}; */
   border-radius: 5px;
-  padding: 20px;
+  padding: 40px;
+  min-width: 325px;
+  background-color: ${({ theme }) => theme.bg.tint};
   @media (max-width: ${MEDIA_BREAK}px) {
     width: 100%;
     height: 100vh;
@@ -170,8 +178,9 @@ const Form = styled.div`
 `
 
 const Title = styled.div`
-  text-align: center;
-  margin-bottom: 10px;
+  text-align: left;
+  margin-top: 10px;
+  margin-bottom: 30px;
   font-size: 24px;
   font-weight: 600;
 `
@@ -184,14 +193,20 @@ const TextInput = styled(TextField)`
 
 const Btn = styled(Button)`
   &.MuiButton-root {
+    background-color: ${({ theme }) => theme.primary.main};
+    color: ${({ theme }) => theme.font.contrast};
     margin-bottom: 10px;
+
+    &:hover {
+      background-color: ${({ theme }) => theme.primary.shade};
+    }
   }
 `
 
 const Details = styled.div`
   display: flex;
   flex-direction: row;
-  color: ${({theme})=>theme.font.secondary};
+  color: ${({ theme }) => theme.font.secondary};
   margin-left: 5px;
   margin-bottom: 10px;
   font-size: 14px;
@@ -201,7 +216,7 @@ const Link = styled.div`
   margin-bottom: 10px;
   font-size: 14px;
   margin-left: 5px;
-  color: ${({theme})=>theme.primary.main};
+  color: ${({ theme }) => theme.primary.main};
   cursor: pointer;
   &:hover {
     text-decoration: underline;

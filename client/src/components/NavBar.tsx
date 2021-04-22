@@ -6,15 +6,25 @@ import { Avatar } from '@material-ui/core'
 import { Link } from 'react-router-dom'
 import { LOCATIONS, toPath } from '../Routes'
 import { MEDIA_BREAK } from './Layout'
+// import DuplexIcon from './DuplexIcon'
+import DuplexIcon from '../assets/duplex-icon.svg'
+import { COLOR } from './GlobalStyle'
+import { useSettingContext } from '../contexts/SettingContext'
 
 const NavBar = (): ReactElement => {
+  const { theme } = useSettingContext().state
+
   return (
     <Wrapper>
       <Items>
         <Link to={toPath(LOCATIONS.home)}>
+          {/* <DuplexIcon color={theme === 'dark' ? COLOR.dark.primary.shade : COLOR.light.primary.shade} /> */}
+          <Icon src={DuplexIcon} />
+        </Link>
+        <Link to={toPath(LOCATIONS.home)}>
           <MdLayers />
         </Link>
-        <Link to={toPath(LOCATIONS.conversation)}>
+        <Link to={toPath(LOCATIONS.conversation, ' ')}>
           <FaLayerGroup />
         </Link>
       </Items>
@@ -32,7 +42,7 @@ const Wrapper = styled.div`
   flex-direction: column;
   align-items: center;
   justify-content: space-between;
-  padding-top: 160px;
+  padding-top: 40px;
   padding-bottom: 30px;
   background: ${({ theme }) => theme.bg.tint};
   z-index: 100;
@@ -53,13 +63,17 @@ const Items = styled.div`
     margin-bottom: 40px;
   }
 
-  & > a:nth-child(1) > svg {
+  & > a:nth-child(2) > svg {
     width: 32px;
     height: 34px;
   }
 
-  & > a:nth-child(2) > svg {
+  & > a:nth-child(3) > svg {
     width: 26px;
     height: 26px;
   }
+`
+
+const Icon = styled.img`
+  margin-bottom: 80px;
 `

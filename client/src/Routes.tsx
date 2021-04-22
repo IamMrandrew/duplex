@@ -39,6 +39,7 @@ export const LOCATIONS = {
   },
   invitation: 'invitation/:id',
   login: 'login',
+  signup: 'signup',
   chat: 'chat/:id',
   conversation: 'conversation/:id',
 }
@@ -81,6 +82,9 @@ const Routes = (props: Props): ReactElement => {
             <Onboarding />
           </Route>
           <Route exact path={toPath(LOCATIONS.login)}>
+            <Login />
+          </Route>
+          <Route exact path={toPath(LOCATIONS.signup)}>
             <Login />
           </Route>
           <ChatProvider>
