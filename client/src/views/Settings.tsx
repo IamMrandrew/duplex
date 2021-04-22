@@ -73,6 +73,7 @@ const Wrapper = styled.div`
     padding: 12px;
     transform: ${(props: { showNav: boolean }) => (props.showNav ? 'translateX(85px)' : 'translateX(0)')};
     transition: all 300ms cubic-bezier(0.18, 0.89, 0.43, 1.19);
+    height: 100vh;
   }
 `
 const Header = styled.div`

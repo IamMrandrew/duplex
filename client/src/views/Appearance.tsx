@@ -46,6 +46,7 @@ const Wrapper = styled.div`
   background: ${({ theme }) => theme.bg.tint};
   color: ${({ theme }) => theme.font.primary};
   transition: 0.1s;
+  height: 100vh;
 `
 
 const Content = styled.div`

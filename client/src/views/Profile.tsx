@@ -67,6 +67,7 @@ export default Profile
 const Wrapper = styled.div`
   background: ${({ theme }) => theme.bg.tint};
   color: ${({ theme }) => theme.font.primary};
+  height: 100vh;
 `
 
 const Header = styled.div`
