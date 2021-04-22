@@ -95,7 +95,7 @@ export const COLOR = {
       sender: '#F9F9F9',
     },
     nav: {
-      main: '#455973',
+      main: '#4E5460',
     },
   },
 }
