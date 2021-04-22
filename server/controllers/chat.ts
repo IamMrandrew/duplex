@@ -51,6 +51,7 @@ const Controller = {
         })
     } else {
       chat.messages.push({
+        _id: new mongoose.Types.ObjectId(),
         content:
           chat.mode === 'Conversation'
             ? user.profile[1].name + ' created a spaces'
@@ -77,6 +78,7 @@ const Controller = {
           .then(async (result: any) => {
             const chat = await Chat.findOne({ _id: req.params.id })
             chat.messages.push({
+              _id: new mongoose.Types.ObjectId(),
               content: chat.mode === 'Conversation' ? user.profile[1].name : user.profile[0].name + ' joined',
             })
             chat
