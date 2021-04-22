@@ -81,7 +81,13 @@ const VideoContainer: React.FC<Props> = ({ displayingVideo, setDisplayingVideo, 
             peer,
             peerID: payload.callerID,
           }
-          setPeers([...peers, peerObj])
+          setPeers((users) => {
+            console.log(users)
+            console.log(peerObj)
+            const newUsers = users.filter((user) => user.peerID !== peerObj.peerID)
+            return [...newUsers, peerObj]
+          })
+          // setPeers([...peers, peerObj])
         }
       })
 
@@ -140,7 +146,7 @@ const VideoContainer: React.FC<Props> = ({ displayingVideo, setDisplayingVideo, 
   }
 
   const toggleSelfMute = () => {
-    if(userStream && userStream.current){
+    if (userStream && userStream.current) {
       userStream.current.getAudioTracks()[0].enabled = !userStream.current?.getAudioTracks()[0].enabled
       setMuteSelf(!muteSelf)
     }
@@ -148,13 +154,13 @@ const VideoContainer: React.FC<Props> = ({ displayingVideo, setDisplayingVideo, 
 
   const toggleOthersMute = () => {
     const newPeers = peers
-    newPeers.map((peer) => peer.muted = !muteOthers)
+    newPeers.map((peer) => (peer.muted = !muteOthers))
     setPeers(newPeers)
     setMuteOthers(!muteOthers)
   }
 
   const toggleCloseCam = () => {
-    if(userStream && userStream.current){
+    if (userStream && userStream.current) {
       userStream.current.getVideoTracks()[0].enabled = !userStream.current?.getVideoTracks()[0].enabled
       setCloseCam(!closeCam)
     }
@@ -178,7 +184,7 @@ const VideoContainer: React.FC<Props> = ({ displayingVideo, setDisplayingVideo, 
       <VideoWrapper>
         <Video ref={userVideo as MutableRefObject<HTMLVideoElement>} muted autoPlay playsInline />
         {peers.map((peer) => (
-          <PeerCell key={peer.peerID} peer={peer.peer} muted={peer.muted}/>
+          <PeerCell key={peer.peerID} peer={peer.peer} muted={peer.muted} />
         ))}
       </VideoWrapper>
       <OperationRow>
@@ -216,7 +222,7 @@ const PeerCell: React.FC<PeerCellProps> = ({ peer, muted = false }) => {
     })
   }, [])
 
-  return <Video playsInline autoPlay ref={ref} muted={muted}/>
+  return <Video playsInline autoPlay ref={ref} muted={muted} />
 }
 
 const Wrapper = styled.div`
@@ -245,6 +251,8 @@ const Video = styled.video`
   width: 47.5%;
   border-radius: 18px;
   margin-bottom: 1%;
+  object-fit: cover;
+
   @media (max-width: ${MEDIA_BREAK}) {
     width: calc(100vw - 24px);
     height: 250px;
