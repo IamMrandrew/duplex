@@ -29,12 +29,14 @@ const Controller = {
       mode: req.body.mode,
       messages: [],
     })
-    chat.users.push(req.userData.userId)
     const user = await User.findById(req.userData.userId)
+    chat.users.push(user)
     if (req.body.type === 'Direct') {
       User.findOne({ username: req.body.username })
+        .populate('profile')
         .then((user: any) => {
-          chat.users.push(user._id)
+          chat.users.push(user)
+          console.log('The user', chat)
           chat
             .save()
             .then((chat: any) => {
