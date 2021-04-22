@@ -81,7 +81,13 @@ const VideoContainer: React.FC<Props> = ({ displayingVideo, setDisplayingVideo, 
             peer,
             peerID: payload.callerID,
           }
-          setPeers([...peers, peerObj])
+          setPeers(users => {
+            console.log(users)
+            console.log(peerObj)
+            const newUsers = users.filter((user)=>user.peerID !== peerObj.peerID)
+            return [...newUsers, peerObj]
+          })
+          // setPeers([...peers, peerObj])
         }
       })
 
