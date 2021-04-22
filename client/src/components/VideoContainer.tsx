@@ -154,7 +154,10 @@ const VideoContainer: React.FC<Props> = ({ displayingVideo, setDisplayingVideo, 
   }
 
   const toggleCloseCam = () => {
-    setCloseCam(!closeCam)
+    if(userStream && userStream.current){
+      userStream.current.getVideoTracks()[0].enabled = !userStream.current?.getVideoTracks()[0].enabled
+      setCloseCam(!closeCam)
+    }
   }
 
   const backToChat = () => {
