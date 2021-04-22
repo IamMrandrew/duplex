@@ -26,15 +26,27 @@ const VideoContainer: React.FC<Props> = ({ displayingVideo, setDisplayingVideo, 
   const [peers, setPeers] = useState<any[]>([]) // for rendering
   const userVideo = useRef() as MutableRefObject<HTMLVideoElement> // user itself
   const peersRef = useRef<any[]>([]) // for sending signal
-  const [muteSelf, setMuteSelf] = useState(true)
+  const [muteSelf, setMuteSelf] = useState(false)
   const [muteOthers, setMuteOthers] = useState(false)
   const [closeCam, setCloseCam] = useState(false)
   const userStream = useRef<MediaStream>()
 
   useEffect(() => {
-    console.log('PEERS', peers)
-  }, [peers])
-  useEffect(() => {
+    startStreaming()
+    return () => {
+      console.log('leaving room')
+      socket?.off('all users')
+      socket?.off('user joined')
+      socket?.off('receiving returned signal')
+      socket?.off('user left')
+      socket?.emit('leave room')
+      userStream.current?.getTracks().forEach((track: MediaStreamTrack) => {
+        track.stop()
+      })
+    }
+  }, [])
+
+  const startStreaming = () => {
     navigator.mediaDevices.getUserMedia({ video: videoConstraints, audio: true }).then((stream: MediaStream) => {
       console.log('joining room')
       userStream.current = stream
@@ -69,8 +81,6 @@ const VideoContainer: React.FC<Props> = ({ displayingVideo, setDisplayingVideo, 
             peer,
             peerID: payload.callerID,
           }
-          console.log(peers)
-          console.log(peerObj)
           setPeers([...peers, peerObj])
         }
       })
@@ -97,18 +107,7 @@ const VideoContainer: React.FC<Props> = ({ displayingVideo, setDisplayingVideo, 
         // })
       })
     })
-    return () => {
-      console.log('leaving room')
-      socket?.off('all users')
-      socket?.off('user joined')
-      socket?.off('receiving returned signal')
-      socket?.off('user left')
-      socket?.emit('leave room')
-      userStream.current?.getTracks().forEach((track: MediaStreamTrack) => {
-        track.stop()
-      })
-    }
-  }, [])
+  }
 
   const createPeer = (userToSignal: any, callerID: any, stream: any) => {
     const peer = new Peer({
@@ -141,10 +140,16 @@ const VideoContainer: React.FC<Props> = ({ displayingVideo, setDisplayingVideo, 
   }
 
   const toggleSelfMute = () => {
-    setMuteSelf(!muteSelf)
+    if(userStream && userStream.current){
+      userStream.current.getAudioTracks()[0].enabled = !userStream.current?.getAudioTracks()[0].enabled
+      setMuteSelf(!muteSelf)
+    }
   }
 
   const toggleOthersMute = () => {
+    const newPeers = peers
+    newPeers.map((peer) => peer.muted = !muteOthers)
+    setPeers(newPeers)
     setMuteOthers(!muteOthers)
   }
 
@@ -170,7 +175,7 @@ const VideoContainer: React.FC<Props> = ({ displayingVideo, setDisplayingVideo, 
       <VideoWrapper>
         <Video ref={userVideo as MutableRefObject<HTMLVideoElement>} muted autoPlay playsInline />
         {peers.map((peer) => (
-          <PeerCell key={peer.peerID} peer={peer.peer} />
+          <PeerCell key={peer.peerID} peer={peer.peer} muted={peer.muted}/>
         ))}
       </VideoWrapper>
       <OperationRow>
@@ -178,7 +183,7 @@ const VideoContainer: React.FC<Props> = ({ displayingVideo, setDisplayingVideo, 
           Back to chat
         </BackToChatBtn>
         <VideoOperationRow>
-          <MuteSelfBtn onClick={toggleSelfMute}>{muteSelf ? <AiOutlineAudio /> : <AiOutlineAudioMuted />}</MuteSelfBtn>
+          <MuteSelfBtn onClick={toggleSelfMute}>{muteSelf ? <AiOutlineAudioMuted /> : <AiOutlineAudio />}</MuteSelfBtn>
           <CloseCamBtn onClick={toggleCloseCam}>{closeCam ? <FiCameraOff /> : <FiCamera />}</CloseCamBtn>
           <MuteOthersBtn onClick={toggleOthersMute}>
             {muteOthers ? <BsFillVolumeMuteFill /> : <BsFillVolumeUpFill />}
@@ -196,9 +201,10 @@ export default VideoContainer
 
 type PeerCellProps = {
   peer: Peer.Instance
+  muted: boolean
 }
 
-const PeerCell: React.FC<PeerCellProps> = ({ peer }) => {
+const PeerCell: React.FC<PeerCellProps> = ({ peer, muted = false }) => {
   const ref = useRef() as MutableRefObject<HTMLVideoElement>
 
   useEffect(() => {
@@ -207,7 +213,7 @@ const PeerCell: React.FC<PeerCellProps> = ({ peer }) => {
     })
   }, [])
 
-  return <Video playsInline autoPlay ref={ref} />
+  return <Video playsInline autoPlay ref={ref} muted={muted}/>
 }
 
 const Wrapper = styled.div`

@@ -6,15 +6,23 @@ import { Avatar } from '@material-ui/core'
 import { Link } from 'react-router-dom'
 import { LOCATIONS, toPath } from '../Routes'
 import { MEDIA_BREAK } from './Layout'
+import DuplexIcon from './DuplexIcon'
+import { COLOR } from './GlobalStyle'
+import { useSettingContext } from '../contexts/SettingContext'
 
 const NavBar = (): ReactElement => {
+  const { theme } = useSettingContext().state
+
   return (
     <Wrapper>
+      <Link to={toPath(LOCATIONS.home)}>
+        <DuplexIcon color={theme === 'dark' ? COLOR.dark.primary.shade : COLOR.light.primary.shade} />
+      </Link>
       <Items>
         <Link to={toPath(LOCATIONS.home)}>
           <MdLayers />
         </Link>
-        <Link to={toPath(LOCATIONS.conversation)}>
+        <Link to={toPath(LOCATIONS.conversation, ' ')}>
           <FaLayerGroup />
         </Link>
       </Items>
@@ -32,7 +40,7 @@ const Wrapper = styled.div`
   flex-direction: column;
   align-items: center;
   justify-content: space-between;
-  padding-top: 160px;
+  padding-top: 10px;
   padding-bottom: 30px;
   background: ${({ theme }) => theme.bg.tint};
   z-index: 100;

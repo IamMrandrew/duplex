@@ -186,35 +186,39 @@ const ChatArea: React.FC<Props> = () => {
                   : chat.users.find((user: any) => user._id !== userState._id).profile[0].name
                 : ''}
             </Name>
-            <OperationWrapper>
-              {
-                chat && chat.type === 'Spaces' && (
-                  <Tooltip title='Invite People'>
-                    <IconBtn onClick={()=>{setShowModal(true)}}>
-                      <BsFillPersonPlusFill />
-                    </IconBtn>
-                  </Tooltip>
-                )
-              }
-              <Tooltip title={videoCalling && !displayingVideo ? 'Back to the call' : 'Video Call'}>
-                {videoCalling ? (
-                  <Identifier badgeContent=" " color="error" overlap="circle" variant="dot">
+            {
+              chat && (
+                <OperationWrapper>
+                {
+                  chat && chat.type === 'Spaces' && (
+                    <Tooltip title='Invite People'>
+                      <IconBtn onClick={()=>{setShowModal(true)}}>
+                        <BsFillPersonPlusFill />
+                      </IconBtn>
+                    </Tooltip>
+                  )
+                }
+                <Tooltip title={videoCalling && !displayingVideo ? 'Back to the call' : 'Video Call'}>
+                  {videoCalling ? (
+                    <Identifier badgeContent=" " color="error" overlap="circle" variant="dot">
+                      <IconBtn onClick={vidoeCallClickHandler}>
+                        <BsFillCameraVideoFill />
+                      </IconBtn>
+                    </Identifier>
+                  ) : (
                     <IconBtn onClick={vidoeCallClickHandler}>
                       <BsFillCameraVideoFill />
                     </IconBtn>
-                  </Identifier>
-                ) : (
-                  <IconBtn onClick={vidoeCallClickHandler}>
-                    <BsFillCameraVideoFill />
-                  </IconBtn>
-                )}
-              </Tooltip>
-              <Tooltip title="Phone Call">
-                <IconBtn>
-                  <AiFillPhone />
-                </IconBtn>
-              </Tooltip>
-            </OperationWrapper>
+                  )}
+                  </Tooltip>
+                  <Tooltip title="Phone Call">
+                    <IconBtn>
+                      <AiFillPhone />
+                    </IconBtn>
+                  </Tooltip>
+                </OperationWrapper>
+              )
+            }
           </TitleWrapper>
           {isMobile() && <Positioning />}
         </Header>
@@ -267,6 +271,7 @@ const Header = styled.div`
   justify-content: flex-start;
   background-color: ${({ theme }) => theme.bg.tint};
   box-shadow: 0 3px 2px -2px ${({ theme }) => theme.divider};
+  min-height: 98px;
   @media (max-width: ${MEDIA_BREAK}) {
     padding: 5px;
   }

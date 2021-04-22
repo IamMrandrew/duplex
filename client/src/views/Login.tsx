@@ -5,11 +5,17 @@ import styled from 'styled-components'
 import { MEDIA_BREAK } from '../components/Layout'
 import { useUserContext } from '../contexts/UserContext'
 import { checkIntegrity, formNoErr, toData, VALIDATORS } from '../formIntegrity'
+import { LOCATIONS } from '../Routes'
 import UserServices from '../services/UserService'
+import { getUrlLastSegmant } from '../utils'
 
 const Login = (): ReactElement => {
 
-  const [isLogin, setIsLogin] = useState(true)
+  const redirectAs = () => {
+    return getUrlLastSegmant() === LOCATIONS.login ? true : false
+  }
+
+  const [isLogin, setIsLogin] = useState(redirectAs())
 
   return <Wrapper>{isLogin ? <LoginForm setIsLogin={setIsLogin} /> : <SignupForm setIsLogin={setIsLogin} />}</Wrapper>
 }
@@ -142,7 +148,7 @@ const SignupForm = (props: FormProps) => {
         helperText={input.password.errMsg}
       />
       <Btn variant="contained" onClick={handleSubmit}>
-        Login
+        Sign up
       </Btn>
       <Link onClick={() => setIsLogin(true)}>Already have an account?</Link>
     </Form>

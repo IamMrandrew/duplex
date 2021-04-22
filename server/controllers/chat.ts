@@ -82,7 +82,7 @@ const Controller = {
               .catch((err: any) => {
                 res.status(400).json(err)
               })
-            res.status(200).json('Successfully joined')
+            // res.status(200).json('Successfully joined')
           })
           .catch((error: any) => {
             res.status(500).json('Wrong id or joining same spaces or trying to join a direct message')
