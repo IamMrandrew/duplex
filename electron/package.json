@@ -8,6 +8,7 @@
     "prod:build-mac": "tsc && electron-builder -m",
     "prod:build-linux": "tsc && electron-builder -l",
     "prod:build-win": "tsc && electron-builder -w",
+    "prod:build": "tsc && electron-builder -mwl",
     "start": "yarn dev:build && electron ./build/main.js"
   },
   "build": {
