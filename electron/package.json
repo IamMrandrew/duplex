@@ -5,7 +5,9 @@
   "main": "build/main.js",
   "scripts": {
     "dev:build": "tsc",
-    "prod:build": "tsc && electron-builder -mwl",
+    "prod:build-mac": "tsc && electron-builder -m",
+    "prod:build-linux": "tsc && electron-builder -l",
+    "prod:build-win": "tsc && electron-builder -w",
     "start": "yarn dev:build && electron ./build/main.js"
   },
   "build": {
