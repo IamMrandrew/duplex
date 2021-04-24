@@ -17,6 +17,15 @@
     "directories": {
       "buildResources": "assets",
       "output": "build/installer"
+    },
+    "mac": {
+      "icon": "assets/icon.ico"
+    },
+    "win": {
+      "icon": "assets/icon.ico"
+    },
+    "linux": {
+      "icon": "assets/icon.ico"
     }
   },
   "dependencies": {
