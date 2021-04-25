@@ -22,7 +22,12 @@
       "output": "build/installer"
     },
     "mac": {
-      "icon": "assets/icon.ico"
+      "icon": "assets/icon.ico",
+      "hardenedRuntime": true,
+      "entitlements": "entitlements.mac.plist",
+      "extendInfo": {
+        "NSMicrophoneUsageDescription": "Please give us access to your microphone"
+      }
     },
     "win": {
       "icon": "assets/icon.ico"
