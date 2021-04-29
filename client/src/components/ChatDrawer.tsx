@@ -59,7 +59,7 @@ const ChatDrawer: React.FC<Props> = ({
       </Tooltip>
       <Users>
         {onlineUsers.map((user: onlineUser) => (
-          <User show={show}>
+          <User key={user.id} show={show}>
             <IconWrapper
               overlap="circle"
               anchorOrigin={{
@@ -88,7 +88,7 @@ export default ChatDrawer
 
 const Wrapper = styled.div`
   position: absolute;
-  bottom: 100px;
+  bottom: 80px;
   height: ${(props: { show: boolean }) => (props.show ? '137px' : '0px')};
   padding: ${(props: { show: boolean }) => (props.show ? '32px 32px' : '12px 32px')};
   left: 0;
@@ -102,7 +102,7 @@ const Wrapper = styled.div`
   transition: all 300ms cubic-bezier(0.18, 0.89, 0.43, 1.19);
 
   @media (max-width: ${MEDIA_BREAK}) {
-    bottom: 98px;
+    bottom: 80px;
   }
 `
 
