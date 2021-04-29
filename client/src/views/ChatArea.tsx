@@ -32,7 +32,11 @@ const ChatArea: React.FC<Props> = () => {
   const { isMobile } = useResponsive()
   const contentRef = useRef() as RefObject<HTMLDivElement>
 
+  const [muteSelf, setMuteSelf] = useState(false)
+  const [muteOthers, setMuteOthers] = useState(false)
+
   const [onlineUsers, setOnlineUsers]: any = useState([])
+  const [audioChat, setAudioChat] = useState(true) // audio chat mode which only access to the microphone
 
   // video call vars
   const [videoCalling, setVideoCalling] = useState(false) // terminate video call
@@ -48,6 +52,14 @@ const ChatArea: React.FC<Props> = () => {
     if (setVideoCalling) {
       setVideoCalling(true)
       setDisplayingVideo(true)
+      setAudioChat(false)
+    }
+  }
+
+  const audioChatClickHandler = () => {
+    if (setVideoCalling) {
+      setVideoCalling(!videoCalling)
+      setAudioChat(true)
     }
   }
 
@@ -207,7 +219,15 @@ const ChatArea: React.FC<Props> = () => {
                     </IconBtn>
                   </Tooltip>
                 )}
-                <Tooltip title={videoCalling && !displayingVideo ? 'Back to the call' : 'Video Call'}>
+                <Tooltip
+                  title={
+                    videoCalling && !displayingVideo
+                      ? audioChat
+                        ? 'Switch to Video call '
+                        : 'Back to the call'
+                      : 'Video Call'
+                  }
+                >
                   {videoCalling ? (
                     <Identifier badgeContent=" " color="error" overlap="circle" variant="dot">
                       <IconBtn onClick={vidoeCallClickHandler}>
@@ -220,11 +240,6 @@ const ChatArea: React.FC<Props> = () => {
                     </IconBtn>
                   )}
                 </Tooltip>
-                <Tooltip title="Phone Call">
-                  <IconBtn>
-                    <AiFillPhone />
-                  </IconBtn>
-                </Tooltip>
               </OperationWrapper>
             )}
           </TitleWrapper>
@@ -235,25 +250,40 @@ const ChatArea: React.FC<Props> = () => {
             displayingVideo={displayingVideo}
             setDisplayingVideo={setDisplayingVideo}
             setVideoCalling={setVideoCalling}
+            audioChat={audioChat}
+            muteSelf={muteSelf}
+            setMuteSelf={setMuteSelf}
+            muteOthers={muteOthers}
+            setMuteOthers={setMuteOthers}
           />
         )}
         {!displayingVideo && (
-          <Content ref={contentRef}>
-            {messages &&
-              messages.map((message: any, index: number) => (
-                <Message
-                  key={message._id}
-                  message={message}
-                  incoming={checkIfIncoming(message)}
-                  continuing={checkIfContinuous(message, index)}
-                  endContinuing={checkIfEndContinuous(message, index)}
-                  type={chat ? chat.type : ''}
-                  mode={chat ? chat.mode : ''}
-                />
-              ))}
-          </Content>
+          <>
+            <Content ref={contentRef}>
+              {messages &&
+                messages.map((message: any, index: number) => (
+                  <Message
+                    key={message._id}
+                    message={message}
+                    incoming={checkIfIncoming(message)}
+                    continuing={checkIfContinuous(message, index)}
+                    endContinuing={checkIfEndContinuous(message, index)}
+                    type={chat ? chat.type : ''}
+                    mode={chat ? chat.mode : ''}
+                  />
+                ))}
+            </Content>
+            <ChatDrawer
+              onlineUsers={onlineUsers}
+              mode={chat ? chat.type : ''}
+              audioChatClickHandler={audioChatClickHandler}
+              muteSelf={muteSelf}
+              setMuteSelf={setMuteSelf}
+              muteOthers={muteOthers}
+              setMuteOthers={setMuteOthers}
+            />
+          </>
         )}
-        <ChatDrawer onlineUsers={onlineUsers} mode={chat ? chat.type : ''} />
         <InputWrapper onSubmit={sendMessageHandler}>
           <Input value={input} onChange={inputHandler} />
           <InputButton>

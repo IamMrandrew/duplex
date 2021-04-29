@@ -13,6 +13,11 @@ type Props = {
   displayingVideo: boolean
   setDisplayingVideo: Dispatch<SetStateAction<boolean>>
   setVideoCalling: Dispatch<SetStateAction<boolean>>
+  audioChat: boolean
+  muteSelf: boolean
+  setMuteSelf: Dispatch<SetStateAction<boolean>>
+  muteOthers: boolean
+  setMuteOthers: Dispatch<SetStateAction<boolean>>
 }
 
 const videoConstraints = {
@@ -20,19 +25,29 @@ const videoConstraints = {
   // width: window.innerWidth / 2,
 }
 
-const VideoContainer: React.FC<Props> = ({ displayingVideo, setDisplayingVideo, setVideoCalling }) => {
+const VideoContainer: React.FC<Props> = ({
+  displayingVideo,
+  setDisplayingVideo,
+  setVideoCalling,
+  audioChat,
+  muteSelf,
+  setMuteSelf,
+  muteOthers,
+  setMuteOthers,
+}) => {
   const { id } = useParams<{ id: string }>()
   const { socket } = useSocketContext()
   const [peers, setPeers] = useState<any[]>([]) // for rendering
   const userVideo = useRef() as MutableRefObject<HTMLVideoElement> // user itself
   const peersRef = useRef<any[]>([]) // for sending signal
-  const [muteSelf, setMuteSelf] = useState(false)
-  const [muteOthers, setMuteOthers] = useState(false)
+  // const [muteSelf, setMuteSelf] = useState(false)
+  // const [muteOthers, setMuteOthers] = useState(false)
   const [closeCam, setCloseCam] = useState(false)
   const userStream = useRef<MediaStream>()
 
   useEffect(() => {
     startStreaming()
+
     return () => {
       console.log('leaving room')
       socket?.off('all users')
@@ -51,6 +66,15 @@ const VideoContainer: React.FC<Props> = ({ displayingVideo, setDisplayingVideo, 
       console.log('joining room')
       userStream.current = stream
       userVideo.current.srcObject = userStream.current
+      if (audioChat) {
+        if (userStream && userStream.current) {
+          userStream.current.getVideoTracks()[0].enabled = false
+        }
+      } else {
+        if (userStream && userStream.current) {
+          userStream.current.getVideoTracks()[0].enabled = true
+        }
+      }
       socket?.emit('join room', id)
       socket?.on('all users', (users) => {
         const peers: any[] = []
@@ -115,6 +139,17 @@ const VideoContainer: React.FC<Props> = ({ displayingVideo, setDisplayingVideo, 
     })
   }
 
+  useEffect(() => {
+    if (audioChat) {
+      if (userStream && userStream.current) {
+        userStream.current.getVideoTracks()[0].enabled = false
+      }
+    } else {
+      if (userStream && userStream.current) {
+        userStream.current.getVideoTracks()[0].enabled = true
+      }
+    }
+  }, [audioChat])
   const createPeer = (userToSignal: any, callerID: any, stream: any) => {
     const peer = new Peer({
       initiator: true,
@@ -146,18 +181,24 @@ const VideoContainer: React.FC<Props> = ({ displayingVideo, setDisplayingVideo, 
   }
 
   const toggleSelfMute = () => {
-    if (userStream && userStream.current) {
-      userStream.current.getAudioTracks()[0].enabled = !userStream.current?.getAudioTracks()[0].enabled
-      setMuteSelf(!muteSelf)
-    }
+    setMuteSelf(!muteSelf)
   }
 
+  useEffect(() => {
+    if (userStream && userStream.current) {
+      userStream.current.getAudioTracks()[0].enabled = !userStream.current?.getAudioTracks()[0].enabled
+    }
+  }, [muteSelf])
+
   const toggleOthersMute = () => {
+    setMuteOthers(!muteOthers)
+  }
+
+  useEffect(() => {
     const newPeers = peers
     newPeers.map((peer) => (peer.muted = !muteOthers))
     setPeers(newPeers)
-    setMuteOthers(!muteOthers)
-  }
+  }, [muteOthers])
 
   const toggleCloseCam = () => {
     if (userStream && userStream.current) {
@@ -261,7 +302,7 @@ const Video = styled.video`
 
 const OperationRow = styled.div`
   position: sticky;
-  bottom: 0;
+  bottom: 30px;
   display: flex;
   flex-direction: row;
   width: 100%;
