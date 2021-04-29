@@ -50,6 +50,9 @@ const Controller = {
       return false
     }
   },
+  getUserInfo: async (extSocket: any) => {
+    return await User.findById(extSocket.userData.userId)
+  },
 }
 
 export default Controller
