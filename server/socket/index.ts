@@ -35,12 +35,11 @@ export default (httpServer: any) => {
       extSocket.broadcast.emit('user left', extSocket.id)
     })
 
-    extSocket.on('join', ({ id }) => {
+    extSocket.on('join', async ({ id }) => {
       extSocket.join(id)
-      console.log(users)
+      const userInfo = await controller.getUserInfo(extSocket)
       if (!users.find((user: any) => user.id === extSocket.userData.userId))
-        users.push({ id: extSocket.userData.userId, name: extSocket.userData.email, roomId: id })
-      console.log('after', users)
+        users.push({ id: extSocket.userData.userId, name: userInfo.username, roomId: id })
       io.to(id).emit(
         'newUsers',
         users.filter((user: any) => user.roomId === id),
@@ -50,9 +49,7 @@ export default (httpServer: any) => {
 
     extSocket.on('leave', ({ id }) => {
       extSocket.leave(id)
-      console.log(extSocket.userData.userId)
       users = users.filter((user: any) => user.id !== extSocket.userData.userId)
-      console.log('after leave', users)
       io.to(id).emit(
         'newUsers',
         users.filter((user: any) => user.roomId === id),

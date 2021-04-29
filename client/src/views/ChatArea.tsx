@@ -18,6 +18,7 @@ import VideoContainer from '../components/VideoContainer'
 import { COLOR } from '../components/GlobalStyle'
 import InviteModal from '../components/InviteModal'
 import ChatService from '../services/ChatService'
+import ChatDrawer from '../components/ChatDrawer'
 
 type Props = {
   children?: ReactElement
@@ -31,7 +32,7 @@ const ChatArea: React.FC<Props> = () => {
   const { isMobile } = useResponsive()
   const contentRef = useRef() as RefObject<HTMLDivElement>
 
-  const [onlineUsers, setOnlineUsers] = useState([])
+  const [onlineUsers, setOnlineUsers]: any = useState([])
 
   // video call vars
   const [videoCalling, setVideoCalling] = useState(false) // terminate video call
@@ -252,6 +253,7 @@ const ChatArea: React.FC<Props> = () => {
               ))}
           </Content>
         )}
+        <ChatDrawer onlineUsers={onlineUsers} />
         <InputWrapper onSubmit={sendMessageHandler}>
           <Input value={input} onChange={inputHandler} />
           <InputButton>
@@ -267,6 +269,7 @@ export default ChatArea
 
 const Wrapper = styled.div`
   background-color: ${({ theme }) => theme.bg.tint};
+  position: relative;
 `
 
 const Header = styled.div`
