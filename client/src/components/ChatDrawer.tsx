@@ -89,8 +89,8 @@ export default ChatDrawer
 const Wrapper = styled.div`
   position: absolute;
   bottom: 80px;
-  height: ${(props: { show: boolean }) => (props.show ? '137px' : '0px')};
-  padding: ${(props: { show: boolean }) => (props.show ? '32px 32px' : '12px 32px')};
+  height: ${(props: { show: boolean }) => (props.show ? '140px' : '0px')};
+  padding: ${(props: { show: boolean }) => (props.show ? '32px 32px' : '20px 32px')};
   left: 0;
   width: 100%;
   border-radius: 30px 30px 0px 0px;
@@ -108,7 +108,7 @@ const Wrapper = styled.div`
 
 const ToggleButton = styled.div`
   position: absolute;
-  top: 5px;
+  top: 3px;
   left: 50%;
   transform: ${(props: { show: boolean }) => (props.show ? 'translateX(50%)' : 'translateX(50%) rotate(180deg)')};
   color: ${({ theme }) => theme.nav.main};
