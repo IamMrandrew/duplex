@@ -183,7 +183,7 @@ const ChatArea: React.FC<Props> = () => {
             </BackButton>
           )}
           <TitleWrapper>
-            <Icon src={chat ? chat.type === 'Conversation' ? getPicture(1) : getPicture(0) : ''} />
+            <Icon src={chat ? chat.mode === 'Conversation' ? getPicture(1) : getPicture(0) : ''} />
             <Name>
               {chat
                 ? chat.type === 'Spaces'

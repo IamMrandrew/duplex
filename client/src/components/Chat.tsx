@@ -51,7 +51,7 @@ const Chat: React.FC<Props> = ({ chat }) => {
           $isActive={!!match}
         >
           <IconWrapper>
-            <Icon src={chat.type === 'Conversation' ? getPicture(1) : getPicture(0)} />
+            <Icon src={chat.mode === 'Conversation' ? getPicture(1) : getPicture(0)} />
           </IconWrapper>
           <ChatWrapper>
             <Name>
