@@ -7,6 +7,7 @@ import ChatRoutes from './routes/chat'
 import connectDB from './DB'
 import middlewares from './middleware'
 import socket from './socket'
+import { AWSRoutes } from './routes/aws'
 
 require('dotenv').config()
 
@@ -27,6 +28,7 @@ const router = express.Router()
 
 routes.push(new UserRoutes(router))
 routes.push(new ChatRoutes(router))
+routes.push(new AWSRoutes(router))
 
 app.use('/api', router)
 

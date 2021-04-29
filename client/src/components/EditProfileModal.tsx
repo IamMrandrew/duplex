@@ -4,6 +4,9 @@ import Overlay from './Overlay'
 import UserServices from '../services/UserService'
 import { useUserContext } from '../contexts/UserContext'
 import { MEDIA_BREAK } from './Layout'
+import { Avatar } from '@material-ui/core'
+import ImageUploading, { ImageListType } from 'react-images-uploading'
+import { uuidv4 } from '../utils'
 
 type Props = {
   showModal: boolean
@@ -15,6 +18,7 @@ const EditProfileModal: React.FC<Props> = ({ showModal, setShowModal, selected }
   const userContext = useUserContext()
   const [name, setName] = useState<string>('')
   const [bio, setBio] = useState<string>('')
+  const [image, setImage] = useState<ImageListType>([])
 
   useEffect(() => {
     if (userContext.state && userContext.state.profile) {
@@ -22,6 +26,10 @@ const EditProfileModal: React.FC<Props> = ({ showModal, setShowModal, selected }
       setBio(userContext.state.profile[selected].bio)
     }
   }, [userContext.state.profile, selected])
+
+  useEffect(() => {
+    setImage([{dataURL: userContext.state.profile[selected].picture}])
+  }, [showModal])
 
   const setNameHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
     setName(e.target.value)
@@ -31,16 +39,44 @@ const EditProfileModal: React.FC<Props> = ({ showModal, setShowModal, selected }
     setBio(e.target.value)
   }
 
+  const uploadPicture = () => {
+    const imageToSend = new File([image[0].file as File], uuidv4(), { type: image[0].file?.type})
+    UserServices.signS3({
+      fileName: imageToSend.name,
+      fileType: imageToSend.type
+    }).then((awsRes:any) => {
+      UserServices.uploadProfilePicture(imageToSend, awsRes.data.url as string)
+        .then(() => {
+          const data = { name, bio, selected, picture: awsRes.data.url }
+          console.log(data);
+          UserServices.updateProfile(data)
+          .then((res) => {
+            userContext.setState(res.data)
+          })
+          .catch((err) => {
+            console.log(err)
+          })
+        })
+    })
+  }
+
+  const imageUploadingHandler = (imageList: ImageListType) => {
+    setImage(imageList)
+  }
+
   const updateProfileHandler = () => {
     const data = { name, bio, selected }
     setShowModal(!showModal)
-    UserServices.updateProfile(data)
+    if(image.length>0) uploadPicture()
+    else {
+      UserServices.updateProfile(data)
       .then((res) => {
         userContext.setState(res.data)
       })
       .catch((err) => {
         console.log(err)
       })
+    }
   }
 
   return (
@@ -49,6 +85,19 @@ const EditProfileModal: React.FC<Props> = ({ showModal, setShowModal, selected }
       <Wrapper showModal={showModal}>
         <Card showModal={showModal}>
           <Title>Edit profile</Title>
+          <IconWrapper>
+            <ImageUploading maxNumber={1} value={image as ImageListType} onChange={imageUploadingHandler}>
+            {({ imageList, onImageUpload, onImageUpdate, dragProps }) => (
+              <>
+                {
+                  image.length > 0 ? 
+                  <Icon onClick={() => {onImageUpdate(0)}} src={image[0]?.dataURL} />:
+                  <Icon onClick={onImageUpload} src={image[0]?.dataURL} />
+                }
+              </>
+            )}
+            </ImageUploading>
+          </IconWrapper>
           <Label>Display name</Label>
           <Input onChange={setNameHandler} value={name} placeholder={'What'} />
           <Label>Bio</Label>
@@ -137,4 +186,17 @@ const Button = styled.button`
   margin-right: left;
   color: white;
   cursor: pointer;
+`
+const IconWrapper = styled.div`
+  display: flex;
+  justify-content: center;
+  margin: 5px 0 5px 0;
+`
+
+const Icon = styled(Avatar)`
+  &.MuiAvatar-root{
+    width: 100px;
+    height: 100px;
+    cursor: pointer;
+  }
 `

@@ -16,6 +16,12 @@ const UserService = {
   updateProfile: (data: any) => {
     return axios.put('/api/user', data, { withCredentials: true })
   },
+  signS3: (data:any) => {
+    return axios.post('/api/sign-s3', data, {withCredentials: true})
+  },
+  uploadProfilePicture: (file: File, url: string) => {
+    return axios.put(url, file, {headers: { 'Content-Type': file.type, acl: 'public-read' }})
+  }
 }
 
 export default UserService

@@ -165,6 +165,13 @@ const ChatArea: React.FC<Props> = () => {
     }
   }, [socket, id, messages, chatContext])
 
+  const getPicture = (profileIndex: number):string => {
+    if(chat.type === 'Spaces')
+      return chat.users[0]?.profile[profileIndex].picture
+    else
+      return chat.users.find((user: any) => user?._id !== userState.state?._id).profile[profileIndex].picture
+  }
+
   return (
     <>
       <InviteModal showModal={showModal} setShowModal={setShowModal} />
@@ -176,7 +183,7 @@ const ChatArea: React.FC<Props> = () => {
             </BackButton>
           )}
           <TitleWrapper>
-            <Icon></Icon>
+            <Icon src={chat ? chat.mode === 'Conversation' ? getPicture(1) : getPicture(0) : ''} />
             <Name>
               {chat
                 ? chat.type === 'Spaces'
