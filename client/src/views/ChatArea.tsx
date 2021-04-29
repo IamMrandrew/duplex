@@ -340,6 +340,7 @@ const Content = styled.div`
 
   @media (max-width: ${MEDIA_BREAK}) {
     padding: 12px;
+    padding-bottom: 30px;
     height: calc(100vh - 80px - 98px);
   }
 `
