@@ -31,6 +31,8 @@ const ChatArea: React.FC<Props> = () => {
   const { isMobile } = useResponsive()
   const contentRef = useRef() as RefObject<HTMLDivElement>
 
+  const [onlineUsers, setOnlineUsers] = useState([])
+
   // video call vars
   const [videoCalling, setVideoCalling] = useState(false) // terminate video call
   const [displayingVideo, setDisplayingVideo] = useState(false) // can go back to text chating without terminating the video call
@@ -157,10 +159,15 @@ const ChatArea: React.FC<Props> = () => {
           }),
         )
       })
+
+      socket.on('newUsers', (content: any) => {
+        setOnlineUsers(content)
+      })
     }
 
     return () => {
       socket?.off('newMessage')
+      socket?.off('newUsers')
       socket?.off('finishedRead')
     }
   }, [socket, id, messages, chatContext])
