@@ -39,7 +39,7 @@ const Profile: React.FC<Props> = () => {
           <SectionTitle>Chats</SectionTitle>
           <Card onClick={() => editHandler(0)}>
             <IconWrapper>
-              <Icon />
+              <Icon src={userContext.state && userContext.state.profile ? userContext.state.profile[0].picture : ''}/>
             </IconWrapper>
             <InfoWrapper>
               <Name>{userContext.state && userContext.state.profile ? userContext.state.profile[0].name : ''}</Name>
@@ -49,7 +49,7 @@ const Profile: React.FC<Props> = () => {
           <SectionTitle>Conversation</SectionTitle>
           <Card onClick={() => editHandler(1)}>
             <IconWrapper>
-              <Icon />
+              <Icon src={userContext.state && userContext.state.profile ? userContext.state.profile[1].picture : ''}/>
             </IconWrapper>
             <InfoWrapper>
               <Name>{userContext.state && userContext.state.profile ? userContext.state.profile[1].name : ''}</Name>

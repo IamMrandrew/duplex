@@ -36,6 +36,13 @@ const Chat: React.FC<Props> = ({ chat }) => {
     return false
   }
 
+  const getPicture = (profileIndex: number):string => {
+    if(chat.type === 'Spaces')
+      return chat.users[0]?.profile[profileIndex].picture
+    else
+      return chat.users.find((user: any) => user._id !== userState.state._id).profile[profileIndex].picture
+  }
+
   return (
     <Route exact path={toPath(LOCATIONS.chat, chat._id)}>
       {({ match }) => (
@@ -44,7 +51,7 @@ const Chat: React.FC<Props> = ({ chat }) => {
           $isActive={!!match}
         >
           <IconWrapper>
-            <Icon />
+            <Icon src={chat.type === 'Conversation' ? getPicture(1) : getPicture(0)} />
           </IconWrapper>
           <ChatWrapper>
             <Name>

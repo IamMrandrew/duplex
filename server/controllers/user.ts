@@ -103,6 +103,7 @@ const Controller = {
       .then((user: any) => {
         user.profile[req.body.selected].name = req.body.name
         user.profile[req.body.selected].bio = req.body.bio
+        user.profile[req.body.selected].picture = req.body.picture
         user.save()
         return res.status(202).json(user)
       })
