@@ -39,7 +39,11 @@ export default (httpServer: any) => {
       extSocket.join(id)
       const userInfo = await controller.getUserInfo(extSocket)
       if (!users.find((user: any) => user.id === extSocket.userData.userId))
-        users.push({ id: extSocket.userData.userId, name: userInfo.username, roomId: id })
+        users.push({
+          id: extSocket.userData.userId,
+          name: [userInfo.profile[0].name, userInfo.profile[1].name],
+          roomId: id,
+        })
       io.to(id).emit(
         'newUsers',
         users.filter((user: any) => user.roomId === id),

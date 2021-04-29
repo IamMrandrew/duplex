@@ -253,7 +253,7 @@ const ChatArea: React.FC<Props> = () => {
               ))}
           </Content>
         )}
-        <ChatDrawer onlineUsers={onlineUsers} />
+        <ChatDrawer onlineUsers={onlineUsers} mode={chat ? chat.type : ''} />
         <InputWrapper onSubmit={sendMessageHandler}>
           <Input value={input} onChange={inputHandler} />
           <InputButton>

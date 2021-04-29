@@ -7,16 +7,17 @@ import { MEDIA_BREAK } from '../components/Layout'
 
 type onlineUser = {
   id: string
-  name: string
+  name: [string, string]
   roomId?: string
 }
 
 type Props = {
   children?: ReactElement
   onlineUsers: [onlineUser]
+  mode: string
 }
 
-const ChatDrawer: React.FC<Props> = ({ onlineUsers }) => {
+const ChatDrawer: React.FC<Props> = ({ onlineUsers, mode }) => {
   const [show, setShow] = useState(true)
 
   return (
@@ -36,7 +37,7 @@ const ChatDrawer: React.FC<Props> = ({ onlineUsers }) => {
           >
             <Icon />
           </IconWrapper>
-          <Name>{user.name}</Name>
+          <Name>{mode === 'Conversation' ? user.name[1] : user.name[0]}</Name>
         </User>
       ))}
     </Wrapper>
