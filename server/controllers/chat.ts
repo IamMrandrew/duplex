@@ -62,14 +62,14 @@ const Controller = {
                   res.status(200).json(chat)
                 })
                 .catch((err: any) => {
-                  res.status(400).json(err)
+                  res.status(500).json({ message: err })
                 })
             } else {
-              res.status(500).send('Username not found or invalid')
+              res.status(500).json({ message: 'Username not found or invalid' })
             }
           })
           .catch((error: any) => {
-            res.status(500).json(error)
+            res.status(500).json({ message: error })
           })
       } else {
         chat.messages.push({

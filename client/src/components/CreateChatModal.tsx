@@ -6,6 +6,7 @@ import { useChatContext } from '../contexts/ChatContext'
 import Tabs from '@material-ui/core/Tabs'
 import Tab from '@material-ui/core/Tab'
 import { MEDIA_BREAK } from './Layout'
+import Toast from '../components/Toast'
 
 type Props = {
   showModal: boolean
@@ -17,11 +18,14 @@ const CreateChatModal: React.FC<Props> = ({ showModal, setShowModal, matchChat }
   const [title, setTitle] = useState('')
   const [username, setUsername] = useState('')
   const [value, setValue] = useState(0)
-  const [error, setError] = useState('')
   const ChatContext = useChatContext()
+  const [toastMessage, setToastMessage] = useState({
+    content: '',
+    variant: 'error' as 'error' | 'info' | 'success' | 'warning',
+  })
+  const [showToast, setShowToast] = useState(false)
 
   useEffect(() => {
-    setError('')
     setTitle('')
     setUsername('')
   }, [showModal])
@@ -51,8 +55,12 @@ const CreateChatModal: React.FC<Props> = ({ showModal, setShowModal, matchChat }
         setUsername('')
       })
       .catch((err) => {
-        setError('Username not found or invalid')
-        console.log(err)
+        setShowToast(true)
+        setToastMessage({
+          content: err.response.data.message,
+          variant: 'error',
+        })
+        console.log(err.response.data.message)
       })
   }
 
@@ -62,6 +70,13 @@ const CreateChatModal: React.FC<Props> = ({ showModal, setShowModal, matchChat }
 
   return (
     <>
+      <Toast
+        message={toastMessage.content}
+        setShow={setShowToast}
+        show={showToast}
+        duration={5000}
+        variant={toastMessage.variant}
+      />
       <Overlay showModal={showModal} setShowModal={setShowModal} />
       <Wrapper showModal={showModal}>
         <Card showModal={showModal}>
@@ -81,7 +96,6 @@ const CreateChatModal: React.FC<Props> = ({ showModal, setShowModal, matchChat }
             value={value ? username : title}
             placeholder={value ? 'Enter his/her username' : 'New group name'}
           ></Input>
-          <Error>{error ? error : ''}</Error>
           <Button onClick={createChatHandler}>Create</Button>
         </Card>
       </Wrapper>
@@ -102,11 +116,6 @@ const Wrapper = styled.div`
   opacity: ${(props: { showModal: boolean }) => (props.showModal ? '100%' : '0%')};
   pointer-events: none;
   transition: all 300ms cubic-bezier(0.18, 0.89, 0.43, 1.19);
-
-  @media (max-width: ${MEDIA_BREAK}) {
-    bottom: 30px;
-    transform: ${(props: { showModal: boolean }) => (props.showModal ? 'translate(-50%)' : 'translate(-50%, 100%)')};
-  }
 `
 
 const Card = styled.div`
