@@ -1,4 +1,4 @@
-import React, { ReactElement } from 'react'
+import React from 'react'
 import styled from 'styled-components/macro'
 import { Route, useHistory } from 'react-router-dom'
 import { LOCATIONS, toPath } from '../Routes'

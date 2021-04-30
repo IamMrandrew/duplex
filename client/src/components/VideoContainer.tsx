@@ -20,6 +20,7 @@ type Props = {
   setMuteOthers: Dispatch<SetStateAction<boolean>>
 }
 
+// constraint on video size
 const videoConstraints = {
   // height: window.innerHeight / 2,
   // width: window.innerWidth / 2,
@@ -62,19 +63,15 @@ const VideoContainer: React.FC<Props> = ({
   }, [])
 
   const startStreaming = () => {
+    // get user camera and mic permission 
     navigator.mediaDevices.getUserMedia({ video: videoConstraints, audio: true }).then((stream: MediaStream) => {
       console.log('joining room')
       userStream.current = stream
       userVideo.current.srcObject = userStream.current
-      if (audioChat) {
-        if (userStream && userStream.current) {
-          userStream.current.getVideoTracks()[0].enabled = false
-        }
-      } else {
-        if (userStream && userStream.current) {
-          userStream.current.getVideoTracks()[0].enabled = true
-        }
-      }
+      if (audioChat)
+        if (userStream && userStream.current) userStream.current.getVideoTracks()[0].enabled = false
+      else 
+        if (userStream && userStream.current) userStream.current.getVideoTracks()[0].enabled = true
       socket?.emit('join room', id)
       socket?.on('all users', (users) => {
         const peers: any[] = []
@@ -126,10 +123,6 @@ const VideoContainer: React.FC<Props> = ({
         const peers = peersRef.current.filter((p) => p.peerID !== id)
         peersRef.current = peers
         setPeers(peers)
-
-        // stream.getTracks().forEach((tracks:MediaStreamTrack) => {
-        //     tracks.stop()
-        // })
       })
     })
   }
@@ -145,6 +138,7 @@ const VideoContainer: React.FC<Props> = ({
       }
     }
   }, [audioChat])
+
   const createPeer = (userToSignal: any, callerID: any, stream: any) => {
     const peer = new Peer({
       initiator: true,
@@ -180,9 +174,8 @@ const VideoContainer: React.FC<Props> = ({
   }
 
   useEffect(() => {
-    if (userStream && userStream.current) {
+    if (userStream && userStream.current)
       userStream.current.getAudioTracks()[0].enabled = !userStream.current?.getAudioTracks()[0].enabled
-    }
   }, [muteSelf])
 
   const toggleOthersMute = () => {
@@ -207,7 +200,6 @@ const VideoContainer: React.FC<Props> = ({
   }
 
   const LeaveVideoChat = () => {
-    // socket?.emit('leave room')
     setDisplayingVideo(false)
     setVideoCalling(false)
     userStream.current?.getTracks().forEach((track: MediaStreamTrack) => {

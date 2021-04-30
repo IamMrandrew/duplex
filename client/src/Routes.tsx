@@ -1,5 +1,5 @@
 import React, { ReactElement, useState, useEffect } from 'react'
-import { Switch, Route, useHistory, useParams } from 'react-router-dom'
+import { Switch, Route, useHistory } from 'react-router-dom'
 import { COLOR, GlobalStyle, ResetStyle } from './components/GlobalStyle'
 import { AppLayout } from './components/Layout'
 import NavBar from './components/NavBar'
@@ -51,7 +51,6 @@ export const toPath = (location: string, id?: string): string => {
 }
 
 const Routes = (props: Props): ReactElement => {
-  const { children, ...rest } = props
   const { isMobile } = useResponsive()
   const userState = useUserContext()
   const history = useHistory()

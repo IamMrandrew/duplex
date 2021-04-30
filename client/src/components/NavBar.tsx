@@ -1,4 +1,4 @@
-import React, { ReactElement } from 'react'
+import React from 'react'
 import styled from 'styled-components/macro'
 import { MdLayers } from 'react-icons/md'
 import { FaLayerGroup } from 'react-icons/fa'
@@ -6,9 +6,7 @@ import { Avatar } from '@material-ui/core'
 import { Link } from 'react-router-dom'
 import { LOCATIONS, toPath } from '../Routes'
 import { MEDIA_BREAK } from './Layout'
-// import DuplexIcon from './DuplexIcon'
 import DuplexIcon from '../assets/duplex-icon.svg'
-import { COLOR } from './GlobalStyle'
 import { useSettingContext } from '../contexts/SettingContext'
 
 type Props = {

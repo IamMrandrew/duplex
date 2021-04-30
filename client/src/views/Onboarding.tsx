@@ -1,26 +1,15 @@
-import { COLOR } from '../components/GlobalStyle'
 import React, { ReactElement } from 'react'
 import styled from 'styled-components/macro'
 import { LOCATIONS, toPath } from '../Routes'
 import { Link } from 'react-router-dom'
 import { Container } from '@material-ui/core'
-// import DuplexIcon from '../components/DuplexIcon'
 import DuplexIcon from '../assets/duplex-icon.svg'
 
 const Onboarding = (): ReactElement => {
-  // const history = useHistory()
-
-  // const redirect = () => {
-  //   history.push(toPath(LOCATIONS.login))
-  // }
-
   return (
     <Wrapper>
       <Nav>
         <CustomContainer>
-          {/* <IconWrapper>
-            <DuplexIcon color={COLOR.light.bg.tint} />
-          </IconWrapper> */}
           <Icon src={DuplexIcon} />
           <NavItems>
             <NavItem to={toPath(LOCATIONS.signup)} $toEnd>
@@ -49,9 +38,7 @@ const Onboarding = (): ReactElement => {
 export default Onboarding
 
 const Wrapper = styled.div`
-  /* display: grid; */
   width: 100%;
-  /* grid-template-rows: ; */
 `
 
 const Nav = styled.div`
@@ -112,15 +99,6 @@ const Text = styled.div`
 `
 
 const Icon = styled.img``
-
-const IconWrapper = styled.div`
-  padding: 14px;
-  border-radius: 10px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background: ${COLOR.dark.primary.shade};
-`
 
 const Button = styled(Link)`
   display: block;
