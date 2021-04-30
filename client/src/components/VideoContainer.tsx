@@ -106,8 +106,6 @@ const VideoContainer: React.FC<Props> = ({
             peerID: payload.callerID,
           }
           setPeers((users) => {
-            console.log(users)
-            console.log(peerObj)
             const newUsers = users.filter((user) => user.peerID !== peerObj.peerID)
             return [...newUsers, peerObj]
           })
@@ -123,9 +121,6 @@ const VideoContainer: React.FC<Props> = ({
       socket?.on('user left', (id) => {
         console.log('user left')
         const peerObj = peersRef.current.find((p) => p.peerID === id)
-        console.log(peerObj)
-        console.log(peerObj?.peer)
-        console.log(peerObj?.peer?.destory)
         if (peerObj && peerObj.peer && peerObj.peer.destory) peerObj.peer.destory()
 
         const peers = peersRef.current.filter((p) => p.peerID !== id)

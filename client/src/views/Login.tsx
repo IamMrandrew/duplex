@@ -60,11 +60,11 @@ const LoginForm = (props: FormProps) => {
   }
 
   const handleSubmit = () => {
-    setLoading(true)
     const emailOrUsername = checkIntegrity(input.emailOrUsername, [VALIDATORS.REQUIRED])
     const password = checkIntegrity(input.password, [VALIDATORS.REQUIRED])
     setInput({ ...input, emailOrUsername, password })
     if (formNoErr(input)) {
+      setLoading(true)
       UserServices.login(toData(input))
         .then((res) => {
           setLoading(false)
@@ -131,12 +131,12 @@ const SignupForm = (props: FormProps) => {
   }
 
   const handleSubmit = () => {
-    setLoading(true)
     const email = checkIntegrity(input.email, [VALIDATORS.REQUIRED, VALIDATORS.EMAIL])
     const username = checkIntegrity(input.username, [VALIDATORS.REQUIRED])
     const password = checkIntegrity(input.password, [VALIDATORS.REQUIRED])
     setInput({ ...input, email, username, password })
     if (formNoErr(input)) {
+      setLoading(true)
       UserServices.signup(toData(input))
         .then((res) => {
           setIsLogin(true)

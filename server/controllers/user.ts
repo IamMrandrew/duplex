@@ -15,7 +15,6 @@ const Controller = {
       if (err) return sendError(res, 500, 'failed to hash password')
       newUser.password = hash
       newUser._id = new mongoose.Types.ObjectId()
-      console.log(newUser)
       newUser.save().then((user:any)=>{
         log(user)
         return res.status(201).json({ message: 'User created' })
