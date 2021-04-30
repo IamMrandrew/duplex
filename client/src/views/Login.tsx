@@ -3,6 +3,7 @@ import React, { ChangeEvent, ReactElement, useState } from 'react'
 import { useHistory } from 'react-router'
 import styled from 'styled-components'
 import { MEDIA_BREAK } from '../components/Layout'
+import Toast from '../components/Toast'
 import { useUserContext } from '../contexts/UserContext'
 import { checkIntegrity, formNoErr, toData, VALIDATORS } from '../formIntegrity'
 import { LOCATIONS } from '../Routes'
@@ -15,22 +16,40 @@ const Login = (): ReactElement => {
   }
 
   const [isLogin, setIsLogin] = useState(redirectedAs())
+  const [toastMessage, setToastMessage] = useState({
+    content: '',
+    variant: 'error' as 'error' | 'info' | 'success' | 'warning'
+  })
+  const [showToast, setShowToast] = useState(false)
 
-  return <Wrapper>{isLogin ? <LoginForm setIsLogin={setIsLogin} /> : <SignupForm setIsLogin={setIsLogin} />}</Wrapper>
+  return (
+    <>
+      <Toast message={toastMessage.content} setShow={setShowToast} show={showToast} duration={5000} variant={toastMessage.variant}/>
+      <Wrapper>
+        {
+          isLogin
+          ? <LoginForm setIsLogin={setIsLogin} setToastMessage={setToastMessage} setShowToast={setShowToast}/>
+          : <SignupForm setIsLogin={setIsLogin} setToastMessage={setToastMessage} setShowToast={setShowToast}/>}
+      </Wrapper>
+    </>
+  )
 }
 
 export default Login
 
 type FormProps = {
   setIsLogin: Function
+  setToastMessage: Function
+  setShowToast: Function
 }
 
 const LoginForm = (props: FormProps) => {
-  const { setIsLogin } = props
+  const { setIsLogin, setToastMessage, setShowToast } = props
   const [input, setInput] = useState({
     emailOrUsername: { value: '', errMsg: '' },
     password: { value: '', errMsg: '' },
   })
+  const [loading, setLoading]  = useState(false)
   const history = useHistory()
   const userState = useUserContext()
 
@@ -41,18 +60,25 @@ const LoginForm = (props: FormProps) => {
   }
 
   const handleSubmit = () => {
+    setLoading(true)
     const emailOrUsername = checkIntegrity(input.emailOrUsername, [VALIDATORS.REQUIRED])
     const password = checkIntegrity(input.password, [VALIDATORS.REQUIRED])
     setInput({ ...input, emailOrUsername, password })
     if (formNoErr(input)) {
       UserServices.login(toData(input))
         .then((res) => {
-          console.log(res)
+          setLoading(false)
           userState.updateState(res.data.user)
           history.push('/')
         })
         .catch((err) => {
+          setLoading(false)
           console.log(err)
+          setShowToast(true)
+          setToastMessage({
+            content: err.response.data.message,
+            variant: 'error'
+          })
         })
     }
   }
@@ -78,7 +104,7 @@ const LoginForm = (props: FormProps) => {
         helperText={input.password.errMsg}
       />
       <Link>Forget your password?</Link>
-      <Btn variant="contained" onClick={handleSubmit}>
+      <Btn variant="contained" onClick={handleSubmit} disabled={loading}>
         Login
       </Btn>
       <Details>
@@ -89,12 +115,14 @@ const LoginForm = (props: FormProps) => {
 }
 
 const SignupForm = (props: FormProps) => {
-  const { setIsLogin } = props
+  const { setIsLogin, setToastMessage, setShowToast } = props
   const [input, setInput] = useState({
     email: { value: '', errMsg: '' },
     username: { value: '', errMsg: '' },
     password: { value: '', errMsg: '' },
   })
+  const [loading, setLoading] = useState(false)
+
 
   const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
     const nextState = input
@@ -103,6 +131,7 @@ const SignupForm = (props: FormProps) => {
   }
 
   const handleSubmit = () => {
+    setLoading(true)
     const email = checkIntegrity(input.email, [VALIDATORS.REQUIRED, VALIDATORS.EMAIL])
     const username = checkIntegrity(input.username, [VALIDATORS.REQUIRED])
     const password = checkIntegrity(input.password, [VALIDATORS.REQUIRED])
@@ -111,9 +140,20 @@ const SignupForm = (props: FormProps) => {
       UserServices.signup(toData(input))
         .then((res) => {
           setIsLogin(true)
+          setLoading(false)
+          setToastMessage({
+            content: 'Signup success, please login.',
+            variant: 'success'
+          })
+          setShowToast(true)
         })
         .catch((err) => {
-          console.log(err)
+          setToastMessage({
+            content: err.response.data.message,
+            variant: 'error'
+          })
+          setShowToast(true)
+          setLoading(false)
         })
     }
   }
@@ -146,7 +186,7 @@ const SignupForm = (props: FormProps) => {
         error={!!input.password.errMsg}
         helperText={input.password.errMsg}
       />
-      <Btn variant="contained" onClick={handleSubmit}>
+      <Btn variant="contained" onClick={handleSubmit} disabled={loading}>
         Sign up
       </Btn>
       <Link onClick={() => setIsLogin(true)}>Already have an account?</Link>
