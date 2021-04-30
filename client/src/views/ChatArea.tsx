@@ -19,6 +19,7 @@ import { COLOR } from '../components/GlobalStyle'
 import InviteModal from '../components/InviteModal'
 import ChatService from '../services/ChatService'
 import ChatDrawer from '../components/ChatDrawer'
+import ProfileModal from '../components/ProfileModal'
 
 type Props = {
   children?: ReactElement
@@ -43,6 +44,8 @@ const ChatArea: React.FC<Props> = () => {
   const [displayingVideo, setDisplayingVideo] = useState(false) // can go back to text chating without terminating the video call
 
   const [showModal, setShowModal] = useState(false)
+  const [showProfileModal, setShowProfileModal] = useState(false)
+  const [messageUser, setMessageUser]: any = useState()
 
   const [chat, setChat]: any = useState(null)
   const [messages, setMessages]: any = useState([])
@@ -185,16 +188,30 @@ const ChatArea: React.FC<Props> = () => {
     }
   }, [socket, id, messages, chatContext])
 
-  const getPicture = (profileIndex: number):string => {
-    if(chat.type === 'Spaces')
-      return chat.users[0]?.profile[profileIndex].picture
-    else
-      return chat.users.find((user: any) => user?._id !== userState.state?._id).profile[profileIndex].picture
+  const getPicture = (profileIndex: number): string => {
+    if (chat.type === 'Spaces') return chat.users[0]?.profile[profileIndex].picture
+    else return chat.users.find((user: any) => user._id !== userState._id).profile[profileIndex].picture
   }
 
   return (
     <>
       <InviteModal showModal={showModal} setShowModal={setShowModal} />
+      {chat && chat.type === 'Direct' && (
+        <ProfileModal
+          showModal={showProfileModal}
+          setShowModal={setShowProfileModal}
+          mode={chat ? chat.mode : ''}
+          user={chat ? chat.users.find((user: any) => user._id !== userState._id) : ''}
+        />
+      )}
+      {chat && chat.type === 'Spaces' && (
+        <ProfileModal
+          showModal={showProfileModal}
+          setShowModal={setShowProfileModal}
+          mode={messageUser ? messageUser?.mode : ''}
+          user={messageUser ? messageUser?.user : ''}
+        />
+      )}
       <Wrapper>
         <Header>
           {isMobile() && (
@@ -203,16 +220,33 @@ const ChatArea: React.FC<Props> = () => {
             </BackButton>
           )}
           <TitleWrapper>
-            <Icon src={chat ? chat.mode === 'Conversation' ? getPicture(1) : getPicture(0) : ''} />
-            <Name>
-              {chat
-                ? chat.type === 'Spaces'
-                  ? chat.title
-                  : chat.mode === 'Conversation'
-                  ? chat.users.find((user: any) => user._id !== userState._id).profile[1].name
-                  : chat.users.find((user: any) => user._id !== userState._id).profile[0].name
-                : ''}
-            </Name>
+            <InfoWrapper
+              onClick={
+                chat
+                  ? chat.type === 'Spaces'
+                    ? () => false
+                    : () => {
+                        setShowProfileModal(!showProfileModal)
+                      }
+                  : () => false
+              }
+            >
+              {chat && userState ? (
+                <Icon src={chat.mode === 'Conversation' ? getPicture(1) : getPicture(0)} />
+              ) : (
+                <Icon />
+              )}
+              <Name>
+                {chat
+                  ? chat.type === 'Spaces'
+                    ? chat.title
+                    : chat.mode === 'Conversation'
+                    ? chat.users.find((user: any) => user._id !== userState._id).profile[1].name
+                    : chat.users.find((user: any) => user._id !== userState._id).profile[0].name
+                  : ''}
+              </Name>
+            </InfoWrapper>
+
             {chat && (
               <OperationWrapper>
                 {chat && chat.type === 'Spaces' && (
@@ -277,6 +311,10 @@ const ChatArea: React.FC<Props> = () => {
                     endContinuing={checkIfEndContinuous(message, index)}
                     type={chat ? chat.type : ''}
                     mode={chat ? chat.mode : ''}
+                    showProfileModal={showProfileModal}
+                    setShowProfileModal={setShowProfileModal}
+                    messageUser={messageUser}
+                    setMessageUser={setMessageUser}
                   />
                 ))}
             </Content>
@@ -328,19 +366,17 @@ const TitleWrapper = styled.div`
   display: flex;
   align-items: center;
   width: 100%;
-
-  > :nth-child(1) {
-    margin-right: 20px;
-  }
 `
 
 const Content = styled.div`
-  overflow-y: auto;
+  overflow-y: scroll;
   height: calc(100vh - 80px - 100px);
   padding: 8px 32px;
+  padding-bottom: 35px;
 
   @media (max-width: ${MEDIA_BREAK}) {
     padding: 12px;
+    padding-bottom: 30px;
     height: calc(100vh - 80px - 98px);
   }
 `
@@ -437,3 +473,13 @@ const Identifier = styled(Badge)`
 `
 
 const Positioning = styled.div``
+
+const InfoWrapper = styled.div`
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+
+  > :nth-child(1) {
+    margin-right: 12px;
+  }
+`

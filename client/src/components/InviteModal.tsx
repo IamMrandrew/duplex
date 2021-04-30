@@ -14,7 +14,7 @@ const CreateChatModal: React.FC<Props> = ({ showModal, setShowModal }) => {
   const copyHandler = () => {
     navigator.clipboard.writeText(window.location.href.replace('chat', 'invitation'))
     setCopied(true)
-    setTimeout(()=>{
+    setTimeout(() => {
       setCopied(false)
     }, 1000)
   }
@@ -27,7 +27,9 @@ const CreateChatModal: React.FC<Props> = ({ showModal, setShowModal }) => {
           <Title>Invite People</Title>
           <Details>Send the link below to your friend</Details>
           <Input value={window.location.href.replace('chat', 'invitation')} readOnly></Input>
-          <Button onClick={copyHandler} copied={copied}>{copied ? `Copied` : `Copy`}</Button>
+          <Button onClick={copyHandler} copied={copied}>
+            {copied ? `Copied` : `Copy`}
+          </Button>
         </Card>
       </Wrapper>
     </>
@@ -48,10 +50,10 @@ const Wrapper = styled.div`
   pointer-events: none;
   transition: all 300ms cubic-bezier(0.18, 0.89, 0.43, 1.19);
 
-  @media (max-width: ${MEDIA_BREAK}) {
+  /* @media (max-width: ${MEDIA_BREAK}) {
     bottom: 30px;
     transform: ${(props: { showModal: boolean }) => (props.showModal ? 'translate(-50%)' : 'translate(-50%, 100%)')};
-  }
+  } */
 `
 
 const Card = styled.div`
@@ -92,7 +94,8 @@ const Input = styled.input`
 const Button = styled.button`
   display: block;
   padding: 8px 15px;
-  background-color: ${(props: {copied: boolean, theme: any}) => props.copied ? props.theme.success.main : props.theme.primary.main};
+  background-color: ${(props: { copied: boolean; theme: any }) =>
+    props.copied ? props.theme.success.main : props.theme.primary.main};
   border: none;
   outline: none;
   border-radius: 12px;
