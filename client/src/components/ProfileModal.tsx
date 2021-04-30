@@ -162,9 +162,11 @@ const Name = styled.span`
   font-size: 16px;
   font-weight: 500;
   margin-bottom: 10px;
+  color: ${({ theme }) => theme.font.primary};
 `
 
 const Bio = styled.div`
   font-size: 14px;
   font-weight: 500;
+  color: ${({ theme }) => theme.font.primary};
 `

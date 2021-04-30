@@ -47,43 +47,50 @@ const Controller = {
       mode: req.body.mode,
       messages: [],
     })
-    const user = await User.findById(req.userData.userId)
-    chat.users.push(user)
-    if (req.body.type === 'Direct') {
-      User.findOne({ username: req.body.username })
-        .populate('profile')
-        .then((user: any) => {
-          chat.users.push(user)
-          console.log('The user', chat)
-          chat
-            .save()
-            .then((chat: any) => {
-              res.status(200).json(chat)
-            })
-            .catch((err: any) => {
-              res.status(400).json(err)
-            })
+    try {
+      const createUser = await User.findById(req.userData.userId)
+      chat.users.push(createUser)
+      if (req.body.type === 'Direct') {
+        User.findOne({ username: req.body.username })
+          .populate('profile')
+          .then((user: any) => {
+            if (user && user._id.toString() !== createUser._id.toString()) {
+              chat.users.push(user)
+              chat
+                .save()
+                .then((chat: any) => {
+                  res.status(200).json(chat)
+                })
+                .catch((err: any) => {
+                  res.status(400).json(err)
+                })
+            } else {
+              res.status(500).send('Username not found or invalid')
+            }
+          })
+          .catch((error: any) => {
+            res.status(500).json(error)
+          })
+      } else {
+        chat.messages.push({
+          _id: new mongoose.Types.ObjectId(),
+          content:
+            chat.mode === 'Conversation'
+              ? createUser.profile[1].name + ' created a spaces'
+              : createUser.profile[0].name + ' created a spaces',
         })
-        .catch((error: any) => {
-          res.status(500).json(error)
-        })
-    } else {
-      chat.messages.push({
-        _id: new mongoose.Types.ObjectId(),
-        content:
-          chat.mode === 'Conversation'
-            ? user.profile[1].name + ' created a spaces'
-            : user.profile[0].name + ' created a spaces',
-      })
-      chat.title = req.body.title
-      chat
-        .save()
-        .then((chat: any) => {
-          res.status(200).json(chat)
-        })
-        .catch((err: any) => {
-          res.status(400).json(err)
-        })
+        chat.title = req.body.title
+        chat
+          .save()
+          .then((chat: any) => {
+            res.status(200).json(chat)
+          })
+          .catch((err: any) => {
+            res.status(400).json(err)
+          })
+      }
+    } catch (error: any) {
+      res.status(500).json(error)
     }
   },
   joinChat: (req: Request, res: Response) => {
