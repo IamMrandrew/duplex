@@ -29,6 +29,7 @@ const ChatArea: React.FC<Props> = () => {
   const { isMobile } = useResponsive()
   const contentRef = useRef() as RefObject<HTMLDivElement>
 
+  // audio chat vars
   const [muteSelf, setMuteSelf] = useState(false)
   const [muteOthers, setMuteOthers] = useState(false)
 
@@ -47,6 +48,7 @@ const ChatArea: React.FC<Props> = () => {
   const [messages, setMessages]: any = useState([])
   const [input, setInput] = useState('')
 
+  // Start Video Call
   const vidoeCallClickHandler = () => {
     if (setVideoCalling) {
       setVideoCalling(true)
@@ -55,6 +57,7 @@ const ChatArea: React.FC<Props> = () => {
     }
   }
 
+  // Start Audio Chat
   const audioChatClickHandler = () => {
     if (setVideoCalling) {
       setVideoCalling(!videoCalling)
@@ -62,10 +65,12 @@ const ChatArea: React.FC<Props> = () => {
     }
   }
 
+  // Input for sending message
   const inputHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
     setInput(e.target.value)
   }
 
+  // Send a text message
   const sendMessageHandler = (e: React.FormEvent) => {
     e.preventDefault()
     if (socket) {
@@ -77,7 +82,7 @@ const ChatArea: React.FC<Props> = () => {
     setInput('')
   }
 
-  // Identify message type
+  // Identify message type (System or From user)
   const checkIfIncoming = (message: any): boolean => {
     if (message.sender) {
       return !(userState._id === message.sender._id)
@@ -85,6 +90,7 @@ const ChatArea: React.FC<Props> = () => {
     return false
   }
 
+  // Identify if message is continous from same sender
   const checkIfContinuous = (message: any, index: number): boolean => {
     if (message.sender) {
       return messages[index - 1]
@@ -96,6 +102,7 @@ const ChatArea: React.FC<Props> = () => {
     return false
   }
 
+  // Identify if message is last continous message from same sender
   const checkIfEndContinuous = (message: any, index: number): boolean => {
     if (message.sender) {
       return messages[index + 1]
@@ -111,11 +118,10 @@ const ChatArea: React.FC<Props> = () => {
     contentRef.current?.scrollTo({ top: contentRef.current.scrollHeight, behavior: 'smooth' })
   }
 
-  // When user enter chat
+  // When user enter/leave chat
   useEffect(() => {
     scrollBottom()
     socket?.emit('join', { id })
-
     socket?.emit('readMessage', {
       id: id,
     })
@@ -145,15 +151,14 @@ const ChatArea: React.FC<Props> = () => {
   useEffect(() => {
     scrollBottom()
     if (socket) {
+      // Update messages on new messages
       socket.on('newMessage', (content: any) => {
         chatContext.updateChatMessage(content.id, content.message)
-
-        socket?.emit('readMessage', {
-          id: id,
-        })
+        socket?.emit('readMessage', { id: id })
       })
 
       socket.on('finishedRead', (content: any) => {
+        // Add back the user who just read the message
         chatContext.setState(
           chatContext.state.map((chat: any) => {
             if (chat._id === content.id) {
@@ -172,6 +177,7 @@ const ChatArea: React.FC<Props> = () => {
         )
       })
 
+      // Update online user
       socket.on('newUsers', (content: any) => {
         setOnlineUsers(content)
       })
