@@ -128,6 +128,10 @@ export default (httpServer: any) => {
     extSocket.on('joined spaces', async () => {
       io.emit('update messages')
     })
+
+    extSocket.on('created chat', async () => {
+      io.emit('update messages')
+    })
   })
   return io
 }

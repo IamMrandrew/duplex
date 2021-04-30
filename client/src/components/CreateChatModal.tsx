@@ -7,6 +7,7 @@ import Tabs from '@material-ui/core/Tabs'
 import Tab from '@material-ui/core/Tab'
 import { MEDIA_BREAK } from './Layout'
 import Toast from '../components/Toast'
+import { useSocketContext } from '../contexts/SocketContext'
 
 type Props = {
   showModal: boolean
@@ -19,6 +20,7 @@ const CreateChatModal: React.FC<Props> = ({ showModal, setShowModal, matchChat }
   const [username, setUsername] = useState('')
   const [value, setValue] = useState(0)
   const ChatContext = useChatContext()
+  const { socket } = useSocketContext()
   const [toastMessage, setToastMessage] = useState({
     content: '',
     variant: 'error' as 'error' | 'info' | 'success' | 'warning',
@@ -50,6 +52,7 @@ const CreateChatModal: React.FC<Props> = ({ showModal, setShowModal, matchChat }
     ChatServices.createChat(data)
       .then((res) => {
         ChatContext.updateState([res.data])
+        socket?.emit('created chat')
         setShowModal(!showModal)
         setTitle('')
         setUsername('')
