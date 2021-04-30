@@ -6,6 +6,7 @@ import Avatar from '@material-ui/core/Avatar'
 import ChatServices from '../services/ChatService'
 import { useChatContext } from '../contexts/ChatContext'
 import { useHistory } from 'react-router'
+import { useSocketContext } from '../contexts/SocketContext'
 
 type Props = {
   showModal: boolean
@@ -17,6 +18,7 @@ type Props = {
 const ProfileModal: React.FC<Props> = ({ showModal, setShowModal, mode, user }) => {
   const ChatContext = useChatContext()
   const history = useHistory()
+  const { socket } = useSocketContext()
 
   const directMessageHandler = () => {
     const availableChat = ChatContext.state.find(
@@ -32,6 +34,7 @@ const ProfileModal: React.FC<Props> = ({ showModal, setShowModal, mode, user }) 
 
       ChatServices.createChat(data)
         .then((res) => {
+          socket?.emit('created chat')
           ChatContext.updateState([res.data])
         })
         .catch((err) => {

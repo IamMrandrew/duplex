@@ -35,6 +35,7 @@ export default (httpServer: any) => {
       extSocket.broadcast.emit('user left', extSocket.id)
     })
 
+    // When user click in to a chat (online)
     extSocket.on('join', async ({ id }) => {
       extSocket.join(id)
       const userInfo = await controller.getUserInfo(extSocket)
@@ -51,6 +52,7 @@ export default (httpServer: any) => {
       log(`${extSocket.userData.email} joined chat ${id}`)
     })
 
+    // When user leave a chat (offline)
     extSocket.on('leave', ({ id }) => {
       extSocket.leave(id)
       users = users.filter((user: any) => user.id !== extSocket.userData.userId)
@@ -61,6 +63,7 @@ export default (httpServer: any) => {
       log(`${extSocket.userData.email} leaved chat ${id}`)
     })
 
+    // When user send a new message
     extSocket.on('message', async ({ id, content }) => {
       if (content.trim().length > 0) {
         try {
@@ -73,7 +76,30 @@ export default (httpServer: any) => {
       }
     })
 
-    // below are video call event handlers, id is the chat id, treated as a room id
+    // When user read a message
+    extSocket.on('readMessage', async ({ id }) => {
+      try {
+        const read = await controller.readMessage(extSocket, { id })
+        const userId = extSocket.userData.userId
+        if (read) {
+          io.emit('finishedRead', { id, userId })
+        }
+      } catch (err) {
+        console.log(err)
+      }
+    })
+
+    // When user join a space via invitation link
+    extSocket.on('joined spaces', async () => {
+      io.emit('update messages')
+    })
+
+    // When user create a chat (Direct Message)
+    extSocket.on('created chat', async () => {
+      io.emit('update messages')
+    })
+
+    // Video call event handlers (id is the chat id, treated as a room id)
     extSocket.on('join room', (roomID) => {
       log(`${extSocket.id} joining room ${roomID}`)
       if (rooms[roomID]) {
@@ -109,22 +135,7 @@ export default (httpServer: any) => {
       }
       extSocket.broadcast.emit('user left', extSocket.id)
     })
-
-    extSocket.on('readMessage', async ({ id }) => {
-      try {
-        const read = await controller.readMessage(extSocket, { id })
-        const userId = extSocket.userData.userId
-        if (read) {
-          io.emit('finishedRead', { id, userId })
-        }
-      } catch (err) {
-        console.log(err)
-      }
-    })
-
-    extSocket.on('joined spaces', async () => {
-      io.emit('update messages')
-    })
   })
+
   return io
 }
