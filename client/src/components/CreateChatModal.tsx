@@ -5,7 +5,6 @@ import ChatServices from '../services/ChatService'
 import { useChatContext } from '../contexts/ChatContext'
 import Tabs from '@material-ui/core/Tabs'
 import Tab from '@material-ui/core/Tab'
-import { MEDIA_BREAK } from './Layout'
 import Toast from '../components/Toast'
 import { useSocketContext } from '../contexts/SocketContext'
 
@@ -189,10 +188,4 @@ const CustomTabs = styled(Tabs)`
     text-transform: none;
     font-size: 16px;
   }
-`
-
-const Error = styled.span`
-  display: block;
-  font-size: 14px;
-  color: ${({ theme }) => theme.error.main};
 `
