@@ -2,6 +2,8 @@ import { Request, Response } from 'express'
 import mongoose from 'mongoose'
 import Chat from '../models/chat'
 import User from '../models/user'
+import crypto from 'crypto'
+require('dotenv').config()
 
 const Controller = {
   getChats: (req: Request, res: Response) => {
@@ -11,6 +13,17 @@ const Controller = {
         Promise.all(
           chats.map((chat: any) => {
             if (chat.users.find((user: any) => user._id == req.userData.userId)) {
+              chat.messages.forEach((message: any) => {
+                let encryptedMessage = message.content.split(':')
+                let iv = Buffer.from(encryptedMessage[0], 'hex')
+                let decipher = crypto.createDecipheriv('aes-256-cbc', process.env.AES_KEY || '', iv)
+                let decryptedMessage = decipher.update(encryptedMessage[1], 'hex', 'utf-8')
+                decryptedMessage += decipher.final('utf-8')
+                console.log('hey hey ', decryptedMessage)
+                message.content = decryptedMessage
+                console.log('hey hey yo ', message.content)
+              })
+
               return chat
             }
           }),
