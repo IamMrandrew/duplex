@@ -60,7 +60,6 @@ const CreateChatModal: React.FC<Props> = ({ showModal, setShowModal, matchChat }
           content: err.response.data.message,
           variant: 'error',
         })
-        console.log(err.response.data.message)
       })
   }
 

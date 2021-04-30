@@ -29,10 +29,7 @@ const UserProvider = ({ children }: Props): ReactElement => {
   // only change properties that are passed from newState
   const updateState = (newState: Obj, connectSocket?: () => void): void => {
     setState((prevState) => ({ ...prevState, ...newState }))
-    if (Object.keys(newState).length > 0 && connectSocket) {
-      console.log(connectSocket)
-      connectSocket()
-    }
+    if (Object.keys(newState).length > 0 && connectSocket) connectSocket()
   }
 
   const loggedIn = (): boolean => {

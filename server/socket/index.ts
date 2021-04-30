@@ -88,8 +88,6 @@ export default (httpServer: any) => {
       }
       socketToRoom[extSocket.id] = roomID
       const usersInThisRoom = rooms[roomID].filter((id: any) => id !== extSocket.id)
-      console.log(rooms)
-      console.log(usersInThisRoom)
       extSocket.emit('all users', usersInThisRoom)
     })
 
@@ -109,7 +107,6 @@ export default (httpServer: any) => {
         room = room.filter((id: any) => id !== extSocket.id)
         rooms[roomID] = room
       }
-      console.log(rooms)
       extSocket.broadcast.emit('user left', extSocket.id)
     })
 

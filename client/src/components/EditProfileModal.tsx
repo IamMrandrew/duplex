@@ -48,7 +48,6 @@ const EditProfileModal: React.FC<Props> = ({ showModal, setShowModal, selected }
       UserServices.uploadProfilePicture(imageToSend, awsRes.data.url as string)
         .then(() => {
           const data = { name, bio, selected, picture: awsRes.data.url }
-          console.log(data);
           UserServices.updateProfile(data)
           .then((res) => {
             userContext.setState(res.data)
@@ -65,9 +64,9 @@ const EditProfileModal: React.FC<Props> = ({ showModal, setShowModal, selected }
   }
 
   const updateProfileHandler = () => {
-    const data = { name, bio, selected }
+    const data = { name, bio, selected, picture: userContext.state.profile[selected].picture }
     setShowModal(!showModal)
-    if(image.length>0) uploadPicture()
+    if(image[0].file) uploadPicture()
     else {
       UserServices.updateProfile(data)
       .then((res) => {

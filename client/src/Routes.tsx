@@ -161,7 +161,6 @@ const App = (props: AppProps): ReactElement => {
   useEffect(() => {
     ChatService.getChats().then((res) => {
       setLoading(false)
-      console.log(res.data)
       setState(res.data)
     })
     const theme = getCookieTheme()
@@ -170,7 +169,6 @@ const App = (props: AppProps): ReactElement => {
     }
 
     socket?.on('update messages', () => {
-      console.log('update')
       ChatService.getChats().then((res) => {
         setState(res.data)
       })
