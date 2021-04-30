@@ -2,7 +2,7 @@
 
   [![Spectrum](./client/public/logo192.png)](https://duplexx.herokuapp.com/)
 
-  ### Duplex.
+  ### Duplex
 
   A dual identity messenger supporting instant text messaging, video call, and voice call.
 
