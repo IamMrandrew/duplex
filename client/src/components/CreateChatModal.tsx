@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import styled from 'styled-components/macro'
 import Overlay from './Overlay'
 import ChatServices from '../services/ChatService'
@@ -17,7 +17,14 @@ const CreateChatModal: React.FC<Props> = ({ showModal, setShowModal, matchChat }
   const [title, setTitle] = useState('')
   const [username, setUsername] = useState('')
   const [value, setValue] = useState(0)
+  const [error, setError] = useState('')
   const ChatContext = useChatContext()
+
+  useEffect(() => {
+    setError('')
+    setTitle('')
+    setUsername('')
+  }, [showModal])
 
   const setTitleHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
     setTitle(e.target.value)
@@ -35,12 +42,16 @@ const CreateChatModal: React.FC<Props> = ({ showModal, setShowModal, matchChat }
       : value
       ? { type: 'Direct', mode: 'Chat', username }
       : { type: 'Spaces', mode: 'Chat', title }
-    setShowModal(!showModal)
+
     ChatServices.createChat(data)
       .then((res) => {
         ChatContext.updateState([res.data])
+        setShowModal(!showModal)
+        setTitle('')
+        setUsername('')
       })
       .catch((err) => {
+        setError('Username not found or invalid')
         console.log(err)
       })
   }
@@ -70,6 +81,7 @@ const CreateChatModal: React.FC<Props> = ({ showModal, setShowModal, matchChat }
             value={value ? username : title}
             placeholder={value ? 'Enter his/her username' : 'New group name'}
           ></Input>
+          <Error>{error ? error : ''}</Error>
           <Button onClick={createChatHandler}>Create</Button>
         </Card>
       </Wrapper>
@@ -150,16 +162,26 @@ const Button = styled.button`
 const CustomTabs = styled(Tabs)`
   margin-bottom: 20px;
 
+  .MuiTab-textColorPrimary {
+    color: ${({ theme }) => theme.font.secondary};
+  }
+
   .MuiTab-textColorPrimary.Mui-selected {
-    color: ${({ theme }) => theme.primary.main};
+    color: ${({ theme }) => theme.nav.main};
   }
 
   .PrivateTabIndicator-colorPrimary-2 {
-    background-color: ${({ theme }) => theme.primary.main};
+    background-color: ${({ theme }) => theme.nav.main};
   }
 
   .MuiTab-root {
     text-transform: none;
     font-size: 16px;
   }
+`
+
+const Error = styled.span`
+  display: block;
+  font-size: 14px;
+  color: ${({ theme }) => theme.error.main};
 `

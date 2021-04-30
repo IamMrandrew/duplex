@@ -39,7 +39,7 @@ const Profile: React.FC<Props> = () => {
           <SectionTitle>Chats</SectionTitle>
           <Card onClick={() => editHandler(0)}>
             <IconWrapper>
-              <Icon src={userContext.state && userContext.state.profile ? userContext.state.profile[0].picture : ''}/>
+              <Icon src={userContext.state && userContext.state.profile ? userContext.state.profile[0].picture : ''} />
             </IconWrapper>
             <InfoWrapper>
               <Name>{userContext.state && userContext.state.profile ? userContext.state.profile[0].name : ''}</Name>
@@ -49,7 +49,7 @@ const Profile: React.FC<Props> = () => {
           <SectionTitle>Conversation</SectionTitle>
           <Card onClick={() => editHandler(1)}>
             <IconWrapper>
-              <Icon src={userContext.state && userContext.state.profile ? userContext.state.profile[1].picture : ''}/>
+              <Icon src={userContext.state && userContext.state.profile ? userContext.state.profile[1].picture : ''} />
             </IconWrapper>
             <InfoWrapper>
               <Name>{userContext.state && userContext.state.profile ? userContext.state.profile[1].name : ''}</Name>
@@ -106,7 +106,7 @@ const SectionTitle = styled.span`
 
 const Card = styled.div`
   border-radius: 20px;
-  padding: 20px 40px;
+  padding: 20px 16px;
   background-color: ${({ theme }) => theme.bg.main};
   display: flex;
   align-items: center;
@@ -118,8 +118,8 @@ const IconWrapper = styled.div`
   margin-right: 20px;
 
   div {
-    width: 80px;
-    height: 80px;
+    width: 70px;
+    height: 70px;
   }
 `
 
@@ -133,13 +133,13 @@ const InfoWrapper = styled.div`
 
 const Name = styled.span`
   display: block;
-  font-size: 22px;
+  font-size: 16px;
   font-weight: 500;
   margin-bottom: 10px;
 `
 
 const Bio = styled.div`
-  font-size: 15px;
+  font-size: 14px;
   font-weight: 500;
 `
 
