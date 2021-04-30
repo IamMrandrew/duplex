@@ -7,22 +7,24 @@ import { isEmail, log, ONE_DAY, sendError } from '../utils'
 
 const Controller = {
   signup: (req: Request, res: Response) => {
-    const newUser = req.body
-    newUser.profile = []
-    newUser.profile.push({ name: req.body.username, bio: 'Hello world from chat!' })
-    newUser.profile.push({ name: req.body.username, bio: 'Hello world from conversation!' })
+    const newUser = new User({
+      ...req.body,
+      profile:[{ name: req.body.username, bio: 'Hello world from chat!' }, { name: req.body.username, bio: 'Hello world from conversation!' }]
+    })
     bcrypt.hash(newUser.password, 10, (err, hash) => {
       if (err) return sendError(res, 500, 'failed to hash password')
       newUser.password = hash
-      User.create(newUser, (err, user) => {
-        if (err) {
-          if (err.message.match('duplicate key')) {
-            if (err.message.match('email')) return sendError(res, 500, 'Email already exists')
-            if (err.message.match('username')) return sendError(res, 500, 'Username already exists')
-          } else return sendError(res, 500, 'Error in creating new user', err.toString())
-        }
+      newUser._id = new mongoose.Types.ObjectId()
+      console.log(newUser)
+      newUser.save().then((user:any)=>{
         log(user)
-        res.status(201).json({ message: 'User created' })
+        return res.status(201).json({ message: 'User created' })
+      }).catch((err:any)=>{
+        console.log(err)
+        if (err.message.match('duplicate key')) {
+          if (err.message.match('email')) return sendError(res, 500, 'Email already exists')
+          if (err.message.match('username')) return sendError(res, 500, 'Username already exists')
+        } else return sendError(res, 500, 'Error in creating new user', err.toString())
       })
     })
   },

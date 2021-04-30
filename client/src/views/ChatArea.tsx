@@ -190,7 +190,7 @@ const ChatArea: React.FC<Props> = () => {
 
   const getPicture = (profileIndex: number): string => {
     if (chat.type === 'Spaces') return chat.users[0]?.profile[profileIndex].picture
-    else return chat.users.find((user: any) => user?._id !== userState.state?._id).profile[profileIndex].picture
+    else return chat.users.find((user: any) => user._id !== userState._id).profile[profileIndex].picture
   }
 
   return (
@@ -231,7 +231,11 @@ const ChatArea: React.FC<Props> = () => {
                   : () => false
               }
             >
-              <Icon src={chat ? (chat.mode === 'Conversation' ? getPicture(1) : getPicture(0)) : ''} />
+              {chat && userState ? (
+                <Icon src={chat.mode === 'Conversation' ? getPicture(1) : getPicture(0)} />
+              ) : (
+                <Icon />
+              )}
               <Name>
                 {chat
                   ? chat.type === 'Spaces'
@@ -242,6 +246,7 @@ const ChatArea: React.FC<Props> = () => {
                   : ''}
               </Name>
             </InfoWrapper>
+
             {chat && (
               <OperationWrapper>
                 {chat && chat.type === 'Spaces' && (
