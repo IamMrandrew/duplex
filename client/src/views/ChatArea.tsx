@@ -185,11 +185,9 @@ const ChatArea: React.FC<Props> = () => {
     }
   }, [socket, id, messages, chatContext])
 
-  const getPicture = (profileIndex: number):string => {
-    if(chat.type === 'Spaces')
-      return chat.users[0]?.profile[profileIndex].picture
-    else
-      return chat.users.find((user: any) => user?._id !== userState.state?._id).profile[profileIndex].picture
+  const getPicture = (profileIndex: number): string => {
+    if (chat.type === 'Spaces') return chat.users[0]?.profile[profileIndex].picture
+    else return chat.users.find((user: any) => user?._id !== userState.state?._id).profile[profileIndex].picture
   }
 
   return (
@@ -203,7 +201,7 @@ const ChatArea: React.FC<Props> = () => {
             </BackButton>
           )}
           <TitleWrapper>
-            <Icon src={chat ? chat.mode === 'Conversation' ? getPicture(1) : getPicture(0) : ''} />
+            <Icon src={chat ? (chat.mode === 'Conversation' ? getPicture(1) : getPicture(0)) : ''} />
             <Name>
               {chat
                 ? chat.type === 'Spaces'
@@ -335,12 +333,14 @@ const TitleWrapper = styled.div`
 `
 
 const Content = styled.div`
-  overflow-y: auto;
+  overflow-y: scroll;
   height: calc(100vh - 80px - 100px);
   padding: 8px 32px;
+  padding-bottom: 35px;
 
   @media (max-width: ${MEDIA_BREAK}) {
     padding: 12px;
+    padding-bottom: 30px;
     height: calc(100vh - 80px - 98px);
   }
 `

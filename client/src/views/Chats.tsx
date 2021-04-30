@@ -87,6 +87,7 @@ const Wrapper = styled.div`
   background: ${({ theme }) => theme.bg.tint};
   z-index: 50;
   box-shadow: 3px 0px 2px -2px ${({ theme }) => theme.divider};
+  overflow: scroll;
 
   @media (max-width: ${MEDIA_BREAK}) {
     padding: 12px;
