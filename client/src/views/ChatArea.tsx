@@ -19,6 +19,7 @@ import { COLOR } from '../components/GlobalStyle'
 import InviteModal from '../components/InviteModal'
 import ChatService from '../services/ChatService'
 import ChatDrawer from '../components/ChatDrawer'
+import ProfileModal from '../components/ProfileModal'
 
 type Props = {
   children?: ReactElement
@@ -43,6 +44,7 @@ const ChatArea: React.FC<Props> = () => {
   const [displayingVideo, setDisplayingVideo] = useState(false) // can go back to text chating without terminating the video call
 
   const [showModal, setShowModal] = useState(false)
+  const [showProfileModal, setShowProfileModal] = useState(false)
 
   const [chat, setChat]: any = useState(null)
   const [messages, setMessages]: any = useState([])
@@ -193,6 +195,14 @@ const ChatArea: React.FC<Props> = () => {
   return (
     <>
       <InviteModal showModal={showModal} setShowModal={setShowModal} />
+      {chat && chat.type === 'Direct' && (
+        <ProfileModal
+          showModal={showProfileModal}
+          setShowModal={setShowProfileModal}
+          mode={chat ? chat.mode : ''}
+          user={chat ? chat.users.find((user: any) => user._id !== userState._id) : ''}
+        />
+      )}
       <Wrapper>
         <Header>
           {isMobile() && (
@@ -201,16 +211,28 @@ const ChatArea: React.FC<Props> = () => {
             </BackButton>
           )}
           <TitleWrapper>
-            <Icon src={chat ? (chat.mode === 'Conversation' ? getPicture(1) : getPicture(0)) : ''} />
-            <Name>
-              {chat
-                ? chat.type === 'Spaces'
-                  ? chat.title
-                  : chat.mode === 'Conversation'
-                  ? chat.users.find((user: any) => user._id !== userState._id).profile[1].name
-                  : chat.users.find((user: any) => user._id !== userState._id).profile[0].name
-                : ''}
-            </Name>
+            <InfoWrapper
+              onClick={
+                chat
+                  ? chat.type === 'Spaces'
+                    ? () => false
+                    : () => {
+                        setShowProfileModal(!showProfileModal)
+                      }
+                  : () => false
+              }
+            >
+              <Icon src={chat ? (chat.mode === 'Conversation' ? getPicture(1) : getPicture(0)) : ''} />
+              <Name>
+                {chat
+                  ? chat.type === 'Spaces'
+                    ? chat.title
+                    : chat.mode === 'Conversation'
+                    ? chat.users.find((user: any) => user._id !== userState._id).profile[1].name
+                    : chat.users.find((user: any) => user._id !== userState._id).profile[0].name
+                  : ''}
+              </Name>
+            </InfoWrapper>
             {chat && (
               <OperationWrapper>
                 {chat && chat.type === 'Spaces' && (
@@ -326,10 +348,6 @@ const TitleWrapper = styled.div`
   display: flex;
   align-items: center;
   width: 100%;
-
-  > :nth-child(1) {
-    margin-right: 20px;
-  }
 `
 
 const Content = styled.div`
@@ -437,3 +455,13 @@ const Identifier = styled(Badge)`
 `
 
 const Positioning = styled.div``
+
+const InfoWrapper = styled.div`
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+
+  > :nth-child(1) {
+    margin-right: 12px;
+  }
+`
