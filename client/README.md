@@ -24,13 +24,13 @@ Your app is ready to be deployed!
 
 ## File Structure
 
-- Frontend routings are in `./client/src/Routes.tsx`
-- Reusable components are in `./client/src/components`
-- Different page views are in `./client/src/views`
-- State mangement with Context API are in `./client/src/context`
-- Axios api calls services are in `./client/src/services`
-- General form integrity checking schema are in `./client/src/formIntegrity.tsx`
-- Commonly used utility functions are in `./client/src/utils.ts`
+- Frontend routings are in `./src/Routes.tsx`
+- Reusable components are in `./src/components`
+- Different page views are in `./src/views`
+- State mangement with Context API are in `./src/context`
+- Axios api calls services are in `./src/services`
+- General form integrity checking schema are in `./src/formIntegrity.tsx`
+- Commonly used utility functions are in `./src/utils.ts`
 
 ## Proxy
 
