@@ -45,6 +45,7 @@ const ChatArea: React.FC<Props> = () => {
 
   const [showModal, setShowModal] = useState(false)
   const [showProfileModal, setShowProfileModal] = useState(false)
+  const [messageUser, setMessageUser]: any = useState()
 
   const [chat, setChat]: any = useState(null)
   const [messages, setMessages]: any = useState([])
@@ -203,6 +204,14 @@ const ChatArea: React.FC<Props> = () => {
           user={chat ? chat.users.find((user: any) => user._id !== userState._id) : ''}
         />
       )}
+      {chat && chat.type === 'Spaces' && (
+        <ProfileModal
+          showModal={showProfileModal}
+          setShowModal={setShowProfileModal}
+          mode={messageUser ? messageUser?.mode : ''}
+          user={messageUser ? messageUser?.user : ''}
+        />
+      )}
       <Wrapper>
         <Header>
           {isMobile() && (
@@ -297,6 +306,10 @@ const ChatArea: React.FC<Props> = () => {
                     endContinuing={checkIfEndContinuous(message, index)}
                     type={chat ? chat.type : ''}
                     mode={chat ? chat.mode : ''}
+                    showProfileModal={showProfileModal}
+                    setShowProfileModal={setShowProfileModal}
+                    messageUser={messageUser}
+                    setMessageUser={setMessageUser}
                   />
                 ))}
             </Content>

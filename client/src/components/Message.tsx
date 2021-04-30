@@ -1,5 +1,6 @@
-import React from 'react'
+import React, { useState } from 'react'
 import styled from 'styled-components/macro'
+import ProfileModal from './ProfileModal'
 
 type Props = {
   message: {
@@ -14,17 +15,45 @@ type Props = {
   endContinuing: boolean
   type: string
   mode: string
+  showProfileModal: boolean
+  setShowProfileModal: any
+  messageUser: any
+  setMessageUser: any
 }
 
-const Message: React.FC<Props> = ({ message, incoming, continuing, endContinuing, type, mode }) => {
+const Message: React.FC<Props> = ({
+  message,
+  incoming,
+  continuing,
+  endContinuing,
+  type,
+  mode,
+  showProfileModal,
+  setShowProfileModal,
+  messageUser,
+  setMessageUser,
+}) => {
+  // const [showProfileModal, setShowProfileModal] = useState(false)
+
   return (
     <Wrapper system={!message.sender} incoming={incoming} endContinuing={endContinuing}>
       {!message.sender && <Text system={!message.sender}>{message.content}</Text>}
       {message.sender && (
         <Content>
-          <Name incoming={incoming} continuing={continuing} type={type}>
-            {mode === 'Conversation' ? message.sender.profile[1].name : message.sender.profile[0].name}
-          </Name>
+          <InfoWrapper
+            onClick={
+              type === 'Spaces'
+                ? () => {
+                    setShowProfileModal(!showProfileModal)
+                    setMessageUser({ mode, user: message.sender })
+                  }
+                : () => false
+            }
+          >
+            <Name incoming={incoming} continuing={continuing} type={type}>
+              {mode === 'Conversation' ? message.sender.profile[1].name : message.sender.profile[0].name}
+            </Name>
+          </InfoWrapper>
           <Bubble incoming={incoming}>
             <Text system={!message.sender}>{message.content}</Text>
           </Bubble>
@@ -71,4 +100,8 @@ const Name = styled.span`
   display: ${(props: { incoming: boolean; continuing: boolean; type: string }) =>
     props.incoming && !props.continuing && props.type === 'Spaces' ? 'block' : 'none'};
   margin-bottom: 3px;
+`
+
+const InfoWrapper = styled.div`
+  cursor: pointer;
 `

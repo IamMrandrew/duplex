@@ -20,7 +20,8 @@ const ProfileModal: React.FC<Props> = ({ showModal, setShowModal, mode, user }) 
 
   const directMessageHandler = () => {
     const availableChat = ChatContext.state.find(
-      (chat: any) => chat.users.find((chatUser: any) => chatUser._id === user._id) && chat.mode === mode,
+      (chat: any) =>
+        chat.users.find((chatUser: any) => chatUser._id === user._id) && chat.mode === mode && chat.type === 'Direct',
     )
     setShowModal(!showModal)
     if (!availableChat) {
